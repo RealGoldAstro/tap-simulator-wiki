@@ -1,8 +1,5 @@
 // js/content.js
 
-// ===== Global Luck Multiplier =====
-let currentLuckMultiplier = 1; // Default 100% = 1x
-
 // ===== Display Egg Details Function =====
 // Called when an egg is selected from sidebar - displays all pets in that egg
 function displayEggDetails(eggName, eggData, worldName) {
@@ -22,9 +19,6 @@ function displayEggDetails(eggName, eggData, worldName) {
     
     // Generate HTML for egg details with all pets
     contentArea.innerHTML = generateEggHTML(eggName, eggData, worldName);
-    
-    // Attach luck input event listener
-    attachLuckInputListener();
 }
 
 // ===== Generate Egg Details HTML =====
@@ -38,23 +32,9 @@ function generateEggHTML(eggName, eggData, worldName) {
                 <p class="pet-meta">
                     World: ${worldName} • Contains ${eggData.pets.length} pet${eggData.pets.length > 1 ? 's' : ''}
                 </p>
-                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 0.3rem;">
-                        <img src="assets/clicks.png" alt="Cost" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
-                        <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">${costFormatted}</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <label for="luck-input" style="color: #72B2FF; font-size: 0.9rem; font-weight: 600;">Luck:</label>
-                        <input 
-                            type="number" 
-                            id="luck-input" 
-                            value="100" 
-                            min="1" 
-                            max="100000"
-                            style="width: 80px; padding: 0.3rem 0.5rem; background: rgba(18, 44, 103, 0.5); border: 1px solid rgba(114, 178, 255, 0.3); border-radius: 4px; color: #E8EAED; font-size: 0.9rem;"
-                        >
-                        <span style="color: #9CA3AF; font-size: 0.9rem;">%</span>
-                    </div>
+                <div style="display: flex; align-items: center; gap: 0.3rem; margin-top: 0.8rem;">
+                    <img src="assets/clicks.png" alt="Cost" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
+                    <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">${costFormatted}</span>
                 </div>
             </div>
             
@@ -73,60 +53,13 @@ function generateEggHTML(eggName, eggData, worldName) {
                             <th>M Rainbow</th>
                         </tr>
                     </thead>
-                    <tbody id="pets-table-body">
+                    <tbody>
                         ${generatePetRows(eggData.pets)}
                     </tbody>
                 </table>
             </div>
         </div>
     `;
-}
-
-// ===== Attach Luck Input Listener =====
-function attachLuckInputListener() {
-    const luckInput = document.getElementById('luck-input');
-    
-    if (!luckInput) {
-        console.warn('⚠️ Luck input not found');
-        return;
-    }
-    
-    // Update luck multiplier when input changes
-    luckInput.addEventListener('input', () => {
-        const luckPercent = parseFloat(luckInput.value) || 100;
-        currentLuckMultiplier = luckPercent / 100;
-        
-        // Refresh the pet rows with new luck
-        refreshPetRows();
-    });
-}
-
-// ===== Refresh Pet Rows =====
-// Re-generates pet rows with updated luck multiplier
-function refreshPetRows() {
-    const tbody = document.getElementById('pets-table-body');
-    
-    if (!tbody) {
-        console.warn('⚠️ Pet table body not found');
-        return;
-    }
-    
-    // Get current egg data from the displayed content
-    const contentArea = document.getElementById('content');
-    if (!contentArea) return;
-    
-    // Store reference to current pets (need to access from somewhere)
-    // For now, we'll regenerate from the last selected egg
-    // This is a simplified approach - in production you'd store the current egg data
-    const petRows = tbody.querySelectorAll('tr');
-    petRows.forEach(row => {
-        const chanceCell = row.cells[2];
-        const petChanceDecimal = parseFloat(row.dataset.chance);
-        
-        if (chanceCell && petChanceDecimal) {
-            chanceCell.innerHTML = formatChance(petChanceDecimal, currentLuckMultiplier);
-        }
-    });
 }
 
 // ===== Generate Pet Rows =====
@@ -144,14 +77,14 @@ function generatePetRows(petsArray) {
         // Calculate all 6 stats for this pet
         const stats = calculatePetStats(petData.base, rarityInfo.maxLevel);
         
-        // Format chance display with current luck
-        const chanceDisplay = formatChance(petData.chance, currentLuckMultiplier);
+        // Format chance display
+        const chanceDisplay = formatChance(petData.chance);
         
         // Get text color for rarity badge
         const textColor = getTextColor(rarityInfo.color);
         
         return `
-            <tr data-chance="${petData.chance}">
+            <tr>
                 <td><strong>${petData.petdisplayname}</strong></td>
                 <td>
                     <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
