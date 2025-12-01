@@ -40,15 +40,15 @@ function createWorldSection(worldName, eggs) {
     const worldDiv = document.createElement('div');
     worldDiv.className = 'world-section';
     
-    // World header (clickable to collapse/expand)
+    // World header (clickable to collapse/expand) - collapsed by default
     const worldHeader = document.createElement('div');
-    worldHeader.className = 'world-header';
+    worldHeader.className = 'world-header collapsed';
     worldHeader.textContent = worldName;
     worldHeader.addEventListener('click', () => toggleWorld(worldHeader));
     
-    // Egg list container
+    // Egg list container - collapsed by default
     const eggList = document.createElement('div');
-    eggList.className = 'egg-list';
+    eggList.className = 'egg-list collapsed';
     
     // Loop through each egg in this world
     for (const eggName in eggs) {
