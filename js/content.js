@@ -26,15 +26,16 @@ function generateEggHTML(eggName, eggData, worldName) {
     const eggType = eggData.type || "Base";
     
     // Format world/category display based on egg type
+    // In js/content.js, find this section and change it:
     let categoryDisplay;
     if (eggType === "Robux") {
         categoryDisplay = `Robux Store: ${worldName}`;
     } else if (eggType === "Leaderboard") {
-        categoryDisplay = worldName;
+        categoryDisplay = "Weekly Leaderboard Pets"; // Custom name here
     } else {
         categoryDisplay = `World: ${worldName}`;
     }
-    
+
     // Generate cost/pack display based on egg type
     let costDisplay = '';
     let noticeDisplay = '';
