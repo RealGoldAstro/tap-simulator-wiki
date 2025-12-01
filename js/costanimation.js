@@ -3,9 +3,9 @@
 // ===== Cost Display Animation Configuration =====
 const COST_ANIMATION_CONFIG = {
     initialDelay: 4000,      // 4 seconds wait before first animation
-    hoverHeight: 3,          // Pixels to hover up/down
-    tiltAngle: 2,            // Degrees to tilt left/right
-    hoverDuration: 2500,     // Duration of one hover cycle (up and down)
+    tiltAngle: 1.5,          // Degrees to tilt left/right
+    scaleRange: 0.03,        // Scale change (1.0 to 1.03)
+    hoverDuration: 2500,     // Duration of one hover cycle
     enabled: false           // Controls if animation should run
 };
 
@@ -23,7 +23,8 @@ function startCostHover() {
     
     // Set initial position style
     costDisplay.style.position = 'relative';
-    costDisplay.style.transform = 'translateY(0px) rotate(0deg)';
+    costDisplay.style.transform = 'rotate(0deg) scale(1)';
+    costDisplay.style.transformOrigin = 'center center';
     
     // Wait initial delay, then start hover loop
     animationTimeout = setTimeout(() => {
@@ -32,7 +33,7 @@ function startCostHover() {
     }, COST_ANIMATION_CONFIG.initialDelay);
 }
 
-// ===== Hover Loop (smooth floating motion with tilt) =====
+// ===== Hover Loop (subtle tilt and scale breathing) =====
 function hoverLoop(element) {
     if (!COST_ANIMATION_CONFIG.enabled || !element) {
         return;
@@ -49,14 +50,15 @@ function hoverLoop(element) {
         const elapsed = Date.now() - startTime;
         const progress = (elapsed % COST_ANIMATION_CONFIG.hoverDuration) / COST_ANIMATION_CONFIG.hoverDuration;
         
-        // Sine wave for smooth up/down motion
-        const yOffset = Math.sin(progress * Math.PI * 2) * COST_ANIMATION_CONFIG.hoverHeight;
+        // Sine wave for smooth rotation (tilt left/right)
+        const rotation = Math.sin(progress * Math.PI * 2) * COST_ANIMATION_CONFIG.tiltAngle;
         
-        // Cosine wave for smooth tilt (offset from vertical for natural motion)
-        const rotation = Math.cos(progress * Math.PI * 2 + Math.PI / 2) * COST_ANIMATION_CONFIG.tiltAngle;
+        // Cosine wave for smooth scale (breathing effect - grows and shrinks)
+        const scaleOffset = (Math.cos(progress * Math.PI * 2) + 1) / 2; // Range 0 to 1
+        const scale = 1 + (scaleOffset * COST_ANIMATION_CONFIG.scaleRange);
         
-        // Apply both transforms smoothly
-        element.style.transform = `translateY(${yOffset}px) rotate(${rotation}deg)`;
+        // Apply transforms (NO position change, only rotate and scale)
+        element.style.transform = `rotate(${rotation}deg) scale(${scale})`;
         
         // Continue animation
         requestAnimationFrame(animate);
@@ -75,11 +77,11 @@ function stopCostHover() {
         animationTimeout = null;
     }
     
-    // Reset cost display position
+    // Reset cost display
     const costDisplay = document.querySelector('.pet-header > div[style*="display: flex"]');
     if (costDisplay) {
         costDisplay.style.transition = 'all 0.4s ease-out';
-        costDisplay.style.transform = 'translateY(0px) rotate(0deg)';
+        costDisplay.style.transform = 'rotate(0deg) scale(1)';
     }
 }
 
