@@ -50,7 +50,7 @@ const RARITIES = {
 // Chance is stored as decimal (e.g., 0.001 = 0.001% / 1 in 100,000)
 const WIKI_DATA = {
     "World 1": {
-        "Starter Egg": [
+        "Basic Egg": [
             {
                 petname: "Dog",
                 rarity: "Common",
@@ -87,20 +87,48 @@ const WIKI_DATA = {
                 chance: 0.059
             }
         ],
-        "Forest Egg": [
+        "Acorn Egg": [
             {
-                petname: "Pet_Fox",
-                rarity: "Rare",
-                base: 5000,
-                petdisplayname: "Forest Fox",
-                chance: 0.6
+                petname: "Hamster",
+                rarity: "Common",
+                base: 6,
+                petdisplayname: "Hamster",
+                chance: 0.34
             },
             {
-                petname: "Pet_Wolf",
+                petname: "Mouse",
+                rarity: "Common",
+                base: 7,
+                petdisplayname: "Mouse",
+                chance: 0.24
+            },
+            {
+                petname: "Chicken",
+                rarity: "Common",
+                base: 8,
+                petdisplayname: "Chicken",
+                chance: 0.20
+            },
+            {
+                petname: "Sheep",
+                rarity: "Rare",
+                base: 10,
+                petdisplayname: "Sheep",
+                chance: 0.13
+            },
+            {
+                petname: "Doggy",
+                rarity: "Rare",
+                base: 12,
+                petdisplayname: "Doggy",
+                chance: 0.068
+            },
+            {
+                petname: "Owl",
                 rarity: "Epic",
-                base: 11000,
-                petdisplayname: "Alpha Wolf",
-                chance: 0.001
+                base: 17,
+                petdisplayname: "Owl",
+                chance: 0.024
             }
         ],
         "Mountain Egg": [
