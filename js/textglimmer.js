@@ -2,8 +2,8 @@
 
 // ===== Glimmer Animation Configuration =====
 const GLIMMER_CONFIG = {
-    interval: 5000,          // Time between glimmers (5 seconds)
-    duration: 2000,          // Duration of glimmer sweep (2 seconds)
+    interval: 6000,          // Time between glimmers (6 seconds)
+    duration: 3500,          // Duration of glimmer sweep (3.5 seconds - slower)
     enabled: true
 };
 
@@ -29,7 +29,7 @@ function applyGlimmerToHeader() {
     shimmer.style.left = '0';
     shimmer.style.width = '100%';
     shimmer.style.height = '100%';
-    shimmer.style.background = 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.8) 50%, transparent 100%)';
+    shimmer.style.background = 'linear-gradient(90deg, transparent 0%, transparent 45%, rgba(255, 255, 255, 0.8) 50%, transparent 55%, transparent 100%)';
     shimmer.style.backgroundSize = '200% 100%';
     shimmer.style.backgroundPosition = '-200% 0';
     shimmer.style.backgroundClip = 'text';
@@ -37,7 +37,7 @@ function applyGlimmerToHeader() {
     shimmer.style.color = 'transparent';
     shimmer.style.pointerEvents = 'none';
     shimmer.textContent = headerTitle.textContent;
-    shimmer.style.filter = 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))';
+    shimmer.style.filter = 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.6))';
     
     headerTitle.appendChild(shimmer);
     
@@ -65,7 +65,7 @@ function applyGlimmerToCost() {
             shimmer.style.left = '0';
             shimmer.style.width = '100%';
             shimmer.style.height = '100%';
-            shimmer.style.background = 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%)';
+            shimmer.style.background = 'linear-gradient(90deg, transparent 0%, transparent 45%, rgba(255, 255, 255, 0.9) 50%, transparent 55%, transparent 100%)';
             shimmer.style.backgroundSize = '200% 100%';
             shimmer.style.backgroundPosition = '-200% 0';
             shimmer.style.backgroundClip = 'text';
@@ -75,7 +75,7 @@ function applyGlimmerToCost() {
             shimmer.style.fontWeight = '700';
             shimmer.style.fontSize = '1.1rem';
             shimmer.textContent = costText.textContent;
-            shimmer.style.filter = 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))';
+            shimmer.style.filter = 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.7))';
             
             costText.appendChild(shimmer);
             
@@ -106,7 +106,7 @@ function applyGlimmerToCost() {
         shimmer.style.left = '0';
         shimmer.style.width = '100%';
         shimmer.style.height = '100%';
-        shimmer.style.background = 'linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.9) 50%, transparent 100%)';
+        shimmer.style.background = 'linear-gradient(90deg, transparent 0%, transparent 45%, rgba(255, 255, 255, 0.9) 50%, transparent 55%, transparent 100%)';
         shimmer.style.backgroundSize = '200% 100%';
         shimmer.style.backgroundPosition = '-200% 0';
         shimmer.style.backgroundClip = 'text';
@@ -116,7 +116,7 @@ function applyGlimmerToCost() {
         shimmer.style.fontWeight = '700';
         shimmer.style.fontSize = '1.1rem';
         shimmer.textContent = costText.textContent;
-        shimmer.style.filter = 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.9))';
+        shimmer.style.filter = 'drop-shadow(0 0 6px rgba(255, 255, 255, 0.7))';
         
         costText.appendChild(shimmer);
         shimmerLoop(shimmer);
@@ -132,24 +132,17 @@ function shimmerLoop(shimmerElement) {
     // Reset to start position
     shimmerElement.style.transition = 'none';
     shimmerElement.style.backgroundPosition = '-200% 0';
-    shimmerElement.style.opacity = '0';
     
-    // Wait a moment, then start shimmer
+    // Start shimmer sweep
     setTimeout(() => {
-        shimmerElement.style.opacity = '1';
         shimmerElement.style.transition = `background-position ${GLIMMER_CONFIG.duration}ms linear`;
         shimmerElement.style.backgroundPosition = '200% 0';
         
-        // After shimmer completes, hide and wait for next cycle
+        // After shimmer completes, wait for next cycle
         setTimeout(() => {
-            shimmerElement.style.opacity = '0';
-            
-            // Wait interval, then repeat
-            setTimeout(() => {
-                shimmerLoop(shimmerElement);
-            }, GLIMMER_CONFIG.interval - GLIMMER_CONFIG.duration);
-            
-        }, GLIMMER_CONFIG.duration);
+            shimmerLoop(shimmerElement);
+        }, GLIMMER_CONFIG.duration + GLIMMER_CONFIG.interval);
+        
     }, 100);
 }
 
