@@ -2,7 +2,7 @@
 
 // ===== Particle System Configuration =====
 const PARTICLE_CONFIG = {
-    count: 2,                      // Number of particles
+    count: 22,                      // Number of particles
     size: 3,                       // Particle size (small dots)
     speed: 0.3,                    // Movement speed
     alpha: 0.5,                    // Particle opacity
