@@ -249,109 +249,123 @@ const WIKI_DATA = {
                 }
             ]
         },
-        "Mountain Egg": {
+        "Cactus Egg": {
             cost: 750000000,
             pets: [
                 {
                     petname: "DuneDog",
                     rarity: "Common",
-                    base: 25,
+                    base: 125,
                     petdisplayname: "Dune Dog",
-                    chance: 0.5
+                    chance: 0.33
                 },
                 {
                     petname: "Mummy",
                     rarity: "Common",
-                    base: 27,
+                    base: 140,
                     petdisplayname: "Mummy",
                     chance: 0.3
                 },
                 {
                     petname: "Camel",
                     rarity: "Common",
-                    base: 30,
+                    base: 190,
                     petdisplayname: "Camel",
-                    chance: 0.09
+                    chance: 0.25
                 },
                 {
                     petname: "MummifiedWyvern",
                     rarity: "Rare",
-                    base: 33,
+                    base: 240,
                     petdisplayname: "Mummified Wyvern",
                     chance: 0.08
                 },
                 {
                     petname: "Sphinx",
                     rarity: "Epic",
-                    base: 40,
+                    base: 300,
                     petdisplayname: "Sphinx",
                     chance: 0.03
                 },
                 {
                     petname: "CactusRaider",
                     rarity: "Legendary",
-                    base: 75,
+                    base: 500,
                     petdisplayname: "Cactus Raider",
-                    chance: 0.008
+                    chance: 0.005
                 },
                 {
                     petname: "SerpentGod",
                     rarity: "Mythical",
-                    base: 75,
+                    base: 760,
                     petdisplayname: "Serpent God",
-                    chance: 0.008
+                    chance: 0.001
                 }
             ]
         },
-        "Mountain Egg": {
-            cost: 500000,
+        "Jungle Egg": {
+            cost: 40000000000,
             pets: [
                 {
-                    petname: "Baor",
+                    petname: "Frog",
                     rarity: "Common",
-                    base: 25,
-                    petdisplayname: "Baor",
-                    chance: 0.5
+                    base: 320,
+                    petdisplayname: "Frog",
+                    chance: 0.33
                 },
                 {
-                    petname: "Goat",
+                    petname: "Monkey",
                     rarity: "Common",
-                    base: 27,
-                    petdisplayname: "Goat",
-                    chance: 0.3
+                    base: 370,
+                    petdisplayname: "Monkey",
+                    chance: 0.25
                 },
                 {
-                    petname: "Elephant",
+                    petname: "Spider",
+                    rarity: "Common",
+                    base: 420,
+                    petdisplayname: "Spider",
+                    chance: 0.18
+                },
+                {
+                    petname: "Gorilla",
                     rarity: "Rare",
-                    base: 30,
-                    petdisplayname: "Elephant",
+                    base: 470,
+                    petdisplayname: "Gorilla",
+                    chance: 0.12
+                },
+                {
+                    petname: "Panda",
+                    rarity: "Epic",
+                    base: 560,
+                    petdisplayname: "Panda",
                     chance: 0.09
                 },
                 {
-                    petname: "Lion",
-                    rarity: "Rare",
-                    base: 33,
-                    petdisplayname: "Lion",
-                    chance: 0.08
-                },
-                {
-                    petname: "Lynx",
+                    petname: "JungleHydra",
                     rarity: "Epic",
-                    base: 40,
-                    petdisplayname: "Lynx",
-                    chance: 0.03
+                    base: 730,
+                    petdisplayname: "Jungle Hydra",
+                    chance: 0.028
                 },
                 {
-                    petname: "CardinalHydra",
+                    petname: "VenomDominus",
                     rarity: "Legendary",
-                    base: 75,
-                    petdisplayname: "Cardinal Hydra",
-                    chance: 0.008
+                    base: 950,
+                    petdisplayname: "Venom Dominus",
+                    chance: 0.0011
+                },
+                {
+                    petname: "Treant",
+                    rarity: "Mythical",
+                    base: 2000,
+                    petdisplayname: "Treant",
+                    chance: 0.0005
                 }
             ]
         },
-        "Mountain Egg": {
-            cost: 500000,
+        "Heaven Egg": {
+            cost: 1500000000000,
             pets: [
                 {
                     petname: "Baor",
