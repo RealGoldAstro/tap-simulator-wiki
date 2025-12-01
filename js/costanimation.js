@@ -3,16 +3,16 @@
 // ===== Cost Display Animation Configuration =====
 const COST_ANIMATION_CONFIG = {
     initialDelay: 4000,      // 4 seconds wait before first animation
-    walkDistance: 15,        // Pixels to walk right
-    walkDuration: 2500,      // Duration of walk right (ms)
-    pauseAtEnd: 800,         // Pause at the end before walking back
-    returnDuration: 2500,    // Duration of walk back
-    pauseAtStart: 1200,      // Pause at start before next cycle
+    walkDistance: 20,        // Pixels to walk right
+    stepDuration: 400,       // Duration of each step
+    steps: 5,                // Number of steps to take
+    pauseAtEnd: 1000,        // Pause at the end before walking back
     enabled: false           // Controls if animation should run
 };
 
-// Store animation timeout/interval IDs for cleanup
+// Store animation state
 let animationTimeout = null;
+let currentStep = 0;
 
 // ===== Start Cost Walking Animation =====
 function startCostWalking() {
@@ -26,49 +26,83 @@ function startCostWalking() {
     // Set initial position style
     costDisplay.style.position = 'relative';
     costDisplay.style.left = '0px';
+    costDisplay.style.transform = 'translateY(0px) rotate(0deg)';
     
     // Wait initial delay, then start loop
     animationTimeout = setTimeout(() => {
         COST_ANIMATION_CONFIG.enabled = true;
-        walkCycle(costDisplay);
+        walkForward(costDisplay);
     }, COST_ANIMATION_CONFIG.initialDelay);
 }
 
-// ===== Walk Cycle Animation =====
-function walkCycle(element) {
+// ===== Walk Forward =====
+function walkForward(element) {
     if (!COST_ANIMATION_CONFIG.enabled || !element) {
         return;
     }
     
-    // Walk right with subtle bob
-    element.style.transition = `all ${COST_ANIMATION_CONFIG.walkDuration}ms ease-in-out`;
-    element.style.left = `${COST_ANIMATION_CONFIG.walkDistance}px`;
-    element.style.transform = 'translateY(-1px)';
+    currentStep = 0;
+    walkStep(element, true);
+}
+
+// ===== Walk Step (smooth walking motion) =====
+function walkStep(element, forward) {
+    if (!COST_ANIMATION_CONFIG.enabled || !element) {
+        return;
+    }
     
-    setTimeout(() => {
-        // Subtle bob down
-        element.style.transform = 'translateY(0px)';
-        
+    const direction = forward ? 1 : -1;
+    const stepSize = COST_ANIMATION_CONFIG.walkDistance / COST_ANIMATION_CONFIG.steps;
+    
+    // Calculate position for this step
+    const newLeft = forward 
+        ? (currentStep + 1) * stepSize 
+        : COST_ANIMATION_CONFIG.walkDistance - ((currentStep + 1) * stepSize);
+    
+    // Alternating bob up and down for walking effect
+    const bobHeight = (currentStep % 2 === 0) ? -2 : -4;
+    const tilt = (currentStep % 2 === 0) ? 1 : -1;
+    
+    // Smooth transition
+    element.style.transition = `all ${COST_ANIMATION_CONFIG.stepDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
+    element.style.left = `${newLeft}px`;
+    element.style.transform = `translateY(${bobHeight}px) rotate(${tilt}deg)`;
+    
+    currentStep++;
+    
+    // Check if walk is complete
+    if (currentStep >= COST_ANIMATION_CONFIG.steps) {
+        // Finished walking
         setTimeout(() => {
-            // Bob up
-            element.style.transform = 'translateY(-1px)';
+            // Reset to flat position
+            element.style.transition = `all 200ms ease-out`;
+            element.style.transform = forward 
+                ? `translateY(0px) rotate(0deg)` 
+                : `translateY(0px) rotate(0deg)`;
             
-            setTimeout(() => {
-                // Pause at end, then walk back
-                element.style.transition = `all ${COST_ANIMATION_CONFIG.returnDuration}ms ease-in-out`;
-                element.style.left = '0px';
-                element.style.transform = 'translateY(0px)';
-                
+            if (forward) {
+                // Pause, then walk back
                 setTimeout(() => {
-                    // Pause at start, then repeat
                     if (COST_ANIMATION_CONFIG.enabled) {
-                        walkCycle(element);
+                        currentStep = 0;
+                        walkStep(element, false);
                     }
-                }, COST_ANIMATION_CONFIG.returnDuration + COST_ANIMATION_CONFIG.pauseAtStart);
-                
-            }, COST_ANIMATION_CONFIG.pauseAtEnd / 2);
-        }, COST_ANIMATION_CONFIG.walkDuration / 2);
-    }, COST_ANIMATION_CONFIG.walkDuration / 2);
+                }, COST_ANIMATION_CONFIG.pauseAtEnd);
+            } else {
+                // Pause, then walk forward again
+                setTimeout(() => {
+                    if (COST_ANIMATION_CONFIG.enabled) {
+                        walkForward(element);
+                    }
+                }, COST_ANIMATION_CONFIG.pauseAtEnd);
+            }
+        }, COST_ANIMATION_CONFIG.stepDuration);
+    } else {
+        // Continue walking
+        setTimeout(() => {
+            walkStep(element, forward);
+        }, COST_ANIMATION_CONFIG.stepDuration);
+    }
 }
 
 // ===== Stop Cost Walking Animation =====
@@ -84,9 +118,9 @@ function stopCostWalking() {
     // Reset cost display position
     const costDisplay = document.querySelector('.pet-header > div[style*="display: flex"]');
     if (costDisplay) {
-        costDisplay.style.transition = 'all 0.3s ease-out';
+        costDisplay.style.transition = 'all 0.4s ease-out';
         costDisplay.style.left = '0px';
-        costDisplay.style.transform = 'translateY(0px)';
+        costDisplay.style.transform = 'translateY(0px) rotate(0deg)';
     }
 }
 
