@@ -25,6 +25,16 @@ function displayEggDetails(eggName, eggData, worldName) {
 function generateEggHTML(eggName, eggData, worldName) {
     const eggType = eggData.type || "Base";
     
+    // Format world/category display based on egg type
+    let categoryDisplay;
+    if (eggType === "Robux") {
+        categoryDisplay = `Robux Store: ${worldName}`;
+    } else if (eggType === "Leaderboard") {
+        categoryDisplay = worldName;
+    } else {
+        categoryDisplay = `World: ${worldName}`;
+    }
+    
     // Generate cost/pack display based on egg type
     let costDisplay = '';
     let noticeDisplay = '';
@@ -74,7 +84,7 @@ function generateEggHTML(eggName, eggData, worldName) {
             <div class="pet-header">
                 <h2 class="pet-title">${eggName}</h2>
                 <p class="pet-meta">
-                    World: ${worldName} • Contains ${eggData.pets.length} pet${eggData.pets.length > 1 ? 's' : ''}
+                    ${categoryDisplay} • Contains ${eggData.pets.length} pet${eggData.pets.length > 1 ? 's' : ''}
                 </p>
                 ${costDisplay}
             </div>
