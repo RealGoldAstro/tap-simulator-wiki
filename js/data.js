@@ -103,7 +103,7 @@ const WIKI_DATA = {
                     rarity: "Secret I",
                     base: 67,
                     petdisplayname: "Dumb Dog",
-                    chance: 0.0003
+                    chance: 0.000003
                 }
             ]
         },
@@ -499,51 +499,72 @@ const WIKI_DATA = {
                 }
             ]
         },
-        "1": {
+        "Elemental Egg": {
             type: "Base",
-            cost: 1,
+            cost: 1500000000000000,
             pets: [
                 {
-                    petname: "Baor",
+                    petname: "FireNinja",
                     rarity: "Common",
-                    base: 25,
-                    petdisplayname: "Baor",
-                    chance: 0.5
+                    base: 5000,
+                    petdisplayname: "Fire Ninja",
+                    chance: 0.38
                 },
                 {
-                    petname: "Goat",
-                    rarity: "Common",
-                    base: 27,
-                    petdisplayname: "Goat",
+                    petname: "SenseiPanda",
+                    rarity: "Rare",
+                    base: 5300,
+                    petdisplayname: "Sensei Panda",
                     chance: 0.3
                 },
                 {
-                    petname: "Elephant",
+                    petname: "MonkeyWarrior",
                     rarity: "Rare",
-                    base: 30,
-                    petdisplayname: "Elephant",
-                    chance: 0.09
+                    base: 5900,
+                    petdisplayname: "Monkey Warrior",
+                    chance: 0.18
                 },
                 {
-                    petname: "Lion",
-                    rarity: "Rare",
-                    base: 33,
-                    petdisplayname: "Lion",
-                    chance: 0.08
-                },
-                {
-                    petname: "Lynx",
+                    petname: "BearBender",
                     rarity: "Epic",
-                    base: 40,
-                    petdisplayname: "Lynx",
-                    chance: 0.03
+                    base: 6500,
+                    petdisplayname: "Bear Bender",
+                    chance: 0.12
                 },
                 {
-                    petname: "CardinalHydra",
+                    petname: "SilentAssassin",
                     rarity: "Legendary",
-                    base: 75,
-                    petdisplayname: "Cardinal Hydra",
-                    chance: 0.008
+                    base: 6900,
+                    petdisplayname: "Silent Assassin",
+                    chance: 0.02
+                },
+                {
+                    petname: "WaterBeast",
+                    rarity: "Legendary",
+                    base: 7500,
+                    petdisplayname: "Water Beast",
+                    chance: 0.0015
+                },
+                {
+                    petname: "Samureye",
+                    rarity: "Mythical",
+                    base: 13000,
+                    petdisplayname: "Samureye",
+                    chance: 0.0001
+                },
+                {
+                    petname: "DivineDragon",
+                    rarity: "Legendary",
+                    base: 26000,
+                    petdisplayname: "Divine Dragon",
+                    chance: 0.000005
+                },
+                {
+                    petname: "RagingClaw",
+                    rarity: "Secret II",
+                    base: 40000,
+                    petdisplayname: "Raging Claw",
+                    chance: 0.000001
                 }
             ]
         }
