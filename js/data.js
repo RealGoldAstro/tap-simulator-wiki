@@ -557,7 +557,7 @@ const WIKI_DATA = {
                     rarity: "Secret I",
                     base: 26000,
                     petdisplayname: "Divine Dragon",
-                    chance: 0.000005
+                    chance: 0.000002
                 },
                 {
                     petname: "RagingClaw",
