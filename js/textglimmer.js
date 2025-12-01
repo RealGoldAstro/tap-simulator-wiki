@@ -2,8 +2,7 @@
 
 // ===== Glimmer Animation Configuration =====
 const GLIMMER_CONFIG = {
-    interval: 6000,          // Time between glimmers (6 seconds)
-    duration: 3500,          // Duration of glimmer sweep (3.5 seconds - slower)
+    duration: 5000,          // Duration of glimmer sweep (5 seconds - slower)
     enabled: true
 };
 
@@ -123,7 +122,7 @@ function applyGlimmerToCost() {
     }
 }
 
-// ===== Shimmer Animation Loop =====
+// ===== Shimmer Animation Loop (continuous, no wait) =====
 function shimmerLoop(shimmerElement) {
     if (!GLIMMER_CONFIG.enabled || !shimmerElement) {
         return;
@@ -133,17 +132,17 @@ function shimmerLoop(shimmerElement) {
     shimmerElement.style.transition = 'none';
     shimmerElement.style.backgroundPosition = '-200% 0';
     
-    // Start shimmer sweep
+    // Start shimmer sweep immediately
     setTimeout(() => {
         shimmerElement.style.transition = `background-position ${GLIMMER_CONFIG.duration}ms linear`;
         shimmerElement.style.backgroundPosition = '200% 0';
         
-        // After shimmer completes, wait for next cycle
+        // Immediately loop again after sweep completes
         setTimeout(() => {
             shimmerLoop(shimmerElement);
-        }, GLIMMER_CONFIG.duration + GLIMMER_CONFIG.interval);
+        }, GLIMMER_CONFIG.duration);
         
-    }, 100);
+    }, 50);
 }
 
 // ===== Initialize Glimmer System =====
