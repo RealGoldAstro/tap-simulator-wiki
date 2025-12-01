@@ -1,8 +1,11 @@
 // js/content.js
 
+// ===== Global Luck Multiplier =====
+let currentLuckMultiplier = 1; // Default 100% = 1x
+
 // ===== Display Egg Details Function =====
 // Called when an egg is selected from sidebar - displays all pets in that egg
-function displayEggDetails(eggName, petsArray, worldName) {
+function displayEggDetails(eggName, eggData, worldName) {
     const contentArea = document.getElementById('content');
     
     // Validation checks
@@ -11,23 +14,48 @@ function displayEggDetails(eggName, petsArray, worldName) {
         return;
     }
     
-    if (!Array.isArray(petsArray) || petsArray.length === 0) {
-        console.warn('⚠️ Invalid or empty pets array provided');
+    if (!eggData || !eggData.pets || !Array.isArray(eggData.pets) || eggData.pets.length === 0) {
+        console.warn('⚠️ Invalid or empty egg data provided');
         contentArea.innerHTML = '<div class="welcome"><h2>No pets found</h2></div>';
         return;
     }
     
     // Generate HTML for egg details with all pets
-    contentArea.innerHTML = generateEggHTML(eggName, petsArray, worldName);
+    contentArea.innerHTML = generateEggHTML(eggName, eggData, worldName);
+    
+    // Attach luck input event listener
+    attachLuckInputListener();
 }
 
 // ===== Generate Egg Details HTML =====
-function generateEggHTML(eggName, petsArray, worldName) {
+function generateEggHTML(eggName, eggData, worldName) {
+    const costFormatted = formatNumberAbbreviated(eggData.cost);
+    
     return `
         <div class="pet-details">
             <div class="pet-header">
                 <h2 class="pet-title">${eggName}</h2>
-                <p class="pet-meta">World: ${worldName} • Contains ${petsArray.length} pet${petsArray.length > 1 ? 's' : ''}</p>
+                <p class="pet-meta">
+                    World: ${worldName} • Contains ${eggData.pets.length} pet${eggData.pets.length > 1 ? 's' : ''}
+                </p>
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 0.3rem;">
+                        <img src="assets/clicks.png" alt="Cost" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
+                        <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">${costFormatted}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <label for="luck-input" style="color: #72B2FF; font-size: 0.9rem; font-weight: 600;">Luck:</label>
+                        <input 
+                            type="number" 
+                            id="luck-input" 
+                            value="100" 
+                            min="1" 
+                            max="100000"
+                            style="width: 80px; padding: 0.3rem 0.5rem; background: rgba(18, 44, 103, 0.5); border: 1px solid rgba(114, 178, 255, 0.3); border-radius: 4px; color: #E8EAED; font-size: 0.9rem;"
+                        >
+                        <span style="color: #9CA3AF; font-size: 0.9rem;">%</span>
+                    </div>
+                </div>
             </div>
             
             <div class="pet-info">
@@ -45,13 +73,60 @@ function generateEggHTML(eggName, petsArray, worldName) {
                             <th>M Rainbow</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        ${generatePetRows(petsArray)}
+                    <tbody id="pets-table-body">
+                        ${generatePetRows(eggData.pets)}
                     </tbody>
                 </table>
             </div>
         </div>
     `;
+}
+
+// ===== Attach Luck Input Listener =====
+function attachLuckInputListener() {
+    const luckInput = document.getElementById('luck-input');
+    
+    if (!luckInput) {
+        console.warn('⚠️ Luck input not found');
+        return;
+    }
+    
+    // Update luck multiplier when input changes
+    luckInput.addEventListener('input', () => {
+        const luckPercent = parseFloat(luckInput.value) || 100;
+        currentLuckMultiplier = luckPercent / 100;
+        
+        // Refresh the pet rows with new luck
+        refreshPetRows();
+    });
+}
+
+// ===== Refresh Pet Rows =====
+// Re-generates pet rows with updated luck multiplier
+function refreshPetRows() {
+    const tbody = document.getElementById('pets-table-body');
+    
+    if (!tbody) {
+        console.warn('⚠️ Pet table body not found');
+        return;
+    }
+    
+    // Get current egg data from the displayed content
+    const contentArea = document.getElementById('content');
+    if (!contentArea) return;
+    
+    // Store reference to current pets (need to access from somewhere)
+    // For now, we'll regenerate from the last selected egg
+    // This is a simplified approach - in production you'd store the current egg data
+    const petRows = tbody.querySelectorAll('tr');
+    petRows.forEach(row => {
+        const chanceCell = row.cells[2];
+        const petChanceDecimal = parseFloat(row.dataset.chance);
+        
+        if (chanceCell && petChanceDecimal) {
+            chanceCell.innerHTML = formatChance(petChanceDecimal, currentLuckMultiplier);
+        }
+    });
 }
 
 // ===== Generate Pet Rows =====
@@ -69,14 +144,14 @@ function generatePetRows(petsArray) {
         // Calculate all 6 stats for this pet
         const stats = calculatePetStats(petData.base, rarityInfo.maxLevel);
         
-        // Format chance display
-        const chanceDisplay = formatChance(petData.chance);
+        // Format chance display with current luck
+        const chanceDisplay = formatChance(petData.chance, currentLuckMultiplier);
         
         // Get text color for rarity badge
         const textColor = getTextColor(rarityInfo.color);
         
         return `
-            <tr>
+            <tr data-chance="${petData.chance}">
                 <td><strong>${petData.petdisplayname}</strong></td>
                 <td>
                     <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
@@ -84,12 +159,12 @@ function generatePetRows(petsArray) {
                     </span>
                 </td>
                 <td>${chanceDisplay}</td>
-                <td class="stat-value">${formatNumber(stats.baseLevel0)}</td>
-                <td class="stat-value">${formatNumber(stats.goldenLevel0)}</td>
-                <td class="stat-value">${formatNumber(stats.rainbowLevel0)}</td>
-                <td class="stat-value">${formatNumber(stats.baseMaxLevel)}</td>
-                <td class="stat-value">${formatNumber(stats.goldenMaxLevel)}</td>
-                <td class="stat-value">${formatNumber(stats.rainbowMaxLevel)}</td>
+                <td class="stat-value">${formatNumberAbbreviated(stats.baseLevel0)}</td>
+                <td class="stat-value">${formatNumberAbbreviated(stats.goldenLevel0)}</td>
+                <td class="stat-value">${formatNumberAbbreviated(stats.rainbowLevel0)}</td>
+                <td class="stat-value">${formatNumberAbbreviated(stats.baseMaxLevel)}</td>
+                <td class="stat-value">${formatNumberAbbreviated(stats.goldenMaxLevel)}</td>
+                <td class="stat-value">${formatNumberAbbreviated(stats.rainbowMaxLevel)}</td>
             </tr>
         `;
     }).join('');
@@ -122,11 +197,6 @@ function calculateStat(baseStat, evolutionMultiplier, level) {
     const levelBonus = 1 + (level * 0.005);
     const finalStat = baseStat * evolutionMultiplier * levelBonus;
     return Math.floor(finalStat); // Round down for clean numbers
-}
-
-// ===== Format Number with Commas =====
-function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 // ===== Get Text Color Based on Background =====
