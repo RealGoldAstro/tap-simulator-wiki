@@ -86,8 +86,7 @@ function generateEggHTML(eggName, eggData, worldName) {
                         <tr>
                             <th>Petname</th>
                             <th>Rarity</th>
-                            ${eggType === "Leaderboard" ? '<th>Tier</th>' : ''}
-                            <th>Chance</th>
+                            ${eggType === "Leaderboard" ? '<th>Tier</th>' : '<th>Chance</th>'}
                             <th>Base</th>
                             <th>Golden</th>
                             <th>Rainbow</th>
@@ -120,9 +119,6 @@ function generatePetRows(petsArray, eggType) {
         // Calculate all 6 stats for this pet based on egg type
         const stats = calculatePetStats(petData.base, rarityInfo.maxLevel, eggType);
         
-        // Format chance display
-        const chanceDisplay = formatChance(petData.chance);
-        
         // Get text color for rarity badge
         const textColor = getTextColor(rarityInfo.color);
         
@@ -138,10 +134,14 @@ function generatePetRows(petsArray, eggType) {
             }
         };
         
-        // Leaderboard tier column (if applicable)
-        const tierColumn = eggType === "Leaderboard" 
-            ? `<td><span style="color: #72B2FF; font-weight: 600;">${petData.leaderboardTier}</span></td>`
-            : '';
+        // Chance/Tier column (depends on egg type)
+        let chanceOrTierColumn;
+        if (eggType === "Leaderboard") {
+            chanceOrTierColumn = `<td><span style="color: #72B2FF; font-weight: 600;">${petData.leaderboardTier}</span></td>`;
+        } else {
+            const chanceDisplay = formatChance(petData.chance);
+            chanceOrTierColumn = `<td>${chanceDisplay}</td>`;
+        }
         
         return `
             <tr>
@@ -151,8 +151,7 @@ function generatePetRows(petsArray, eggType) {
                         ${petData.rarity}
                     </span>
                 </td>
-                ${tierColumn}
-                <td>${chanceDisplay}</td>
+                ${chanceOrTierColumn}
                 <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
                 <td class="stat-value">${formatStat(stats.goldenLevel0)}</td>
                 <td class="stat-value">${formatStat(stats.rainbowLevel0)}</td>
