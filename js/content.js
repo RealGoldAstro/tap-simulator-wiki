@@ -23,7 +23,51 @@ function displayEggDetails(eggName, eggData, worldName) {
 
 // ===== Generate Egg Details HTML =====
 function generateEggHTML(eggName, eggData, worldName) {
-    const costFormatted = formatNumberAbbreviated(eggData.cost);
+    const eggType = eggData.type || "Base";
+    
+    // Generate cost/pack display based on egg type
+    let costDisplay = '';
+    let noticeDisplay = '';
+    
+    if (eggType === "Base") {
+        // Base egg: show currency cost
+        const costFormatted = formatNumberAbbreviated(eggData.cost);
+        costDisplay = `
+            <div style="display: flex; align-items: center; gap: 0.3rem; margin-top: 0.8rem;">
+                <img src="assets/clicks.png" alt="Cost" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
+                <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">${costFormatted}</span>
+            </div>
+        `;
+    } else if (eggType === "Robux") {
+        // Robux egg: show pack options
+        const packsHTML = eggData.packs.map(pack => {
+            return `<span style="color: #E8EAED; font-weight: 600;">${pack.amount}x</span> <span style="color: #FFD700;">R$${pack.price}</span>`;
+        }).join(' • ');
+        
+        costDisplay = `
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap;">
+                <img src="assets/robux.png" alt="Robux" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
+                <div style="font-size: 0.95rem;">${packsHTML}</div>
+            </div>
+        `;
+        
+        noticeDisplay = `
+            <div style="background: rgba(255, 215, 0, 0.1); border-left: 3px solid #FFD700; padding: 0.8rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                <p style="color: #FFD700; font-size: 0.9rem; margin: 0;">
+                    <strong>⚠️ Notice:</strong> All percentages are based off your best pet's base stat
+                </p>
+            </div>
+        `;
+    } else if (eggType === "Leaderboard") {
+        // Leaderboard egg: no cost, just notice
+        noticeDisplay = `
+            <div style="background: rgba(114, 178, 255, 0.1); border-left: 3px solid #72B2FF; padding: 0.8rem; margin-bottom: 1.5rem; border-radius: 4px;">
+                <p style="color: #72B2FF; font-size: 0.9rem; margin: 0;">
+                    <strong>ℹ️ Notice:</strong> Leaderboard based off total pet power
+                </p>
+            </div>
+        `;
+    }
     
     return `
         <div class="pet-details">
@@ -32,18 +76,17 @@ function generateEggHTML(eggName, eggData, worldName) {
                 <p class="pet-meta">
                     World: ${worldName} • Contains ${eggData.pets.length} pet${eggData.pets.length > 1 ? 's' : ''}
                 </p>
-                <div style="display: flex; align-items: center; gap: 0.3rem; margin-top: 0.8rem;">
-                    <img src="assets/clicks.png" alt="Cost" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
-                    <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">${costFormatted}</span>
-                </div>
+                ${costDisplay}
             </div>
             
             <div class="pet-info">
+                ${noticeDisplay}
                 <table class="pets-table">
                     <thead>
                         <tr>
                             <th>Petname</th>
                             <th>Rarity</th>
+                            ${eggType === "Leaderboard" ? '<th>Tier</th>' : ''}
                             <th>Chance</th>
                             <th>Base</th>
                             <th>Golden</th>
@@ -54,7 +97,7 @@ function generateEggHTML(eggName, eggData, worldName) {
                         </tr>
                     </thead>
                     <tbody>
-                        ${generatePetRows(eggData.pets)}
+                        ${generatePetRows(eggData.pets, eggType)}
                     </tbody>
                 </table>
             </div>
@@ -64,7 +107,7 @@ function generateEggHTML(eggName, eggData, worldName) {
 
 // ===== Generate Pet Rows =====
 // Creates table rows for all pets in the egg
-function generatePetRows(petsArray) {
+function generatePetRows(petsArray, eggType) {
     return petsArray.map(petData => {
         // Get rarity info
         const rarityInfo = RARITIES[petData.rarity];
@@ -74,14 +117,31 @@ function generatePetRows(petsArray) {
             return '';
         }
         
-        // Calculate all 6 stats for this pet
-        const stats = calculatePetStats(petData.base, rarityInfo.maxLevel);
+        // Calculate all 6 stats for this pet based on egg type
+        const stats = calculatePetStats(petData.base, rarityInfo.maxLevel, eggType);
         
         // Format chance display
         const chanceDisplay = formatChance(petData.chance);
         
         // Get text color for rarity badge
         const textColor = getTextColor(rarityInfo.color);
+        
+        // Determine if stats should show as percentages
+        const isPercentage = (eggType === "Robux" || eggType === "Leaderboard");
+        
+        // Format stats with appropriate suffix
+        const formatStat = (value) => {
+            if (isPercentage) {
+                return value.toFixed(1).replace(/\.0$/, '') + '%';
+            } else {
+                return formatNumberAbbreviated(value);
+            }
+        };
+        
+        // Leaderboard tier column (if applicable)
+        const tierColumn = eggType === "Leaderboard" 
+            ? `<td><span style="color: #72B2FF; font-weight: 600;">${petData.leaderboardTier}</span></td>`
+            : '';
         
         return `
             <tr>
@@ -91,13 +151,14 @@ function generatePetRows(petsArray) {
                         ${petData.rarity}
                     </span>
                 </td>
+                ${tierColumn}
                 <td>${chanceDisplay}</td>
-                <td class="stat-value">${formatNumberAbbreviated(stats.baseLevel0)}</td>
-                <td class="stat-value">${formatNumberAbbreviated(stats.goldenLevel0)}</td>
-                <td class="stat-value">${formatNumberAbbreviated(stats.rainbowLevel0)}</td>
-                <td class="stat-value">${formatNumberAbbreviated(stats.baseMaxLevel)}</td>
-                <td class="stat-value">${formatNumberAbbreviated(stats.goldenMaxLevel)}</td>
-                <td class="stat-value">${formatNumberAbbreviated(stats.rainbowMaxLevel)}</td>
+                <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
+                <td class="stat-value">${formatStat(stats.goldenLevel0)}</td>
+                <td class="stat-value">${formatStat(stats.rainbowLevel0)}</td>
+                <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
+                <td class="stat-value">${formatStat(stats.goldenMaxLevel)}</td>
+                <td class="stat-value">${formatStat(stats.rainbowMaxLevel)}</td>
             </tr>
         `;
     }).join('');
@@ -105,11 +166,22 @@ function generatePetRows(petsArray) {
 
 // ===== Calculate Pet Stats =====
 // Calculates all 6 states: Base/Golden/Rainbow × Level0/MaxLevel
-function calculatePetStats(baseStat, maxLevel) {
-    // Evolution multipliers: Base = x1, Golden = x2, Rainbow = x4
-    const baseMultiplier = 1;
-    const goldenMultiplier = 2;
-    const rainbowMultiplier = 4;
+// Uses different multipliers based on egg type
+function calculatePetStats(baseStat, maxLevel, eggType) {
+    // Determine multipliers based on egg type
+    let baseMultiplier, goldenMultiplier, rainbowMultiplier;
+    
+    if (eggType === "Robux" || eggType === "Leaderboard") {
+        // Percentage-based pets: smaller multipliers
+        baseMultiplier = 1;
+        goldenMultiplier = 1.25;
+        rainbowMultiplier = 1.5;
+    } else {
+        // Base eggs: standard multipliers
+        baseMultiplier = 1;
+        goldenMultiplier = 2;
+        rainbowMultiplier = 4;
+    }
     
     return {
         // Level 0 stats
@@ -129,7 +201,7 @@ function calculatePetStats(baseStat, maxLevel) {
 function calculateStat(baseStat, evolutionMultiplier, level) {
     const levelBonus = 1 + (level * 0.005);
     const finalStat = baseStat * evolutionMultiplier * levelBonus;
-    return Math.floor(finalStat); // Round down for clean numbers
+    return finalStat; // Keep decimals for percentages
 }
 
 // ===== Get Text Color Based on Background =====
