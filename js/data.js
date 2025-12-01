@@ -1,5 +1,9 @@
 // js/data.js
 
+// ===== Number Abbreviation Configuration =====
+// Customize abbreviations here
+const NUMBER_ABBREVIATIONS = ['', 'K', 'M', 'B', 'T', 'QA', 'QN', 'SX', 'SP', 'OC', 'NO', 'DC'];
+
 // ===== Rarity Configuration =====
 // Contains color (RGB) and max level for each rarity tier
 const RARITIES = {
@@ -46,201 +50,239 @@ const RARITIES = {
 };
 
 // ===== Wiki Data Structure =====
-// Each egg contains an array of pets (supports up to 50 pets per egg)
+// Each egg contains cost and an array of pets (supports up to 50 pets per egg)
 // Chance is stored as decimal (e.g., 0.001 = 0.001% / 1 in 100,000)
 const WIKI_DATA = {
     "World 1": {
-        "Basic Egg": [
-            {
-                petname: "Dog",
-                rarity: "Common",
-                base: 2,
-                petdisplayname: "Dog",
-                chance: 0.35
-            },
-            {
-                petname: "Cat",
-                rarity: "Common",
-                base: 2,
-                petdisplayname: "Cat",
-                chance: 0.29
-            },
-            {
-                petname: "Bunny",
-                rarity: "Common",
-                base: 3,
-                petdisplayname: "Bunny",
-                chance: 0.18
-            },
-            {
-                petname: "Bear",
-                rarity: "Rare",
-                base: 4,
-                petdisplayname: "Bear",
-                chance: 0.12
-            },
-            {
-                petname: "Panther",
-                rarity: "Rare",
-                base: 6,
-                petdisplayname: "Panther",
-                chance: 0.059
-            }
-        ],
-        "Acorn Egg": [
-            {
-                petname: "Hamster",
-                rarity: "Common",
-                base: 6,
-                petdisplayname: "Hamster",
-                chance: 0.34
-            },
-            {
-                petname: "Mouse",
-                rarity: "Common",
-                base: 7,
-                petdisplayname: "Mouse",
-                chance: 0.24
-            },
-            {
-                petname: "Chicken",
-                rarity: "Common",
-                base: 8,
-                petdisplayname: "Chicken",
-                chance: 0.20
-            },
-            {
-                petname: "Sheep",
-                rarity: "Rare",
-                base: 10,
-                petdisplayname: "Sheep",
-                chance: 0.13
-            },
-            {
-                petname: "Doggy",
-                rarity: "Rare",
-                base: 12,
-                petdisplayname: "Doggy",
-                chance: 0.068
-            },
-            {
-                petname: "Owl",
-                rarity: "Epic",
-                base: 17,
-                petdisplayname: "Owl",
-                chance: 0.024
-            }
-        ],
-        "Mountain Egg": [
-            {
-                petname: "Pet_Eagle",
-                rarity: "Epic",
-                base: 12000,
-                petdisplayname: "Mountain Eagle",
-                chance: 0.55
-            },
-            {
-                petname: "Pet_Hawk",
-                rarity: "Legendary",
-                base: 22000,
-                petdisplayname: "Sky Hawk",
-                chance: 0.0005
-            }
-        ]
+        "Basic Egg": {
+            cost: 100,
+            pets: [
+                {
+                    petname: "Dog",
+                    rarity: "Common",
+                    base: 2,
+                    petdisplayname: "Dog",
+                    chance: 0.35
+                },
+                {
+                    petname: "Cat",
+                    rarity: "Common",
+                    base: 2,
+                    petdisplayname: "Cat",
+                    chance: 0.29
+                },
+                {
+                    petname: "Bunny",
+                    rarity: "Common",
+                    base: 3,
+                    petdisplayname: "Bunny",
+                    chance: 0.18
+                },
+                {
+                    petname: "Bear",
+                    rarity: "Rare",
+                    base: 4,
+                    petdisplayname: "Bear",
+                    chance: 0.12
+                },
+                {
+                    petname: "Panther",
+                    rarity: "Rare",
+                    base: 6,
+                    petdisplayname: "Panther",
+                    chance: 0.059
+                }
+            ]
+        },
+        "Acorn Egg": {
+            cost: 500,
+            pets: [
+                {
+                    petname: "Hamster",
+                    rarity: "Common",
+                    base: 6,
+                    petdisplayname: "Hamster",
+                    chance: 0.34
+                },
+                {
+                    petname: "Mouse",
+                    rarity: "Common",
+                    base: 7,
+                    petdisplayname: "Mouse",
+                    chance: 0.24
+                },
+                {
+                    petname: "Chicken",
+                    rarity: "Common",
+                    base: 8,
+                    petdisplayname: "Chicken",
+                    chance: 0.20
+                },
+                {
+                    petname: "Sheep",
+                    rarity: "Rare",
+                    base: 10,
+                    petdisplayname: "Sheep",
+                    chance: 0.13
+                },
+                {
+                    petname: "Doggy",
+                    rarity: "Rare",
+                    base: 12,
+                    petdisplayname: "Doggy",
+                    chance: 0.068
+                },
+                {
+                    petname: "Owl",
+                    rarity: "Epic",
+                    base: 17,
+                    petdisplayname: "Owl",
+                    chance: 0.024
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 15000,
+            pets: [
+                {
+                    petname: "Pet_Eagle",
+                    rarity: "Epic",
+                    base: 12000,
+                    petdisplayname: "Mountain Eagle",
+                    chance: 0.55
+                },
+                {
+                    petname: "Pet_Hawk",
+                    rarity: "Legendary",
+                    base: 22000,
+                    petdisplayname: "Sky Hawk",
+                    chance: 0.0005
+                }
+            ]
+        }
     },
     "World 2": {
-        "Ocean Egg": [
-            {
-                petname: "Pet_Dolphin",
-                rarity: "Legendary",
-                base: 25000,
-                petdisplayname: "Ocean Dolphin",
-                chance: 0.5
-            },
-            {
-                petname: "Pet_Whale",
-                rarity: "Mythical",
-                base: 45000,
-                petdisplayname: "Blue Whale",
-                chance: 0.00001
-            }
-        ],
-        "Deep Sea Egg": [
-            {
-                petname: "Pet_Shark",
-                rarity: "Mythical",
-                base: 50000,
-                petdisplayname: "Deep Sea Shark",
-                chance: 0.65
-            },
-            {
-                petname: "Pet_Megalodon",
-                rarity: "Godly",
-                base: 95000,
-                petdisplayname: "Ancient Megalodon",
-                chance: 0.0001
-            }
-        ]
+        "Ocean Egg": {
+            cost: 50000,
+            pets: [
+                {
+                    petname: "Pet_Dolphin",
+                    rarity: "Legendary",
+                    base: 25000,
+                    petdisplayname: "Ocean Dolphin",
+                    chance: 0.5
+                },
+                {
+                    petname: "Pet_Whale",
+                    rarity: "Mythical",
+                    base: 45000,
+                    petdisplayname: "Blue Whale",
+                    chance: 0.00001
+                }
+            ]
+        },
+        "Deep Sea Egg": {
+            cost: 150000,
+            pets: [
+                {
+                    petname: "Pet_Shark",
+                    rarity: "Mythical",
+                    base: 50000,
+                    petdisplayname: "Deep Sea Shark",
+                    chance: 0.65
+                },
+                {
+                    petname: "Pet_Megalodon",
+                    rarity: "Godly",
+                    base: 95000,
+                    petdisplayname: "Ancient Megalodon",
+                    chance: 0.0001
+                }
+            ]
+        }
     },
     "World 3": {
-        "Sky Egg": [
-            {
-                petname: "Pet_Dragon",
-                rarity: "Godly",
-                base: 100000,
-                petdisplayname: "Sky Dragon",
-                chance: 0.55
-            },
-            {
-                petname: "Pet_Wyvern",
-                rarity: "Exclusive",
-                base: 220000,
-                petdisplayname: "Storm Wyvern",
-                chance: 0.00005
-            }
-        ],
-        "Heaven Egg": [
-            {
-                petname: "Pet_Phoenix",
-                rarity: "Exclusive",
-                base: 250000,
-                petdisplayname: "Heaven Phoenix",
-                chance: 0.7
-            },
-            {
-                petname: "Pet_Seraphim",
-                rarity: "Secret I",
-                base: 500000,
-                petdisplayname: "Divine Seraphim",
-                chance: 0.000001
-            }
-        ]
+        "Sky Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Pet_Dragon",
+                    rarity: "Godly",
+                    base: 100000,
+                    petdisplayname: "Sky Dragon",
+                    chance: 0.55
+                },
+                {
+                    petname: "Pet_Wyvern",
+                    rarity: "Exclusive",
+                    base: 220000,
+                    petdisplayname: "Storm Wyvern",
+                    chance: 0.00005
+                }
+            ]
+        },
+        "Heaven Egg": {
+            cost: 2000000,
+            pets: [
+                {
+                    petname: "Pet_Phoenix",
+                    rarity: "Exclusive",
+                    base: 250000,
+                    petdisplayname: "Heaven Phoenix",
+                    chance: 0.7
+                },
+                {
+                    petname: "Pet_Seraphim",
+                    rarity: "Secret I",
+                    base: 500000,
+                    petdisplayname: "Divine Seraphim",
+                    chance: 0.000001
+                }
+            ]
+        }
     }
 };
 
-// ===== Format Chance Display =====
-// Converts decimal to "X% / 1 in Y" format
-// Example: 0.001 → "0.001% / 1 in 100k"
-function formatChance(decimal) {
+// ===== Format Number with Abbreviations =====
+// Converts numbers over 999 to abbreviated format (1000 -> 1K, 1000000 -> 1M, etc.)
+function formatNumberAbbreviated(num) {
+    if (num < 1000) {
+        return num.toString();
+    }
+    
+    let tier = Math.floor(Math.log10(num) / 3);
+    if (tier >= NUMBER_ABBREVIATIONS.length) {
+        tier = NUMBER_ABBREVIATIONS.length - 1;
+    }
+    
+    const suffix = NUMBER_ABBREVIATIONS[tier];
+    const scale = Math.pow(10, tier * 3);
+    const scaled = num / scale;
+    
+    // Format with appropriate decimal places
+    const formatted = scaled >= 100 ? scaled.toFixed(0) : scaled.toFixed(1);
+    return formatted + suffix;
+}
+
+// ===== Format Chance Display with Luck =====
+// Converts decimal to "X% / 1 in Y" format with luck multiplier applied
+// Example: 0.001 with 100% luck → "0.001% / 1 in 100K"
+// Example: 0.001 with 400% luck → "0.004% / 1 in 25K"
+function formatChance(decimal, luckMultiplier = 1) {
     if (!decimal || decimal <= 0) {
         console.warn('⚠️ Invalid chance value provided');
         return 'Unknown';
     }
     
+    // Apply luck multiplier to chance
+    const adjustedChance = Math.min(decimal * luckMultiplier, 1); // Cap at 100%
+    
     // Convert to percentage
-    const percentage = (decimal * 100).toFixed(3).replace(/\.?0+$/, '');
+    const percentage = (adjustedChance * 100).toFixed(3).replace(/\.?0+$/, '');
     
-    // Calculate ratio (1 in X)
-    const ratio = 1 / decimal;
-    let ratioText;
-    
-    if (ratio >= 1000000) {
-        ratioText = `${(ratio / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
-    } else if (ratio >= 1000) {
-        ratioText = `${(ratio / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-    } else {
-        ratioText = ratio.toFixed(2).replace(/\.00$/, '');
-    }
+    // Calculate ratio (1 in X) with abbreviations
+    const ratio = 1 / adjustedChance;
+    const ratioText = formatNumberAbbreviated(Math.round(ratio));
     
     return `${percentage}% / 1 in ${ratioText}`;
 }
@@ -250,18 +292,22 @@ function formatChance(decimal) {
 (function validateData() {
     for (const world in WIKI_DATA) {
         for (const egg in WIKI_DATA[world]) {
-            const petArray = WIKI_DATA[world][egg];
+            const eggData = WIKI_DATA[world][egg];
             
-            if (!Array.isArray(petArray)) {
-                console.warn(`⚠️ ${egg} in ${world} is not an array`);
+            if (!eggData.pets || !Array.isArray(eggData.pets)) {
+                console.warn(`⚠️ ${egg} in ${world} has no pets array`);
                 continue;
             }
             
-            if (petArray.length === 0) {
+            if (!eggData.cost || eggData.cost <= 0) {
+                console.warn(`⚠️ ${egg} in ${world} has invalid cost`);
+            }
+            
+            if (eggData.pets.length === 0) {
                 console.warn(`⚠️ ${egg} in ${world} has no pets`);
             }
             
-            petArray.forEach((petData, index) => {
+            eggData.pets.forEach((petData, index) => {
                 if (!RARITIES[petData.rarity]) {
                     console.warn(`⚠️ Invalid rarity "${petData.rarity}" for pet ${index + 1} in ${egg} (${world})`);
                 }
