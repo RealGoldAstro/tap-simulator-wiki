@@ -148,7 +148,7 @@ const WIKI_DATA = {
                 }
             ]
         },
-        "Mountain Egg": {
+        "Safari Egg": {
             cost: 500000,
             pets: [
                 {
@@ -195,50 +195,57 @@ const WIKI_DATA = {
                 }
             ]
         },
-        "Mountain Egg": {
-            cost: 500000,
+        "Snowman Egg": {
+            cost: 30000000,
             pets: [
                 {
-                    petname: "Baor",
+                    petname: "Moose",
                     rarity: "Common",
-                    base: 25,
-                    petdisplayname: "Baor",
-                    chance: 0.5
+                    base: 50,
+                    petdisplayname: "Moose",
+                    chance: 0.4
                 },
                 {
-                    petname: "Goat",
-                    rarity: "Common",
-                    base: 27,
-                    petdisplayname: "Goat",
+                    petname: "Mammoth",
+                    rarity: "Rare",
+                    base: 60,
+                    petdisplayname: "Mammoth",
                     chance: 0.3
                 },
                 {
-                    petname: "Elephant",
+                    petname: "Snowman",
                     rarity: "Rare",
-                    base: 30,
-                    petdisplayname: "Elephant",
-                    chance: 0.09
+                    base: 70,
+                    petdisplayname: "Snowman",
+                    chance: 0.13
                 },
                 {
-                    petname: "Lion",
+                    petname: "Yeti",
                     rarity: "Rare",
-                    base: 33,
-                    petdisplayname: "Lion",
-                    chance: 0.08
+                    base: 85,
+                    petdisplayname: "Yeti",
+                    chance: 0.1
                 },
                 {
-                    petname: "Lynx",
+                    petname: "TriYeti",
                     rarity: "Epic",
-                    base: 40,
-                    petdisplayname: "Lynx",
-                    chance: 0.03
+                    base: 100,
+                    petdisplayname: "Tri-Yeti",
+                    chance: 0.06
                 },
                 {
-                    petname: "CardinalHydra",
-                    rarity: "Legendary",
-                    base: 75,
-                    petdisplayname: "Cardinal Hydra",
-                    chance: 0.008
+                    petname: "FrostGolem",
+                    rarity: "Mythical",
+                    base: 250,
+                    petdisplayname: "FrostGolem",
+                    chance: 0.001
+                },
+                {
+                    petname: "FrostQueen",
+                    rarity: "Secret I",
+                    base: 3000,
+                    petdisplayname: "Frost Queen",
+                    chance: 0.00001
                 }
             ]
         },
