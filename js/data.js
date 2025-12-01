@@ -35,8 +35,12 @@ const RARITIES = {
         color: "rgb(200, 0, 255)",
         maxLevel: 150
     },
+    "Leaderboard": {
+        color: "rgb(255, 215, 0)",
+        maxLevel: 100
+    },
     "Secret I": {
-        color: "rgb(0, 0, 0)",
+        color: "rgb(255, 0, 0)",
         maxLevel: 150
     },
     "Secret II": {
@@ -540,116 +544,54 @@ const WIKI_DATA = {
             ],
             pets: [
                 {
-                    petname: "ChronosGuardian",
+                    petname: "idk",
                     rarity: "Exclusive",
-                    base: 85,
-                    petdisplayname: "Chronos Guardian",
+                    base: 75,
+                    petdisplayname: "idk",
                     chance: 0.5
                 },
                 {
-                    petname: "TimeLord",
+                    petname: "idk2",
                     rarity: "Exclusive",
-                    base: 100,
-                    petdisplayname: "Time Lord",
+                    base: 85,
+                    petdisplayname: "idk",
                     chance: 0.35
                 },
                 {
-                    petname: "EternalPhoenix",
+                    petname: "Chronos",
                     rarity: "Exclusive",
-                    base: 200,
-                    petdisplayname: "Eternal Phoenix",
-                    chance: 0.15
-                }
-            ]
-        },
-        "Deep Sea Egg": {
-            type: "Base",
-            cost: 150000,
-            pets: [
-                {
-                    petname: "Pet_Shark",
-                    rarity: "Mythical",
-                    base: 50000,
-                    petdisplayname: "Deep Sea Shark",
-                    chance: 0.65
-                },
-                {
-                    petname: "Pet_Megalodon",
-                    rarity: "Godly",
-                    base: 95000,
-                    petdisplayname: "Ancient Megalodon",
-                    chance: 0.0001
+                    base: 100,
+                    petdisplayname: "Chronos",
+                    chance: 0.001
                 }
             ]
         }
     },
-    "World 3": {
-        "Sky Egg": {
-            type: "Base",
-            cost: 500000,
-            pets: [
-                {
-                    petname: "Pet_Dragon",
-                    rarity: "Godly",
-                    base: 100000,
-                    petdisplayname: "Sky Dragon",
-                    chance: 0.55
-                },
-                {
-                    petname: "Pet_Wyvern",
-                    rarity: "Exclusive",
-                    base: 220000,
-                    petdisplayname: "Storm Wyvern",
-                    chance: 0.00005
-                }
-            ]
-        },
-        "Heaven Egg 2": {
-            type: "Base",
-            cost: 2000000,
-            pets: [
-                {
-                    petname: "Pet_Phoenix",
-                    rarity: "Exclusive",
-                    base: 250000,
-                    petdisplayname: "Heaven Phoenix",
-                    chance: 0.7
-                },
-                {
-                    petname: "Pet_Seraphim",
-                    rarity: "Secret I",
-                    base: 500000,
-                    petdisplayname: "Divine Seraphim",
-                    chance: 0.000001
-                }
-            ]
-        }
-    },
-    "Special": {
+    "Leaderboard": {
         "Weekly Leaderboard": {
             type: "Leaderboard",
             pets: [
                 {
-                    petname: "LB_Champion",
-                    rarity: "Secret III",
-                    base: 200,
-                    petdisplayname: "Champion's Glory",
+                    petname: "DivineCelestia",
+                    rarity: "Leaderboard",
+                    base: 125,
+                    petdisplayname: "Divine Celestia",
                     leaderboardTier: "Top 10",
                     chance: 1.0
                 },
                 {
-                    petname: "LB_Elite",
-                    rarity: "Secret II",
-                    base: 150,
-                    petdisplayname: "Elite Warrior",
+                    petname: "SilverEmperor",
+                    rarity: "Leaderboard",
+                    base: 110,
+                    petdisplayname: "Silver Emperor",
                     leaderboardTier: "Top 100",
                     chance: 1.0
                 },
                 {
-                    petname: "LB_Contender",
-                    rarity: "Secret I",
-                    base: 100,
-                    petdisplayname: "Contender's Pride",
+                    petname: "TrophyGaurdian",
+                    rarity: "Leaderboard",
+                    base: 90,
+                    petdisplayname: "Trophy Gaurdian",
                     leaderboardTier: "Top 250",
                     chance: 1.0
                 }
