@@ -29,7 +29,7 @@ function generateEggHTML(eggName, eggData, worldName) {
     let categoryDisplay;
     if (eggType === "Robux") {
         categoryDisplay = `Robux Store: ${worldName}`;
-    } else if (eggType === "Leaderboard") {
+    } else if (eggType === "Weekly Leaderboard Pet") {
         categoryDisplay = worldName;
     } else {
         categoryDisplay = `World: ${worldName}`;
