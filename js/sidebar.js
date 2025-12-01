@@ -64,15 +64,15 @@ function createWorldSection(worldName, eggs) {
 }
 
 // ===== Create Egg Item =====
-function createEggItem(eggName, petsArray, worldName) {
+function createEggItem(eggName, eggData, worldName) {
     const eggDiv = document.createElement('div');
     eggDiv.className = 'egg-item';
     eggDiv.textContent = eggName;
     
-    // Click event to display egg details (all pets in this egg)
+    // Click event to display egg details (passes entire egg data with cost and pets)
     eggDiv.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevent world toggle
-        selectEgg(eggDiv, eggName, petsArray, worldName);
+        selectEgg(eggDiv, eggName, eggData, worldName);
     });
     
     return eggDiv;
@@ -93,7 +93,7 @@ function toggleWorld(worldHeader) {
 }
 
 // ===== Select Egg =====
-function selectEgg(eggElement, eggName, petsArray, worldName) {
+function selectEgg(eggElement, eggName, eggData, worldName) {
     // Remove active class from all eggs
     document.querySelectorAll('.egg-item').forEach(item => {
         item.classList.remove('active');
@@ -104,7 +104,7 @@ function selectEgg(eggElement, eggName, petsArray, worldName) {
     
     // Trigger content display (content.js will handle this)
     if (typeof displayEggDetails === 'function') {
-        displayEggDetails(eggName, petsArray, worldName);
+        displayEggDetails(eggName, eggData, worldName);
     } else {
         console.warn('⚠️ displayEggDetails function not found - content.js may not be loaded');
     }
