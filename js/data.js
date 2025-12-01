@@ -47,6 +47,7 @@ const RARITIES = {
 
 // ===== Wiki Data Structure =====
 // Each egg contains an array of pets (supports up to 50 pets per egg)
+// Chance is stored as decimal (e.g., 0.001 = 0.001% / 1 in 100,000)
 const WIKI_DATA = {
     "World 1": {
         "Starter Egg": [
@@ -55,14 +56,14 @@ const WIKI_DATA = {
                 rarity: "Common",
                 base: 2000,
                 petdisplayname: "Bunny Chow Mein",
-                chance: "70%"
+                chance: 0.7
             },
             {
                 petname: "Pet_Rabbit",
                 rarity: "Rare",
                 base: 4500,
                 petdisplayname: "Speed Rabbit",
-                chance: "30%"
+                chance: 0.3
             }
         ],
         "Forest Egg": [
@@ -71,14 +72,14 @@ const WIKI_DATA = {
                 rarity: "Rare",
                 base: 5000,
                 petdisplayname: "Forest Fox",
-                chance: "60%"
+                chance: 0.6
             },
             {
                 petname: "Pet_Wolf",
                 rarity: "Epic",
                 base: 11000,
                 petdisplayname: "Alpha Wolf",
-                chance: "40%"
+                chance: 0.001
             }
         ],
         "Mountain Egg": [
@@ -87,14 +88,14 @@ const WIKI_DATA = {
                 rarity: "Epic",
                 base: 12000,
                 petdisplayname: "Mountain Eagle",
-                chance: "55%"
+                chance: 0.55
             },
             {
                 petname: "Pet_Hawk",
                 rarity: "Legendary",
                 base: 22000,
                 petdisplayname: "Sky Hawk",
-                chance: "45%"
+                chance: 0.0005
             }
         ]
     },
@@ -105,14 +106,14 @@ const WIKI_DATA = {
                 rarity: "Legendary",
                 base: 25000,
                 petdisplayname: "Ocean Dolphin",
-                chance: "50%"
+                chance: 0.5
             },
             {
                 petname: "Pet_Whale",
                 rarity: "Mythical",
                 base: 45000,
                 petdisplayname: "Blue Whale",
-                chance: "50%"
+                chance: 0.00001
             }
         ],
         "Deep Sea Egg": [
@@ -121,14 +122,14 @@ const WIKI_DATA = {
                 rarity: "Mythical",
                 base: 50000,
                 petdisplayname: "Deep Sea Shark",
-                chance: "65%"
+                chance: 0.65
             },
             {
                 petname: "Pet_Megalodon",
                 rarity: "Godly",
                 base: 95000,
                 petdisplayname: "Ancient Megalodon",
-                chance: "35%"
+                chance: 0.0001
             }
         ]
     },
@@ -139,14 +140,14 @@ const WIKI_DATA = {
                 rarity: "Godly",
                 base: 100000,
                 petdisplayname: "Sky Dragon",
-                chance: "55%"
+                chance: 0.55
             },
             {
                 petname: "Pet_Wyvern",
                 rarity: "Exclusive",
                 base: 220000,
                 petdisplayname: "Storm Wyvern",
-                chance: "45%"
+                chance: 0.00005
             }
         ],
         "Heaven Egg": [
@@ -155,18 +156,45 @@ const WIKI_DATA = {
                 rarity: "Exclusive",
                 base: 250000,
                 petdisplayname: "Heaven Phoenix",
-                chance: "70%"
+                chance: 0.7
             },
             {
                 petname: "Pet_Seraphim",
                 rarity: "Secret I",
                 base: 500000,
                 petdisplayname: "Divine Seraphim",
-                chance: "30%"
+                chance: 0.000001
             }
         ]
     }
 };
+
+// ===== Format Chance Display =====
+// Converts decimal to "X% / 1 in Y" format
+// Example: 0.001 → "0.001% / 1 in 100k"
+function formatChance(decimal) {
+    if (!decimal || decimal <= 0) {
+        console.warn('⚠️ Invalid chance value provided');
+        return 'Unknown';
+    }
+    
+    // Convert to percentage
+    const percentage = (decimal * 100).toFixed(3).replace(/\.?0+$/, '');
+    
+    // Calculate ratio (1 in X)
+    const ratio = 1 / decimal;
+    let ratioText;
+    
+    if (ratio >= 1000000) {
+        ratioText = `${(ratio / 1000000).toFixed(1).replace(/\.0$/, '')}M`;
+    } else if (ratio >= 1000) {
+        ratioText = `${(ratio / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    } else {
+        ratioText = ratio.toFixed(2).replace(/\.00$/, '');
+    }
+    
+    return `${percentage}% / 1 in ${ratioText}`;
+}
 
 // ===== Validation Check =====
 // Warn if any egg has invalid data
@@ -191,8 +219,8 @@ const WIKI_DATA = {
                 if (!petData.base || petData.base <= 0) {
                     console.warn(`⚠️ Invalid base stat for pet ${index + 1} in ${egg} (${world})`);
                 }
-                if (!petData.chance) {
-                    console.warn(`⚠️ Missing chance for pet ${index + 1} in ${egg} (${world})`);
+                if (!petData.chance || petData.chance <= 0 || petData.chance > 1) {
+                    console.warn(`⚠️ Invalid chance for pet ${index + 1} in ${egg} (${world}) - must be decimal between 0 and 1`);
                 }
             });
         }
