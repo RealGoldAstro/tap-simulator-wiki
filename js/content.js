@@ -1,8 +1,8 @@
 // js/content.js
 
-// ===== Display Pet Details Function =====
-// Called when an egg is selected from sidebar
-function displayPetDetails(eggName, petData, worldName) {
+// ===== Display Egg Details Function =====
+// Called when an egg is selected from sidebar - displays all pets in that egg
+function displayEggDetails(eggName, petsArray, worldName) {
     const contentArea = document.getElementById('content');
     
     // Validation checks
@@ -11,44 +11,107 @@ function displayPetDetails(eggName, petData, worldName) {
         return;
     }
     
-    if (!petData || !petData.rarity || !petData.base) {
-        console.warn('⚠️ Invalid pet data provided');
+    if (!Array.isArray(petsArray) || petsArray.length === 0) {
+        console.warn('⚠️ Invalid or empty pets array provided');
+        contentArea.innerHTML = '<div class="welcome"><h2>No pets found</h2></div>';
         return;
     }
     
-    const rarityInfo = RARITIES[petData.rarity];
-    if (!rarityInfo) {
-        console.warn(`⚠️ Rarity "${petData.rarity}" not found in RARITIES config`);
-        return;
-    }
-    
-    // Calculate all 6 states
-    const stats = calculateAllStats(petData.base, rarityInfo.maxLevel);
-    
-    // Generate HTML for pet details
-    contentArea.innerHTML = generatePetHTML(eggName, petData, worldName, rarityInfo, stats);
+    // Generate HTML for egg details with all pets
+    contentArea.innerHTML = generateEggHTML(eggName, petsArray, worldName);
 }
 
-// ===== Calculate All 6 States =====
-// Returns object with Base/Golden/Rainbow stats at Level 0 and Max Level
-function calculateAllStats(baseStat, maxLevel) {
+// ===== Generate Egg Details HTML =====
+function generateEggHTML(eggName, petsArray, worldName) {
+    return `
+        <div class="pet-details">
+            <div class="pet-header">
+                <h2 class="pet-title">${eggName}</h2>
+                <p class="pet-meta">World: ${worldName} • Contains ${petsArray.length} pet${petsArray.length > 1 ? 's' : ''}</p>
+            </div>
+            
+            <div class="pet-info">
+                <table class="pets-table">
+                    <thead>
+                        <tr>
+                            <th>Petname</th>
+                            <th>Rarity</th>
+                            <th>Chance</th>
+                            <th>Base</th>
+                            <th>Golden</th>
+                            <th>Rainbow</th>
+                            <th>M Base</th>
+                            <th>M Golden</th>
+                            <th>M Rainbow</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${generatePetRows(petsArray)}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+// ===== Generate Pet Rows =====
+// Creates table rows for all pets in the egg
+function generatePetRows(petsArray) {
+    return petsArray.map(petData => {
+        // Get rarity info
+        const rarityInfo = RARITIES[petData.rarity];
+        
+        if (!rarityInfo) {
+            console.warn(`⚠️ Rarity "${petData.rarity}" not found for ${petData.petdisplayname}`);
+            return '';
+        }
+        
+        // Calculate all 6 stats for this pet
+        const stats = calculatePetStats(petData.base, rarityInfo.maxLevel);
+        
+        // Format chance display
+        const chanceDisplay = formatChance(petData.chance);
+        
+        // Get text color for rarity badge
+        const textColor = getTextColor(rarityInfo.color);
+        
+        return `
+            <tr>
+                <td><strong>${petData.petdisplayname}</strong></td>
+                <td>
+                    <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
+                        ${petData.rarity}
+                    </span>
+                </td>
+                <td>${chanceDisplay}</td>
+                <td class="stat-value">${formatNumber(stats.baseLevel0)}</td>
+                <td class="stat-value">${formatNumber(stats.goldenLevel0)}</td>
+                <td class="stat-value">${formatNumber(stats.rainbowLevel0)}</td>
+                <td class="stat-value">${formatNumber(stats.baseMaxLevel)}</td>
+                <td class="stat-value">${formatNumber(stats.goldenMaxLevel)}</td>
+                <td class="stat-value">${formatNumber(stats.rainbowMaxLevel)}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// ===== Calculate Pet Stats =====
+// Calculates all 6 states: Base/Golden/Rainbow × Level0/MaxLevel
+function calculatePetStats(baseStat, maxLevel) {
     // Evolution multipliers: Base = x1, Golden = x2, Rainbow = x4
     const baseMultiplier = 1;
     const goldenMultiplier = 2;
     const rainbowMultiplier = 4;
     
-    // Formula: Stat = BaseStat × Multiplier × (1 + (Level × 0.005))
     return {
-        // Base evolution
+        // Level 0 stats
         baseLevel0: calculateStat(baseStat, baseMultiplier, 0),
-        baseMaxLevel: calculateStat(baseStat, baseMultiplier, maxLevel),
-        
-        // Golden evolution
         goldenLevel0: calculateStat(baseStat, goldenMultiplier, 0),
-        goldenMaxLevel: calculateStat(baseStat, goldenMultiplier, maxLevel),
-        
-        // Rainbow evolution
         rainbowLevel0: calculateStat(baseStat, rainbowMultiplier, 0),
+        
+        // Max level stats
+        baseMaxLevel: calculateStat(baseStat, baseMultiplier, maxLevel),
+        goldenMaxLevel: calculateStat(baseStat, goldenMultiplier, maxLevel),
         rainbowMaxLevel: calculateStat(baseStat, rainbowMultiplier, maxLevel)
     };
 }
@@ -59,61 +122,6 @@ function calculateStat(baseStat, evolutionMultiplier, level) {
     const levelBonus = 1 + (level * 0.005);
     const finalStat = baseStat * evolutionMultiplier * levelBonus;
     return Math.floor(finalStat); // Round down for clean numbers
-}
-
-// ===== Generate Pet Details HTML =====
-function generatePetHTML(eggName, petData, worldName, rarityInfo, stats) {
-    return `
-        <div class="pet-details">
-            <div class="pet-header">
-                <h2 class="pet-name">${petData.petdisplayname}</h2>
-                <span class="pet-rarity" style="background-color: ${rarityInfo.color}; color: ${getTextColor(rarityInfo.color)};">
-                    ${petData.rarity}
-                </span>
-                <p style="color: #B0B0B0; margin-top: 0.5rem;">
-                    <strong>Egg:</strong> ${eggName} | <strong>World:</strong> ${worldName}
-                </p>
-            </div>
-            
-            <div class="pet-info">
-                <h3 style="color: #72B2FF; margin-bottom: 1rem;">Evolution Stats</h3>
-                <table class="stats-table">
-                    <thead>
-                        <tr>
-                            <th>Evolution</th>
-                            <th>Multiplier</th>
-                            <th>Level 0</th>
-                            <th>Max Level (${rarityInfo.maxLevel})</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="evolution-label">Base</td>
-                            <td>×1</td>
-                            <td class="stat-value">${formatNumber(stats.baseLevel0)}</td>
-                            <td class="stat-value">${formatNumber(stats.baseMaxLevel)}</td>
-                        </tr>
-                        <tr>
-                            <td class="evolution-label">Golden</td>
-                            <td>×2</td>
-                            <td class="stat-value">${formatNumber(stats.goldenLevel0)}</td>
-                            <td class="stat-value">${formatNumber(stats.goldenMaxLevel)}</td>
-                        </tr>
-                        <tr>
-                            <td class="evolution-label">Rainbow</td>
-                            <td>×4</td>
-                            <td class="stat-value">${formatNumber(stats.rainbowLevel0)}</td>
-                            <td class="stat-value">${formatNumber(stats.rainbowMaxLevel)}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <p style="color: #B0B0B0; margin-top: 1.5rem; font-size: 0.9rem;">
-                    <strong>Note:</strong> Each level adds 0.5% of the pet's base stat for that evolution stage.
-                </p>
-            </div>
-        </div>
-    `;
 }
 
 // ===== Format Number with Commas =====
