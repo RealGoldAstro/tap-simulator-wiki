@@ -579,17 +579,17 @@ const WIKI_DATA = {
             ],
             pets: [
                 {
-                    petname: "idk",
+                    petname: "Kairos",
                     rarity: "Exclusive",
                     base: 75,
-                    petdisplayname: "idk",
+                    petdisplayname: "Kairos",
                     chance: 0.5
                 },
                 {
-                    petname: "idk2",
+                    petname: "Paradox",
                     rarity: "Exclusive",
                     base: 85,
-                    petdisplayname: "idk",
+                    petdisplayname: "Paradox",
                     chance: 0.35
                 },
                 {
