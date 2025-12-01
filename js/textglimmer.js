@@ -6,7 +6,7 @@ const GLIMMER_CONFIG = {
     minimumDuration: 2000,   // Minimum duration (2 seconds)
     randomDelayMin: 100,     // Minimum random delay (ms)
     randomDelayMax: 200,     // Maximum random delay (ms)
-    opacity: 0.5,            // Shimmer opacity (0.0 to 1.0)
+    opacity: 0.8,            // Shimmer opacity (0.0 to 1.0)
     enabled: true
 };
 
