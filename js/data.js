@@ -55,7 +55,7 @@ const RARITIES = {
 const WIKI_DATA = {
     "World 1": {
         "Basic Egg": {
-            cost: 100,
+            cost: 250,
             pets: [
                 {
                     petname: "Dog",
@@ -91,11 +91,18 @@ const WIKI_DATA = {
                     base: 6,
                     petdisplayname: "Panther",
                     chance: 0.059
+                },
+                {
+                    petname: "Dumb Dog",
+                    rarity: "Secret I",
+                    base: 67,
+                    petdisplayname: "Dumb Dog",
+                    chance: 0.0003
                 }
             ]
         },
         "Acorn Egg": {
-            cost: 500,
+            cost: 2700,
             pets: [
                 {
                     petname: "Hamster",
@@ -142,28 +149,338 @@ const WIKI_DATA = {
             ]
         },
         "Mountain Egg": {
-            cost: 15000,
+            cost: 500000,
             pets: [
                 {
-                    petname: "Pet_Eagle",
-                    rarity: "Epic",
-                    base: 12000,
-                    petdisplayname: "Mountain Eagle",
-                    chance: 0.55
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
                 },
                 {
-                    petname: "Pet_Hawk",
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
                     rarity: "Legendary",
-                    base: 22000,
-                    petdisplayname: "Sky Hawk",
-                    chance: 0.0005
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
+                },
+                {
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
+                    rarity: "Legendary",
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
+                },
+                {
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
+                    rarity: "Legendary",
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
+                },
+                {
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
+                    rarity: "Legendary",
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
+                },
+                {
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
+                    rarity: "Legendary",
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
+                },
+                {
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
+                    rarity: "Legendary",
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
+                }
+            ]
+        },
+        "Mountain Egg": {
+            cost: 500000,
+            pets: [
+                {
+                    petname: "Baor",
+                    rarity: "Common",
+                    base: 25,
+                    petdisplayname: "Baor",
+                    chance: 0.5
+                },
+                {
+                    petname: "Goat",
+                    rarity: "Common",
+                    base: 27,
+                    petdisplayname: "Goat",
+                    chance: 0.3
+                },
+                {
+                    petname: "Elephant",
+                    rarity: "Rare",
+                    base: 30,
+                    petdisplayname: "Elephant",
+                    chance: 0.09
+                },
+                {
+                    petname: "Lion",
+                    rarity: "Rare",
+                    base: 33,
+                    petdisplayname: "Lion",
+                    chance: 0.08
+                },
+                {
+                    petname: "Lynx",
+                    rarity: "Epic",
+                    base: 40,
+                    petdisplayname: "Lynx",
+                    chance: 0.03
+                },
+                {
+                    petname: "CardinalHydra",
+                    rarity: "Legendary",
+                    base: 75,
+                    petdisplayname: "Cardinal Hydra",
+                    chance: 0.008
                 }
             ]
         }
     },
-    "World 2": {
-        "Ocean Egg": {
-            cost: 50000,
+    "Exclusive Eggs": {
+        "Chronos Egg": {
+            cost: 399, 
             pets: [
                 {
                     petname: "Pet_Dolphin",
