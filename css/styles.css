@@ -8,99 +8,145 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #070C1D;
-    color: #E0E0E0;
-    line-height: 1.6;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 25%, #0f1623 50%, #151b2e 75%, #0a0e1a 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    color: #E8EAED;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Pattern overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(114, 178, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(114, 178, 255, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
 }
 
 /* ===== Header Styles ===== */
 header {
-    background-color: #0F172A;
-    border-bottom: 2px solid #122C67;
-    padding: 1rem 2rem;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
+    padding: 0.6rem 1.5rem;
     position: sticky;
     top: 0;
     z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1800px;
+    max-width: 1900px;
     margin: 0 auto;
 }
 
 header h1 {
-    color: #72B2FF;
-    font-size: 1.8rem;
-    font-weight: 600;
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-/* Game icon placeholder (top right) */
+/* Game icon (top right) */
 .game-icon-container {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
 }
 
 .game-icon-placeholder {
     width: 100%;
     height: 100%;
-    background-color: #122C67;
+    background-image: url('../assets/GameIcon.png');
+    background-size: cover;
+    background-position: center;
     border-radius: 8px;
-    border: 2px solid #72B2FF;
+    border: 2px solid rgba(114, 178, 255, 0.4);
+    box-shadow: 0 0 15px rgba(114, 178, 255, 0.3);
 }
 
 /* ===== Main Container ===== */
 .container {
     display: flex;
-    max-width: 1800px;
+    max-width: 1900px;
     margin: 0 auto;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 70px);
+    position: relative;
+    z-index: 1;
 }
 
 /* ===== Sidebar Styles ===== */
 #sidebar {
-    width: 280px;
-    background-color: #0F172A;
-    border-right: 2px solid #122C67;
+    width: 220px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(114, 178, 255, 0.2);
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0.8rem;
 }
 
 .sidebar-content {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.4rem;
 }
 
 /* World section (collapsible) */
 .world-section {
-    background-color: #122C67;
+    background: rgba(18, 44, 103, 0.3);
     border-radius: 6px;
     overflow: hidden;
+    border: 1px solid rgba(114, 178, 255, 0.15);
+    transition: all 0.2s;
+}
+
+.world-section:hover {
+    border-color: rgba(114, 178, 255, 0.4);
+    box-shadow: 0 0 10px rgba(114, 178, 255, 0.2);
 }
 
 .world-header {
-    padding: 0.8rem 1rem;
+    padding: 0.5rem 0.8rem;
     cursor: pointer;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: #72B2FF;
-    background-color: #122C67;
-    transition: background-color 0.2s;
+    background: rgba(18, 44, 103, 0.4);
+    transition: all 0.2s;
     user-select: none;
 }
 
 .world-header:hover {
-    background-color: #1a3a7d;
+    background: rgba(18, 44, 103, 0.6);
 }
 
 .world-header::before {
-    content: '▼ ';
+    content: '▼';
     display: inline-block;
+    margin-right: 0.5rem;
     transition: transform 0.2s;
+    font-size: 0.7rem;
 }
 
 .world-header.collapsed::before {
@@ -111,7 +157,7 @@ header h1 {
 .egg-list {
     display: flex;
     flex-direction: column;
-    background-color: #0F172A;
+    background: rgba(7, 12, 29, 0.4);
     max-height: 500px;
     overflow: hidden;
     transition: max-height 0.3s ease;
@@ -122,21 +168,23 @@ header h1 {
 }
 
 .egg-item {
-    padding: 0.7rem 1.5rem;
+    padding: 0.5rem 1rem;
     cursor: pointer;
-    color: #E0E0E0;
+    color: #C5C7CA;
     transition: all 0.2s;
-    border-left: 3px solid transparent;
+    border-left: 2px solid transparent;
+    font-size: 0.85rem;
 }
 
 .egg-item:hover {
-    background-color: #122C67;
+    background: rgba(18, 44, 103, 0.4);
     border-left-color: #72B2FF;
-    padding-left: 1.8rem;
+    color: #72B2FF;
+    padding-left: 1.2rem;
 }
 
 .egg-item.active {
-    background-color: #122C67;
+    background: rgba(18, 44, 103, 0.5);
     border-left-color: #72B2FF;
     color: #72B2FF;
     font-weight: 600;
@@ -145,105 +193,119 @@ header h1 {
 /* ===== Content Area Styles ===== */
 #content {
     flex: 1;
-    padding: 2rem;
+    padding: 1.5rem;
     overflow-y: auto;
-    background-color: #070C1D;
+    background: transparent;
 }
 
 .welcome {
     text-align: center;
-    padding: 4rem 2rem;
+    padding: 3rem 2rem;
 }
 
 .welcome h2 {
-    color: #72B2FF;
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
 }
 
 .welcome p {
-    color: #B0B0B0;
-    font-size: 1.1rem;
+    color: #9CA3AF;
+    font-size: 1rem;
 }
 
 /* Pet details display */
 .pet-details {
-    background-color: #0F172A;
-    border-radius: 10px;
-    padding: 2rem;
-    border: 2px solid #122C67;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(114, 178, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .pet-header {
-    margin-bottom: 2rem;
-    border-bottom: 2px solid #122C67;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
     padding-bottom: 1rem;
 }
 
-.pet-name {
-    font-size: 2rem;
-    color: #72B2FF;
-    margin-bottom: 0.5rem;
+.pet-title {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.3rem;
 }
 
-.pet-rarity {
+.pet-meta {
+    color: #9CA3AF;
+    font-size: 0.85rem;
+}
+
+/* Pet stats table */
+.pets-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.pets-table th {
+    padding: 0.7rem 0.5rem;
+    text-align: left;
+    background: rgba(18, 44, 103, 0.5);
+    color: #72B2FF;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(114, 178, 255, 0.3);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.pets-table td {
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.1);
+    color: #E8EAED;
+}
+
+.pets-table tr:hover {
+    background: rgba(18, 44, 103, 0.3);
+}
+
+.rarity-badge {
     display: inline-block;
-    padding: 0.3rem 1rem;
+    padding: 0.2rem 0.6rem;
     border-radius: 4px;
     font-weight: 600;
-    font-size: 1rem;
-}
-
-/* Evolution stats table */
-.stats-table {
-    width: 100%;
-    margin-top: 2rem;
-    border-collapse: collapse;
-}
-
-.stats-table th,
-.stats-table td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #122C67;
-}
-
-.stats-table th {
-    background-color: #122C67;
-    color: #72B2FF;
-    font-weight: 600;
-}
-
-.stats-table tr:hover {
-    background-color: #122C67;
-}
-
-.evolution-label {
-    font-weight: 600;
-    color: #72B2FF;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .stat-value {
-    color: #E0E0E0;
     font-family: 'Courier New', monospace;
+    color: #72B2FF;
+    font-weight: 600;
 }
 
 /* ===== Scrollbar Styling ===== */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #070C1D;
+    background: rgba(7, 12, 29, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #122C67;
-    border-radius: 4px;
+    background: rgba(114, 178, 255, 0.4);
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #72B2FF;
+    background: rgba(114, 178, 255, 0.6);
 }
 
 /* ===== Responsive Design ===== */
@@ -256,7 +318,11 @@ header h1 {
         width: 100%;
         height: auto;
         border-right: none;
-        border-bottom: 2px solid #122C67;
+        border-bottom: 1px solid rgba(114, 178, 255, 0.2);
+    }
+    
+    .pets-table {
+        font-size: 0.75rem;
     }
 }
 /* css/styles.css */
