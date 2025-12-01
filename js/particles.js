@@ -2,12 +2,11 @@
 
 // ===== Particle System Configuration =====
 const PARTICLE_CONFIG = {
-    count: 15,                    // Number of particles
-    maxSize: 25,                  // Maximum particle size
-    minSize: 10,                  // Minimum particle size
-    smoothing: 0.1,               // Movement smoothing (lower = smoother/slower)
-    glowIntensity: 0.3,           // Glow effect intensity
-    baseColor: 'rgba(114, 178, 255, 0.4)'  // Particle color
+    count: 7,                      // Number of particles
+    size: 3,                       // Particle size (small dots)
+    speed: 0.3,                    // Movement speed
+    alpha: 0.6,                    // Particle opacity
+    color: 'rgba(114, 178, 255, 1)' // Particle color
 };
 
 // ===== Canvas Setup =====
@@ -18,12 +17,6 @@ const ctx = canvas.getContext('2d');
 if (!canvas || !ctx) {
     console.warn('⚠️ Particles canvas not found or context unavailable');
 }
-
-// Mouse position tracking
-let mouse = {
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2
-};
 
 // Particles array
 let particles = [];
@@ -36,41 +29,57 @@ function resizeCanvas() {
 
 // ===== Particle Class =====
 class Particle {
-    constructor(index) {
-        this.x = mouse.x;
-        this.y = mouse.y;
-        this.targetX = mouse.x;
-        this.targetY = mouse.y;
-        this.size = PARTICLE_CONFIG.minSize + Math.random() * (PARTICLE_CONFIG.maxSize - PARTICLE_CONFIG.minSize);
-        this.delay = index * 0.05;  // Stagger effect for trailing
-        this.alpha = 0.2 + Math.random() * 0.3;
+    constructor() {
+        // Random starting position
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        
+        // Random velocity for autonomous movement
+        this.vx = (Math.random() - 0.5) * PARTICLE_CONFIG.speed;
+        this.vy = (Math.random() - 0.5) * PARTICLE_CONFIG.speed;
+        
+        // Random phase for sine wave movement (makes it feel alive)
+        this.phaseX = Math.random() * Math.PI * 2;
+        this.phaseY = Math.random() * Math.PI * 2;
+        
+        // Random frequency for organic movement
+        this.freqX = 0.01 + Math.random() * 0.02;
+        this.freqY = 0.01 + Math.random() * 0.02;
+        
+        this.time = 0;
     }
     
-    // Update particle position (smooth following)
+    // Update particle position (autonomous floating movement)
     update() {
-        // Update target to mouse position
-        this.targetX = mouse.x;
-        this.targetY = mouse.y;
+        this.time += 0.02;
         
-        // Smooth movement towards target with delay
-        const smoothing = PARTICLE_CONFIG.smoothing * (1 - this.delay);
-        this.x += (this.targetX - this.x) * smoothing;
-        this.y += (this.targetY - this.y) * smoothing;
+        // Add sine wave oscillation for organic floating effect
+        const oscillationX = Math.sin(this.time * this.freqX + this.phaseX) * 0.5;
+        const oscillationY = Math.cos(this.time * this.freqY + this.phaseY) * 0.5;
+        
+        // Update position with base velocity + oscillation
+        this.x += this.vx + oscillationX;
+        this.y += this.vy + oscillationY;
+        
+        // Wrap around screen edges (particles loop around)
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
     }
     
-    // Draw fuzzy ball particle
+    // Draw small dot particle
     draw() {
-        // Create gradient for fuzzy glow effect
-        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-        gradient.addColorStop(0, `rgba(114, 178, 255, ${this.alpha})`);
-        gradient.addColorStop(0.5, `rgba(114, 178, 255, ${this.alpha * 0.5})`);
-        gradient.addColorStop(1, 'rgba(114, 178, 255, 0)');
-        
-        // Draw fuzzy ball
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
+        ctx.arc(this.x, this.y, PARTICLE_CONFIG.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(114, 178, 255, ${PARTICLE_CONFIG.alpha})`;
         ctx.fill();
+        
+        // Add subtle glow
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(114, 178, 255, 0.5)';
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset shadow
     }
 }
 
@@ -78,15 +87,14 @@ class Particle {
 function createParticles() {
     particles = [];
     for (let i = 0; i < PARTICLE_CONFIG.count; i++) {
-        particles.push(new Particle(i));
+        particles.push(new Particle());
     }
 }
 
 // ===== Animation Loop =====
 function animate() {
-    // Clear canvas with slight trail effect
-    ctx.fillStyle = 'rgba(10, 14, 26, 0.1)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Clear canvas completely (no trails)
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // Update and draw all particles
     particles.forEach(particle => {
@@ -99,12 +107,6 @@ function animate() {
 }
 
 // ===== Event Listeners =====
-// Track mouse movement
-window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-});
-
 // Handle window resize
 window.addEventListener('resize', () => {
     resizeCanvas();
