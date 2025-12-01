@@ -3,14 +3,16 @@
 // ===== Cost Display Animation Configuration =====
 const COST_ANIMATION_CONFIG = {
     initialDelay: 4000,      // 4 seconds wait before first animation
-    tiltAngle: 1.5,          // Degrees to tilt left/right
-    scaleRange: 0.03,        // Scale change (1.0 to 1.03)
-    hoverDuration: 2500,     // Duration of one hover cycle
+    maxTilt: 3,              // Maximum degrees to tilt
+    maxScale: 0.08,          // Maximum scale change (up to 8%)
+    changeInterval: 800,     // How often to change (ms)
+    transitionSpeed: 600,    // Transition duration between changes
     enabled: false           // Controls if animation should run
 };
 
 // Store animation state
 let animationTimeout = null;
+let changeInterval = null;
 
 // ===== Start Cost Hover Animation =====
 function startCostHover() {
@@ -25,56 +27,49 @@ function startCostHover() {
     costDisplay.style.position = 'relative';
     costDisplay.style.transform = 'rotate(0deg) scale(1)';
     costDisplay.style.transformOrigin = 'center center';
+    costDisplay.style.transition = `transform ${COST_ANIMATION_CONFIG.transitionSpeed}ms cubic-bezier(0.4, 0.0, 0.2, 1)`;
     
     // Wait initial delay, then start hover loop
     animationTimeout = setTimeout(() => {
         COST_ANIMATION_CONFIG.enabled = true;
-        hoverLoop(costDisplay);
+        randomHoverChange(costDisplay);
     }, COST_ANIMATION_CONFIG.initialDelay);
 }
 
-// ===== Hover Loop (subtle tilt and scale breathing) =====
-function hoverLoop(element) {
+// ===== Random Hover Change =====
+function randomHoverChange(element) {
     if (!COST_ANIMATION_CONFIG.enabled || !element) {
         return;
     }
     
-    let startTime = Date.now();
+    // Generate random rotation and scale independently
+    const randomRotation = (Math.random() - 0.5) * 2 * COST_ANIMATION_CONFIG.maxTilt;
+    const randomScale = 1 + (Math.random() - 0.5) * 2 * COST_ANIMATION_CONFIG.maxScale;
     
-    // Smooth hover animation using requestAnimationFrame
-    function animate() {
-        if (!COST_ANIMATION_CONFIG.enabled) {
-            return;
+    // Apply random transform
+    element.style.transform = `rotate(${randomRotation}deg) scale(${randomScale})`;
+    
+    // Schedule next random change
+    changeInterval = setTimeout(() => {
+        if (COST_ANIMATION_CONFIG.enabled) {
+            randomHoverChange(element);
         }
-        
-        const elapsed = Date.now() - startTime;
-        const progress = (elapsed % COST_ANIMATION_CONFIG.hoverDuration) / COST_ANIMATION_CONFIG.hoverDuration;
-        
-        // Sine wave for smooth rotation (tilt left/right)
-        const rotation = Math.sin(progress * Math.PI * 2) * COST_ANIMATION_CONFIG.tiltAngle;
-        
-        // Cosine wave for smooth scale (breathing effect - grows and shrinks)
-        const scaleOffset = (Math.cos(progress * Math.PI * 2) + 1) / 2; // Range 0 to 1
-        const scale = 1 + (scaleOffset * COST_ANIMATION_CONFIG.scaleRange);
-        
-        // Apply transforms (NO position change, only rotate and scale)
-        element.style.transform = `rotate(${rotation}deg) scale(${scale})`;
-        
-        // Continue animation
-        requestAnimationFrame(animate);
-    }
-    
-    animate();
+    }, COST_ANIMATION_CONFIG.changeInterval);
 }
 
 // ===== Stop Cost Hover Animation =====
 function stopCostHover() {
     COST_ANIMATION_CONFIG.enabled = false;
     
-    // Clear any pending timeouts
+    // Clear any pending timeouts/intervals
     if (animationTimeout) {
         clearTimeout(animationTimeout);
         animationTimeout = null;
+    }
+    
+    if (changeInterval) {
+        clearTimeout(changeInterval);
+        changeInterval = null;
     }
     
     // Reset cost display
