@@ -433,55 +433,69 @@ const WIKI_DATA = {
                     rarity: "Secret I",
                     base: 6500,
                     petdisplayname: "Weeping Angle",
-                    chance: 0.00000001
+                    chance: 0.000003
                 }
             ]
         },
-        "2": {
+        "Sakura Egg": {
             type: "Base",
-            cost: 2,
+            cost: 40000000000000,
             pets: [
                 {
-                    petname: "Baor",
+                    petname: "NinjaPup",
                     rarity: "Common",
-                    base: 25,
-                    petdisplayname: "Baor",
-                    chance: 0.5
+                    base: 2200,
+                    petdisplayname: "Ninja Pup",
+                    chance: 0.35
                 },
                 {
-                    petname: "Goat",
-                    rarity: "Common",
-                    base: 27,
-                    petdisplayname: "Goat",
-                    chance: 0.3
-                },
-                {
-                    petname: "Elephant",
+                    petname: "KarateLynx",
                     rarity: "Rare",
-                    base: 30,
-                    petdisplayname: "Elephant",
-                    chance: 0.09
+                    base: 2300,
+                    petdisplayname: "Karate Lynx",
+                    chance: 0.28
                 },
                 {
-                    petname: "Lion",
+                    petname: "SakuraNymph",
                     rarity: "Rare",
-                    base: 33,
-                    petdisplayname: "Lion",
-                    chance: 0.08
+                    base: 2650,
+                    petdisplayname: "Sakura Nymph",
+                    chance: 0.19
                 },
                 {
-                    petname: "Lynx",
+                    petname: "BonsaiMonster",
                     rarity: "Epic",
-                    base: 40,
-                    petdisplayname: "Lynx",
-                    chance: 0.03
+                    base: 2900,
+                    petdisplayname: "Bonsai Monster",
+                    chance: 0.14
                 },
                 {
-                    petname: "CardinalHydra",
+                    petname: "NinjaDemon",
+                    rarity: "Epic",
+                    base: 3250,
+                    petdisplayname: "Ninja Demon",
+                    chance: 0.035
+                },
+                {
+                    petname: "NinjaTriDemon",
                     rarity: "Legendary",
-                    base: 75,
-                    petdisplayname: "Cardinal Hydra",
-                    chance: 0.008
+                    base: 3900,
+                    petdisplayname: "Ninja Tri-Demon",
+                    chance: 0.0049
+                },
+                {
+                    petname: "SakuraQueen",
+                    rarity: "Mythical",
+                    base: 8000,
+                    petdisplayname: "Sakura Queen",
+                    chance: 0.0049
+                },
+                {
+                    petname: "SakuraDominator",
+                    rarity: "Secret I",
+                    base: 25000,
+                    petdisplayname: "Sakura Dominator",
+                    chance: 0.000003
                 }
             ]
         },
