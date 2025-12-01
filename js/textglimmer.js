@@ -4,7 +4,7 @@
 const GLIMMER_CONFIG = {
     msPerCharacter: 250,     // Milliseconds per character
     minimumDuration: 2000,   // Minimum duration (2 seconds)
-    opacity: 0.4,            // Shimmer opacity (0.0 to 1.0)
+    opacity: 0.3,            // Shimmer opacity (0.0 to 1.0)
     enabled: true
 };
 
@@ -54,41 +54,60 @@ function applyGlimmerToHeader() {
     shimmerLoop(shimmer, duration);
 }
 
+// ===== Apply Glimmer to Cost Text =====
+function applyShimmerToCostText(costSpan) {
+    if (!costSpan || costSpan.querySelector('.shimmer-overlay')) {
+        return; // Already has shimmer
+    }
+    
+    const textContent = costSpan.textContent;
+    const duration = calculateDuration(textContent);
+    
+    costSpan.style.position = 'relative';
+    costSpan.style.overflow = 'visible';
+    costSpan.style.display = 'inline-block';
+    
+    const shimmer = document.createElement('div');
+    shimmer.className = 'shimmer-overlay';
+    shimmer.style.position = 'absolute';
+    shimmer.style.top = '0';
+    shimmer.style.left = '0';
+    shimmer.style.width = '100%';
+    shimmer.style.height = '100%';
+    shimmer.style.background = `linear-gradient(90deg, transparent 0%, transparent 45%, rgba(255, 255, 255, ${GLIMMER_CONFIG.opacity}) 50%, transparent 55%, transparent 100%)`;
+    shimmer.style.backgroundSize = '200% 100%';
+    shimmer.style.backgroundPosition = '-200% 0';
+    shimmer.style.backgroundClip = 'text';
+    shimmer.style.webkitBackgroundClip = 'text';
+    shimmer.style.color = 'transparent';
+    shimmer.style.pointerEvents = 'none';
+    shimmer.style.fontWeight = '700';
+    shimmer.style.fontSize = '1.1rem';
+    shimmer.textContent = textContent;
+    shimmer.style.filter = `drop-shadow(0 0 6px rgba(255, 255, 255, ${GLIMMER_CONFIG.opacity * 0.75}))`;
+    
+    costSpan.appendChild(shimmer);
+    
+    shimmerLoop(shimmer, duration);
+}
+
 // ===== Apply Glimmer to Cost =====
 function applyGlimmerToCost() {
-    const observer = new MutationObserver(() => {
-        const costText = document.querySelector('.pet-header span[style*="color: #FFD700"]');
+    // Try to find cost immediately
+    const checkAndApply = () => {
+        const costSpans = document.querySelectorAll('.pet-header span[style*="color: #FFD700"]');
         
-        if (costText && !costText.querySelector('.shimmer-overlay')) {
-            const textContent = costText.textContent;
-            const duration = calculateDuration(textContent);
-            
-            costText.style.position = 'relative';
-            costText.style.overflow = 'visible';
-            
-            const shimmer = document.createElement('div');
-            shimmer.className = 'shimmer-overlay';
-            shimmer.style.position = 'absolute';
-            shimmer.style.top = '0';
-            shimmer.style.left = '0';
-            shimmer.style.width = '100%';
-            shimmer.style.height = '100%';
-            shimmer.style.background = `linear-gradient(90deg, transparent 0%, transparent 45%, rgba(255, 255, 255, ${GLIMMER_CONFIG.opacity}) 50%, transparent 55%, transparent 100%)`;
-            shimmer.style.backgroundSize = '200% 100%';
-            shimmer.style.backgroundPosition = '-200% 0';
-            shimmer.style.backgroundClip = 'text';
-            shimmer.style.webkitBackgroundClip = 'text';
-            shimmer.style.color = 'transparent';
-            shimmer.style.pointerEvents = 'none';
-            shimmer.style.fontWeight = '700';
-            shimmer.style.fontSize = '1.1rem';
-            shimmer.textContent = textContent;
-            shimmer.style.filter = `drop-shadow(0 0 6px rgba(255, 255, 255, ${GLIMMER_CONFIG.opacity * 0.75}))`;
-            
-            costText.appendChild(shimmer);
-            
-            shimmerLoop(shimmer, duration);
+        if (costSpans.length > 0) {
+            costSpans.forEach(span => applyShimmerToCostText(span));
         }
+    };
+    
+    // Check immediately
+    checkAndApply();
+    
+    // Observe for changes
+    const observer = new MutationObserver(() => {
+        checkAndApply();
     });
     
     const contentArea = document.getElementById('content');
@@ -97,6 +116,8 @@ function applyGlimmerToCost() {
             childList: true,
             subtree: true
         });
+    } else {
+        console.warn('⚠️ Content area not found for cost glimmer observer');
     }
 }
 
@@ -118,17 +139,21 @@ function shimmerLoop(shimmerElement, duration) {
         shimmerElement.style.transition = `background-position ${duration}ms linear`;
         shimmerElement.style.backgroundPosition = '200% 0';
         
-        // Loop immediately after completion (no extra delay)
+        // Loop immediately after completion
         setTimeout(() => {
             shimmerLoop(shimmerElement, duration);
         }, duration);
-    }, 16); // Single frame delay for reset
+    }, 16);
 }
 
 // ===== Initialize Glimmer System =====
 (function initGlimmer() {
     applyGlimmerToHeader();
-    applyGlimmerToCost();
+    
+    // Wait a bit for DOM to load, then apply cost glimmer
+    setTimeout(() => {
+        applyGlimmerToCost();
+    }, 500);
 })();
 
 // js/textglimmer.js
