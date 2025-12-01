@@ -488,7 +488,7 @@ const WIKI_DATA = {
                     rarity: "Mythical",
                     base: 8000,
                     petdisplayname: "Sakura Queen",
-                    chance: 0.0049
+                    chance: 0.0001
                 },
                 {
                     petname: "SakuraDominator",
