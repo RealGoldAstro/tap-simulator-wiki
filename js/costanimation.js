@@ -3,19 +3,17 @@
 // ===== Cost Display Animation Configuration =====
 const COST_ANIMATION_CONFIG = {
     initialDelay: 4000,      // 4 seconds wait before first animation
-    walkDistance: 40,        // Pixels to walk right (increased)
-    stepDuration: 450,       // Duration of each step
-    steps: 6,                // Number of steps to take
-    pauseAtEnd: 1200,        // Pause at the end before walking back
+    hoverHeight: 3,          // Pixels to hover up/down
+    tiltAngle: 2,            // Degrees to tilt left/right
+    hoverDuration: 2500,     // Duration of one hover cycle (up and down)
     enabled: false           // Controls if animation should run
 };
 
 // Store animation state
 let animationTimeout = null;
-let currentStep = 0;
 
-// ===== Start Cost Walking Animation =====
-function startCostWalking() {
+// ===== Start Cost Hover Animation =====
+function startCostHover() {
     const costDisplay = document.querySelector('.pet-header > div[style*="display: flex"]');
     
     if (!costDisplay) {
@@ -25,88 +23,50 @@ function startCostWalking() {
     
     // Set initial position style
     costDisplay.style.position = 'relative';
-    costDisplay.style.left = '0px';
-    costDisplay.style.transform = 'translateY(0px) scaleX(1) skewX(0deg)';
+    costDisplay.style.transform = 'translateY(0px) rotate(0deg)';
     
-    // Wait initial delay, then start loop
+    // Wait initial delay, then start hover loop
     animationTimeout = setTimeout(() => {
         COST_ANIMATION_CONFIG.enabled = true;
-        walkForward(costDisplay);
+        hoverLoop(costDisplay);
     }, COST_ANIMATION_CONFIG.initialDelay);
 }
 
-// ===== Walk Forward =====
-function walkForward(element) {
+// ===== Hover Loop (smooth floating motion with tilt) =====
+function hoverLoop(element) {
     if (!COST_ANIMATION_CONFIG.enabled || !element) {
         return;
     }
     
-    currentStep = 0;
-    walkStep(element, true);
-}
-
-// ===== Walk Step (smooth walking motion with horizontal warp) =====
-function walkStep(element, forward) {
-    if (!COST_ANIMATION_CONFIG.enabled || !element) {
-        return;
+    let startTime = Date.now();
+    
+    // Smooth hover animation using requestAnimationFrame
+    function animate() {
+        if (!COST_ANIMATION_CONFIG.enabled) {
+            return;
+        }
+        
+        const elapsed = Date.now() - startTime;
+        const progress = (elapsed % COST_ANIMATION_CONFIG.hoverDuration) / COST_ANIMATION_CONFIG.hoverDuration;
+        
+        // Sine wave for smooth up/down motion
+        const yOffset = Math.sin(progress * Math.PI * 2) * COST_ANIMATION_CONFIG.hoverHeight;
+        
+        // Cosine wave for smooth tilt (offset from vertical for natural motion)
+        const rotation = Math.cos(progress * Math.PI * 2 + Math.PI / 2) * COST_ANIMATION_CONFIG.tiltAngle;
+        
+        // Apply both transforms smoothly
+        element.style.transform = `translateY(${yOffset}px) rotate(${rotation}deg)`;
+        
+        // Continue animation
+        requestAnimationFrame(animate);
     }
     
-    const stepSize = COST_ANIMATION_CONFIG.walkDistance / COST_ANIMATION_CONFIG.steps;
-    
-    // Calculate position for this step
-    const newLeft = forward 
-        ? (currentStep + 1) * stepSize 
-        : COST_ANIMATION_CONFIG.walkDistance - ((currentStep + 1) * stepSize);
-    
-    // Alternating horizontal squish/stretch for walking effect (warp on sides)
-    const scaleX = (currentStep % 2 === 0) ? 1.05 : 0.98;
-    const skewX = (currentStep % 2 === 0) ? 2 : -2;
-    
-    // Minimal vertical bob (just a tiny bit)
-    const bobHeight = (currentStep % 2 === 0) ? -0.5 : -1;
-    
-    // Smooth transition with easing
-    element.style.transition = `all ${COST_ANIMATION_CONFIG.stepDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-    element.style.left = `${newLeft}px`;
-    element.style.transform = `translateY(${bobHeight}px) scaleX(${scaleX}) skewX(${skewX}deg)`;
-    
-    currentStep++;
-    
-    // Check if walk is complete
-    if (currentStep >= COST_ANIMATION_CONFIG.steps) {
-        // Finished walking
-        setTimeout(() => {
-            // Reset to normal shape
-            element.style.transition = `all 250ms ease-out`;
-            element.style.transform = `translateY(0px) scaleX(1) skewX(0deg)`;
-            
-            if (forward) {
-                // Pause, then walk back
-                setTimeout(() => {
-                    if (COST_ANIMATION_CONFIG.enabled) {
-                        currentStep = 0;
-                        walkStep(element, false);
-                    }
-                }, COST_ANIMATION_CONFIG.pauseAtEnd);
-            } else {
-                // Pause, then walk forward again
-                setTimeout(() => {
-                    if (COST_ANIMATION_CONFIG.enabled) {
-                        walkForward(element);
-                    }
-                }, COST_ANIMATION_CONFIG.pauseAtEnd);
-            }
-        }, COST_ANIMATION_CONFIG.stepDuration);
-    } else {
-        // Continue walking
-        setTimeout(() => {
-            walkStep(element, forward);
-        }, COST_ANIMATION_CONFIG.stepDuration);
-    }
+    animate();
 }
 
-// ===== Stop Cost Walking Animation =====
-function stopCostWalking() {
+// ===== Stop Cost Hover Animation =====
+function stopCostHover() {
     COST_ANIMATION_CONFIG.enabled = false;
     
     // Clear any pending timeouts
@@ -119,8 +79,7 @@ function stopCostWalking() {
     const costDisplay = document.querySelector('.pet-header > div[style*="display: flex"]');
     if (costDisplay) {
         costDisplay.style.transition = 'all 0.4s ease-out';
-        costDisplay.style.left = '0px';
-        costDisplay.style.transform = 'translateY(0px) scaleX(1) skewX(0deg)';
+        costDisplay.style.transform = 'translateY(0px) rotate(0deg)';
     }
 }
 
@@ -128,13 +87,13 @@ function stopCostWalking() {
 // Detects when new egg content is loaded
 const contentObserver = new MutationObserver(() => {
     // Stop any existing animation
-    stopCostWalking();
+    stopCostHover();
     
     // Check if egg details are displayed (not welcome screen)
     const petDetails = document.querySelector('.pet-details');
     if (petDetails) {
         // Start animation for new egg page
-        startCostWalking();
+        startCostHover();
     }
 });
 
@@ -156,7 +115,7 @@ const contentObserver = new MutationObserver(() => {
     // If egg is already displayed on load, start animation
     const petDetails = document.querySelector('.pet-details');
     if (petDetails) {
-        startCostWalking();
+        startCostHover();
     }
 })();
 
