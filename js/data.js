@@ -368,51 +368,65 @@ const WIKI_DATA = {
             cost: 1500000000000,
             pets: [
                 {
-                    petname: "Baor",
+                    petname: "HolySquirrel",
                     rarity: "Common",
-                    base: 25,
-                    petdisplayname: "Baor",
-                    chance: 0.5
+                    base: 850,
+                    petdisplayname: "Holy Squirrel",
+                    chance: 0.33
                 },
                 {
-                    petname: "Goat",
-                    rarity: "Common",
-                    base: 27,
-                    petdisplayname: "Goat",
-                    chance: 0.3
-                },
-                {
-                    petname: "Elephant",
+                    petname: "HaloChicken",
                     rarity: "Rare",
-                    base: 30,
-                    petdisplayname: "Elephant",
-                    chance: 0.09
+                    base: 900,
+                    petdisplayname: "Halo Chicken",
+                    chance: 0.28
                 },
                 {
-                    petname: "Lion",
+                    petname: "Phoenix",
                     rarity: "Rare",
-                    base: 33,
-                    petdisplayname: "Lion",
-                    chance: 0.08
+                    base: 1000,
+                    petdisplayname: "Phoenix",
+                    chance: 0.14
                 },
                 {
-                    petname: "Lynx",
+                    petname: "TriPhoenix",
                     rarity: "Epic",
-                    base: 40,
-                    petdisplayname: "Lynx",
-                    chance: 0.03
+                    base: 1100,
+                    petdisplayname: "Tri-Phoenix",
+                    chance: 0.14
                 },
                 {
-                    petname: "CardinalHydra",
+                    petname: "TreeOfLife",
                     rarity: "Legendary",
-                    base: 75,
-                    petdisplayname: "Cardinal Hydra",
-                    chance: 0.008
+                    base: 1400,
+                    petdisplayname: "Tree Of Life",
+                    chance: 0.035
+                },
+                {
+                    petname: "DivineGaurd",
+                    rarity: "Legendary",
+                    base: 1500,
+                    petdisplayname: "Divine Gaurd",
+                    chance: 0.0049
+                },
+                {
+                    petname: "Archangel",
+                    rarity: "Mythical",
+                    base: 2500,
+                    petdisplayname: "Archangel",
+                    chance: 0.0049
+                },
+                {
+                    petname: "WeepingAngle",
+                    rarity: "Secret I",
+                    base: 6500,
+                    petdisplayname: "Weeping Angle",
+                    chance: 0.00000001
                 }
             ]
         },
-        "Mountain Egg": {
-            cost: 500000,
+        "2": {
+            cost: 2,
             pets: [
                 {
                     petname: "Baor",
@@ -458,8 +472,8 @@ const WIKI_DATA = {
                 }
             ]
         },
-        "Mountain Egg": {
-            cost: 500000,
+        "1": {
+            cost: 1,
             pets: [
                 {
                     petname: "Baor",
