@@ -2,76 +2,56 @@
 
 // ===== Glimmer Animation Configuration =====
 const GLIMMER_CONFIG = {
-    interval: 8000,          // Time between glimmers (8 seconds)
-    duration: 1500,          // Duration of glimmer animation
-    glimmerWidth: '40%',     // Width of the glimmer shine
+    interval: 4000,          // Time between glimmers (4 seconds - more frequent)
+    duration: 2500,          // Duration of glimmer animation (slower)
     enabled: true
 };
-
-// ===== Create Glimmer Effect Element =====
-function createGlimmerEffect(targetElement) {
-    // Create glimmer overlay
-    const glimmer = document.createElement('div');
-    glimmer.style.position = 'absolute';
-    glimmer.style.top = '0';
-    glimmer.style.left = '-40%';
-    glimmer.style.width = GLIMMER_CONFIG.glimmerWidth;
-    glimmer.style.height = '100%';
-    glimmer.style.background = 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent)';
-    glimmer.style.pointerEvents = 'none';
-    glimmer.style.zIndex = '10';
-    glimmer.style.opacity = '0';
-    
-    return glimmer;
-}
 
 // ===== Apply Glimmer to Element =====
 function applyGlimmerToElement(element) {
     if (!element) return;
     
-    // Make element relative positioned for glimmer overlay
-    const currentPosition = window.getComputedStyle(element).position;
-    if (currentPosition === 'static') {
-        element.style.position = 'relative';
-    }
-    element.style.overflow = 'hidden';
+    // Store original text
+    const originalText = element.textContent;
     
-    // Create and append glimmer
-    const glimmer = createGlimmerEffect(element);
-    element.appendChild(glimmer);
+    // Wrap text in span for glimmer effect
+    element.innerHTML = `<span class="glimmer-text">${originalText}</span>`;
+    
+    const textSpan = element.querySelector('.glimmer-text');
+    
+    // Apply CSS for text-only glimmer
+    textSpan.style.background = 'linear-gradient(90deg, #E8EAED 0%, #E8EAED 30%, #FFFFFF 50%, #E8EAED 70%, #E8EAED 100%)';
+    textSpan.style.backgroundSize = '200% 100%';
+    textSpan.style.backgroundClip = 'text';
+    textSpan.style.webkitBackgroundClip = 'text';
+    textSpan.style.color = 'transparent';
+    textSpan.style.backgroundPosition = '-200% 0';
     
     // Start glimmer loop
-    glimmerLoop(glimmer);
+    glimmerLoop(textSpan);
 }
 
 // ===== Glimmer Animation Loop =====
-function glimmerLoop(glimmerElement) {
-    if (!GLIMMER_CONFIG.enabled || !glimmerElement) {
+function glimmerLoop(textElement) {
+    if (!GLIMMER_CONFIG.enabled || !textElement) {
         return;
     }
     
     // Trigger glimmer effect
     setTimeout(() => {
-        glimmerElement.style.transition = 'none';
-        glimmerElement.style.left = '-40%';
-        glimmerElement.style.opacity = '1';
+        textElement.style.transition = 'none';
+        textElement.style.backgroundPosition = '-200% 0';
         
-        // Animate glimmer across
+        // Animate glimmer across text
         setTimeout(() => {
-            glimmerElement.style.transition = `left ${GLIMMER_CONFIG.duration}ms ease-in-out, opacity ${GLIMMER_CONFIG.duration}ms ease-in-out`;
-            glimmerElement.style.left = '140%';
-            glimmerElement.style.opacity = '0.8';
+            textElement.style.transition = `background-position ${GLIMMER_CONFIG.duration}ms ease-in-out`;
+            textElement.style.backgroundPosition = '200% 0';
             
-            // Fade out at end
+            // Schedule next glimmer
             setTimeout(() => {
-                glimmerElement.style.opacity = '0';
-                
-                // Schedule next glimmer
-                setTimeout(() => {
-                    glimmerLoop(glimmerElement);
-                }, GLIMMER_CONFIG.interval - GLIMMER_CONFIG.duration);
-                
-            }, GLIMMER_CONFIG.duration);
+                glimmerLoop(textElement);
+            }, GLIMMER_CONFIG.interval);
+            
         }, 50);
     }, 0);
 }
@@ -94,9 +74,24 @@ function applyGlimmerToCost() {
     const contentObserver = new MutationObserver(() => {
         const costText = document.querySelector('.pet-header span[style*="color: #FFD700"]');
         
-        if (costText && !costText.querySelector('div')) {
-            applyGlimmerToElement(costText);
-            contentObserver.disconnect();
+        if (costText && !costText.classList.contains('glimmer-applied')) {
+            costText.classList.add('glimmer-applied');
+            
+            // Apply glimmer with gold color
+            const originalText = costText.textContent;
+            costText.innerHTML = `<span class="glimmer-text">${originalText}</span>`;
+            
+            const textSpan = costText.querySelector('.glimmer-text');
+            textSpan.style.background = 'linear-gradient(90deg, #FFD700 0%, #FFD700 30%, #FFFFFF 50%, #FFD700 70%, #FFD700 100%)';
+            textSpan.style.backgroundSize = '200% 100%';
+            textSpan.style.backgroundClip = 'text';
+            textSpan.style.webkitBackgroundClip = 'text';
+            textSpan.style.color = 'transparent';
+            textSpan.style.backgroundPosition = '-200% 0';
+            textSpan.style.fontWeight = '700';
+            textSpan.style.fontSize = '1.1rem';
+            
+            glimmerLoop(textSpan);
         }
     });
     
@@ -111,8 +106,23 @@ function applyGlimmerToCost() {
     
     // Also check if it exists immediately
     const costText = document.querySelector('.pet-header span[style*="color: #FFD700"]');
-    if (costText) {
-        applyGlimmerToElement(costText);
+    if (costText && !costText.classList.contains('glimmer-applied')) {
+        costText.classList.add('glimmer-applied');
+        
+        const originalText = costText.textContent;
+        costText.innerHTML = `<span class="glimmer-text">${originalText}</span>`;
+        
+        const textSpan = costText.querySelector('.glimmer-text');
+        textSpan.style.background = 'linear-gradient(90deg, #FFD700 0%, #FFD700 30%, #FFFFFF 50%, #FFD700 70%, #FFD700 100%)';
+        textSpan.style.backgroundSize = '200% 100%';
+        textSpan.style.backgroundClip = 'text';
+        textSpan.style.webkitBackgroundClip = 'text';
+        textSpan.style.color = 'transparent';
+        textSpan.style.backgroundPosition = '-200% 0';
+        textSpan.style.fontWeight = '700';
+        textSpan.style.fontSize = '1.1rem';
+        
+        glimmerLoop(textSpan);
     }
 }
 
