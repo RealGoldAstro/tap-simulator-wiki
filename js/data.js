@@ -250,48 +250,55 @@ const WIKI_DATA = {
             ]
         },
         "Mountain Egg": {
-            cost: 500000,
+            cost: 750000000,
             pets: [
                 {
-                    petname: "Baor",
+                    petname: "DuneDog",
                     rarity: "Common",
                     base: 25,
-                    petdisplayname: "Baor",
+                    petdisplayname: "Dune Dog",
                     chance: 0.5
                 },
                 {
-                    petname: "Goat",
+                    petname: "Mummy",
                     rarity: "Common",
                     base: 27,
-                    petdisplayname: "Goat",
+                    petdisplayname: "Mummy",
                     chance: 0.3
                 },
                 {
-                    petname: "Elephant",
-                    rarity: "Rare",
+                    petname: "Camel",
+                    rarity: "Common",
                     base: 30,
-                    petdisplayname: "Elephant",
+                    petdisplayname: "Camel",
                     chance: 0.09
                 },
                 {
-                    petname: "Lion",
+                    petname: "MummifiedWyvern",
                     rarity: "Rare",
                     base: 33,
-                    petdisplayname: "Lion",
+                    petdisplayname: "Mummified Wyvern",
                     chance: 0.08
                 },
                 {
-                    petname: "Lynx",
+                    petname: "Sphinx",
                     rarity: "Epic",
                     base: 40,
-                    petdisplayname: "Lynx",
+                    petdisplayname: "Sphinx",
                     chance: 0.03
                 },
                 {
-                    petname: "CardinalHydra",
+                    petname: "CactusRaider",
                     rarity: "Legendary",
                     base: 75,
-                    petdisplayname: "Cardinal Hydra",
+                    petdisplayname: "Cactus Raider",
+                    chance: 0.008
+                },
+                {
+                    petname: "SerpentGod",
+                    rarity: "Mythical",
+                    base: 75,
+                    petdisplayname: "Serpent God",
                     chance: 0.008
                 }
             ]
