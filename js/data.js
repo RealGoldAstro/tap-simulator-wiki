@@ -52,18 +52,39 @@ const WIKI_DATA = {
     "World 1": {
         "Starter Egg": [
             {
-                petname: "Pet_Bunny",
+                petname: "Dog",
                 rarity: "Common",
-                base: 2000,
-                petdisplayname: "Bunny Chow Mein",
-                chance: 0.7
+                base: 2,
+                petdisplayname: "Dog",
+                chance: 0.35
             },
             {
-                petname: "Pet_Rabbit",
+                petname: "Cat",
+                rarity: "Common",
+                base: 2,
+                petdisplayname: "Cat",
+                chance: 0.29
+            },
+            {
+                petname: "Bunny",
+                rarity: "Common",
+                base: 3,
+                petdisplayname: "Bunny",
+                chance: 0.18
+            },
+            {
+                petname: "Bear",
                 rarity: "Rare",
-                base: 4500,
-                petdisplayname: "Speed Rabbit",
-                chance: 0.3
+                base: 4,
+                petdisplayname: "Bear",
+                chance: 0.12
+            },
+            {
+                petname: "Panther",
+                rarity: "Rare",
+                base: 6,
+                petdisplayname: "Panther",
+                chance: 0.059
             }
         ],
         "Forest Egg": [
