@@ -603,7 +603,7 @@ const WIKI_DATA = {
         }
     },
     "Leaderboard": {
-        "Season One": {
+        "Season 1": {
             type: "Leaderboard",
             pets: [
                 {
