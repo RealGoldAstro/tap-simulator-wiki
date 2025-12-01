@@ -50,11 +50,13 @@ const RARITIES = {
 };
 
 // ===== Wiki Data Structure =====
-// Each egg contains cost and an array of pets (supports up to 50 pets per egg)
-// Chance is stored as decimal (e.g., 0.001 = 0.001% / 1 in 100,000)
+// Each egg has a type: "Base", "Robux", or "Leaderboard"
+// Base eggs: base is a number, uses ×2/×4 multipliers
+// Robux/Leaderboard eggs: base is a percentage (85 = 85%), uses ×1.25/×1.5 multipliers
 const WIKI_DATA = {
     "World 1": {
         "Basic Egg": {
+            type: "Base",
             cost: 250,
             pets: [
                 {
@@ -102,6 +104,7 @@ const WIKI_DATA = {
             ]
         },
         "Acorn Egg": {
+            type: "Base",
             cost: 2700,
             pets: [
                 {
@@ -149,6 +152,7 @@ const WIKI_DATA = {
             ]
         },
         "Safari Egg": {
+            type: "Base",
             cost: 500000,
             pets: [
                 {
@@ -196,6 +200,7 @@ const WIKI_DATA = {
             ]
         },
         "Snowman Egg": {
+            type: "Base",
             cost: 30000000,
             pets: [
                 {
@@ -250,6 +255,7 @@ const WIKI_DATA = {
             ]
         },
         "Cactus Egg": {
+            type: "Base",
             cost: 750000000,
             pets: [
                 {
@@ -304,6 +310,7 @@ const WIKI_DATA = {
             ]
         },
         "Jungle Egg": {
+            type: "Base",
             cost: 40000000000,
             pets: [
                 {
@@ -365,6 +372,7 @@ const WIKI_DATA = {
             ]
         },
         "Heaven Egg": {
+            type: "Base",
             cost: 1500000000000,
             pets: [
                 {
@@ -426,6 +434,7 @@ const WIKI_DATA = {
             ]
         },
         "2": {
+            type: "Base",
             cost: 2,
             pets: [
                 {
@@ -473,6 +482,7 @@ const WIKI_DATA = {
             ]
         },
         "1": {
+            type: "Base",
             cost: 1,
             pets: [
                 {
@@ -522,25 +532,38 @@ const WIKI_DATA = {
     },
     "Exclusive Eggs": {
         "Chronos Egg": {
-            cost: 399, 
+            type: "Robux",
+            packs: [
+                { amount: 1, price: 399 },
+                { amount: 3, price: 1200 },
+                { amount: 10, price: 3200 }
+            ],
             pets: [
                 {
-                    petname: "Pet_Dolphin",
-                    rarity: "Legendary",
-                    base: 25000,
-                    petdisplayname: "Ocean Dolphin",
+                    petname: "ChronosGuardian",
+                    rarity: "Exclusive",
+                    base: 85,
+                    petdisplayname: "Chronos Guardian",
                     chance: 0.5
                 },
                 {
-                    petname: "Pet_Whale",
-                    rarity: "Mythical",
-                    base: 45000,
-                    petdisplayname: "Blue Whale",
-                    chance: 0.00001
+                    petname: "TimeLord",
+                    rarity: "Exclusive",
+                    base: 100,
+                    petdisplayname: "Time Lord",
+                    chance: 0.35
+                },
+                {
+                    petname: "EternalPhoenix",
+                    rarity: "Exclusive",
+                    base: 200,
+                    petdisplayname: "Eternal Phoenix",
+                    chance: 0.15
                 }
             ]
         },
         "Deep Sea Egg": {
+            type: "Base",
             cost: 150000,
             pets: [
                 {
@@ -562,6 +585,7 @@ const WIKI_DATA = {
     },
     "World 3": {
         "Sky Egg": {
+            type: "Base",
             cost: 500000,
             pets: [
                 {
@@ -580,7 +604,8 @@ const WIKI_DATA = {
                 }
             ]
         },
-        "Heaven Egg": {
+        "Heaven Egg 2": {
+            type: "Base",
             cost: 2000000,
             pets: [
                 {
@@ -596,6 +621,37 @@ const WIKI_DATA = {
                     base: 500000,
                     petdisplayname: "Divine Seraphim",
                     chance: 0.000001
+                }
+            ]
+        }
+    },
+    "Special": {
+        "Weekly Leaderboard": {
+            type: "Leaderboard",
+            pets: [
+                {
+                    petname: "LB_Champion",
+                    rarity: "Secret III",
+                    base: 200,
+                    petdisplayname: "Champion's Glory",
+                    leaderboardTier: "Top 10",
+                    chance: 1.0
+                },
+                {
+                    petname: "LB_Elite",
+                    rarity: "Secret II",
+                    base: 150,
+                    petdisplayname: "Elite Warrior",
+                    leaderboardTier: "Top 100",
+                    chance: 1.0
+                },
+                {
+                    petname: "LB_Contender",
+                    rarity: "Secret I",
+                    base: 100,
+                    petdisplayname: "Contender's Pride",
+                    leaderboardTier: "Top 250",
+                    chance: 1.0
                 }
             ]
         }
@@ -623,27 +679,32 @@ function formatNumberAbbreviated(num) {
     return formatted + suffix;
 }
 
-// ===== Format Chance Display with Luck =====
-// Converts decimal to "X% / 1 in Y" format with luck multiplier applied
-// Example: 0.001 with 100% luck → "0.001% / 1 in 100K"
-// Example: 0.001 with 400% luck → "0.004% / 1 in 25K"
-function formatChance(decimal, luckMultiplier = 1) {
+// ===== Format Chance Display =====
+// Converts decimal to "X% / 1 in Y" format
+// Handles very small percentages correctly (e.g., 0.00001% shows correctly, not as 0%)
+function formatChance(decimal) {
     if (!decimal || decimal <= 0) {
         console.warn('⚠️ Invalid chance value provided');
         return 'Unknown';
     }
     
-    // Apply luck multiplier to chance
-    const adjustedChance = Math.min(decimal * luckMultiplier, 1); // Cap at 100%
+    // Convert to percentage with dynamic precision
+    const percentage = (decimal * 100);
+    let percentageStr;
     
-    // Convert to percentage
-    const percentage = (adjustedChance * 100).toFixed(3).replace(/\.?0+$/, '');
+    if (percentage >= 0.001) {
+        // Normal percentages: show up to 3 decimal places, remove trailing zeros
+        percentageStr = percentage.toFixed(3).replace(/\.?0+$/, '');
+    } else {
+        // Very small percentages: use scientific notation or more decimals
+        percentageStr = percentage.toExponential(2);
+    }
     
     // Calculate ratio (1 in X) with abbreviations
-    const ratio = 1 / adjustedChance;
+    const ratio = 1 / decimal;
     const ratioText = formatNumberAbbreviated(Math.round(ratio));
     
-    return `${percentage}% / 1 in ${ratioText}`;
+    return `${percentageStr}% / 1 in ${ratioText}`;
 }
 
 // ===== Validation Check =====
@@ -653,13 +714,25 @@ function formatChance(decimal, luckMultiplier = 1) {
         for (const egg in WIKI_DATA[world]) {
             const eggData = WIKI_DATA[world][egg];
             
+            if (!eggData.type) {
+                console.warn(`⚠️ ${egg} in ${world} has no type specified`);
+            }
+            
+            if (eggData.type === "Base") {
+                if (!eggData.cost || eggData.cost <= 0) {
+                    console.warn(`⚠️ Base egg ${egg} in ${world} has invalid cost`);
+                }
+            }
+            
+            if (eggData.type === "Robux") {
+                if (!eggData.packs || !Array.isArray(eggData.packs)) {
+                    console.warn(`⚠️ Robux egg ${egg} in ${world} has no packs array`);
+                }
+            }
+            
             if (!eggData.pets || !Array.isArray(eggData.pets)) {
                 console.warn(`⚠️ ${egg} in ${world} has no pets array`);
                 continue;
-            }
-            
-            if (!eggData.cost || eggData.cost <= 0) {
-                console.warn(`⚠️ ${egg} in ${world} has invalid cost`);
             }
             
             if (eggData.pets.length === 0) {
@@ -673,8 +746,8 @@ function formatChance(decimal, luckMultiplier = 1) {
                 if (!petData.base || petData.base <= 0) {
                     console.warn(`⚠️ Invalid base stat for pet ${index + 1} in ${egg} (${world})`);
                 }
-                if (!petData.chance || petData.chance <= 0 || petData.chance > 1) {
-                    console.warn(`⚠️ Invalid chance for pet ${index + 1} in ${egg} (${world}) - must be decimal between 0 and 1`);
+                if (eggData.type !== "Leaderboard" && (!petData.chance || petData.chance <= 0 || petData.chance > 1)) {
+                    console.warn(`⚠️ Invalid chance for pet ${index + 1} in ${egg} (${world})`);
                 }
             });
         }
