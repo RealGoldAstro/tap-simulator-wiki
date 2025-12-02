@@ -15,6 +15,15 @@ const UPDATE_LOGS = [
             { icon: "⭐", text: "3 New Secrets" },
             { icon: "🛒", text: "Triple Hatch is now free!" }
         ]
+    },
+    {
+        version: "Update 2",
+        date: "December 10, 2025",
+        features: [
+            { icon: "🏝️", text: "Another Island" },
+            { icon: "🥚", text: "5 New Eggs" },
+            { icon: "🐾", text: "25 New Pets" }
+        ]
     }
     // Add more updates here in the future
 ];
@@ -36,8 +45,6 @@ const CREATORS = {
         }
     ]
 };
-
-let currentUpdateIndex = 0;
 
 (function initSidebar() {
     const sidebarContent = document.querySelector('.sidebar-content');
@@ -66,119 +73,103 @@ function generateSidebar() {
     const sidebarContent = document.querySelector('.sidebar-content');
     sidebarContent.innerHTML = ''; // Clear existing content
     
-    // Add update log dropdown at the bottom
-    const updateSection = createUpdateSection();
-    
     // Loop through each world
     for (const worldName in WIKI_DATA) {
         const worldSection = createWorldSection(worldName, WIKI_DATA[worldName]);
         sidebarContent.appendChild(worldSection);
     }
     
-    // Append update section at the bottom
-    sidebarContent.appendChild(updateSection);
+    // Add updates section at the bottom
+    const updatesSection = createUpdatesSection();
+    sidebarContent.appendChild(updatesSection);
 }
 
-// ===== Create Update Section =====
-function createUpdateSection() {
+// ===== Create Updates Section =====
+function createUpdatesSection() {
+    const updatesDiv = document.createElement('div');
+    updatesDiv.className = 'world-section';
+    
+    // Updates header (collapsible like worlds)
+    const updatesHeader = document.createElement('div');
+    updatesHeader.className = 'world-header collapsed';
+    updatesHeader.textContent = 'Updates';
+    updatesHeader.addEventListener('click', () => toggleWorld(updatesHeader));
+    
+    // Updates list container
+    const updatesList = document.createElement('div');
+    updatesList.className = 'egg-list collapsed';
+    
+    // Loop through each update
+    UPDATE_LOGS.forEach((update, index) => {
+        const updateItem = createUpdateItem(update, index);
+        updatesList.appendChild(updateItem);
+    });
+    
+    updatesDiv.appendChild(updatesHeader);
+    updatesDiv.appendChild(updatesList);
+    
+    return updatesDiv;
+}
+
+// ===== Create Update Item =====
+function createUpdateItem(update, index) {
     const updateDiv = document.createElement('div');
-    updateDiv.className = 'update-section-sidebar';
+    updateDiv.className = 'egg-item';
+    updateDiv.innerHTML = `${update.version} <span class="update-date-small">• ${update.date}</span>`;
     
-    const currentUpdate = UPDATE_LOGS[currentUpdateIndex];
-    
-    updateDiv.innerHTML = `
-        <div class="update-header-sidebar" id="updateHeaderSidebar">
-            <span class="gem-icon">💎</span>
-            <div class="update-info-sidebar">
-                <span class="update-version-sidebar">${currentUpdate.version}</span>
-                <span class="update-date-sidebar">${currentUpdate.date}</span>
-            </div>
-            <span class="dropdown-arrow-sidebar">▲</span>
-        </div>
-        <div class="update-dropdown-sidebar collapsed" id="updateDropdownSidebar">
-            <div class="update-options-sidebar">
-                ${UPDATE_LOGS.map((update, index) => `
-                    <div class="update-option-sidebar" data-index="${index}">
-                        <span class="update-version">${update.version}</span>
-                        <span class="update-date">${update.date}</span>
-                    </div>
-                `).join('')}
-            </div>
-            <div class="update-content-sidebar">
-                <ul class="update-list-sidebar">
-                    ${currentUpdate.features.map(feature => `
-                        <li>
-                            <span class="feature-icon">${feature.icon}</span>
-                            <span class="feature-text">${feature.text}</span>
-                        </li>
-                    `).join('')}
-                </ul>
-            </div>
-        </div>
-    `;
-    
-    // Add event listeners after appending
-    setTimeout(() => {
-        setupUpdateSidebarListeners();
-    }, 0);
+    updateDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+        selectUpdate(updateDiv, update, index);
+    });
     
     return updateDiv;
 }
 
-// ===== Setup Update Sidebar Listeners =====
-function setupUpdateSidebarListeners() {
-    const header = document.getElementById('updateHeaderSidebar');
-    const dropdown = document.getElementById('updateDropdownSidebar');
-    
-    if (!header || !dropdown) {
-        console.warn('⚠️ Update sidebar elements not found');
-        return;
-    }
-    
-    // Toggle dropdown
-    header.addEventListener('click', () => {
-        dropdown.classList.toggle('collapsed');
-        header.classList.toggle('active');
+// ===== Select Update =====
+function selectUpdate(updateElement, update, index) {
+    // Remove active class from all eggs and updates
+    document.querySelectorAll('.egg-item').forEach(item => {
+        item.classList.remove('active');
     });
     
-    // Update option clicks
-    const options = document.querySelectorAll('.update-option-sidebar');
-    options.forEach(option => {
-        option.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const index = parseInt(option.getAttribute('data-index'));
-            changeUpdateSidebar(index);
-        });
-    });
+    // Add active class to selected update
+    updateElement.classList.add('active');
+    
+    // Display update details in content area
+    displayUpdateDetails(update, index);
 }
 
-// ===== Change Update in Sidebar =====
-function changeUpdateSidebar(index) {
-    if (index < 0 || index >= UPDATE_LOGS.length) {
-        console.warn('⚠️ Invalid update index');
+// ===== Display Update Details =====
+function displayUpdateDetails(update, index) {
+    const contentArea = document.getElementById('content');
+    
+    if (!contentArea) {
+        console.warn('⚠️ Content area not found');
         return;
     }
     
-    currentUpdateIndex = index;
-    const currentUpdate = UPDATE_LOGS[index];
+    const updateHTML = `
+        <div class="update-details">
+            <div class="update-details-header">
+                <div class="update-title-section">
+                    <span class="gem-icon-large">💎</span>
+                    <h2 class="update-details-title">${update.version} is out!</h2>
+                </div>
+                <div class="update-date-large">${update.date}</div>
+            </div>
+            
+            <div class="update-features-grid">
+                ${update.features.map(feature => `
+                    <div class="feature-card">
+                        <span class="feature-card-icon">${feature.icon}</span>
+                        <span class="feature-card-text">${feature.text}</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
     
-    // Update header text
-    const header = document.getElementById('updateHeaderSidebar');
-    if (header) {
-        header.querySelector('.update-version-sidebar').textContent = currentUpdate.version;
-        header.querySelector('.update-date-sidebar').textContent = currentUpdate.date;
-    }
-    
-    // Update content
-    const contentList = document.querySelector('.update-list-sidebar');
-    if (contentList) {
-        contentList.innerHTML = currentUpdate.features.map(feature => `
-            <li>
-                <span class="feature-icon">${feature.icon}</span>
-                <span class="feature-text">${feature.text}</span>
-            </li>
-        `).join('');
-    }
+    contentArea.innerHTML = updateHTML;
 }
 
 // ===== Create World Section =====
