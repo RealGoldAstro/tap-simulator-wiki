@@ -15,13 +15,13 @@ const SECRET_EFFECT_CONFIG = {
     },
     "Secret II": {
         enabled: true,
-        glowColor: 'rgba(0, 0, 0, 0.20)',  // White inner glow (very low opacity)
+        glowColor: 'rgba(228, 228, 228, 0.10)',  // White inner glow (very low opacity)
         particles: {
             count: 10,                             // Number of particles
             size: 3,                               // Particle size in pixels
             speed: 0.4,                            // Movement speed multiplier
             alpha: 0.6,                            // Particle opacity
-            color: 'rgba(0, 0, 0, 1)'       // White particle color
+            color: 'rgba(228, 228, 228, 0.8)'       // White particle color
         }
     },
     "Secret III": {
@@ -37,7 +37,7 @@ const SECRET_EFFECT_CONFIG = {
     },
     "Leaderboard": {
         enabled: true,
-        glowColor: 'rgba(255, 215, 0, 0.10)',  // White inner glow (very low opacity)
+        glowColor: 'rgba(255, 215, 0, 0.08)',  // White inner glow (very low opacity)
         particles: {
             count: 12,                             // Number of particles
             size: 2,                               // Particle size in pixels
