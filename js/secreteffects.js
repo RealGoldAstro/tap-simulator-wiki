@@ -8,7 +8,7 @@ const SECRET_EFFECT_CONFIG = {
         particles: {
             count: 15,                         // Number of particles
             size: 3,                           // Particle size in pixels
-            speed: 0.4,                        // Movement speed multiplier
+            speed: 0.5,                        // Horizontal movement speed
             alpha: 0.6,                        // Particle opacity
             color: 'rgba(255, 0, 0, 1)'       // Red particle color
         }
@@ -41,33 +41,24 @@ class RowParticle {
             box-shadow: 0 0 8px ${config.color};
         `;
         
-        // Spread particles evenly across grid with randomization
-        const cols = Math.ceil(Math.sqrt(total));
-        const rows = Math.ceil(total / cols);
-        const col = index % cols;
-        const row = Math.floor(index / cols);
+        // Spread particles evenly along the row horizontally
+        // Divide width into segments and position each particle in its segment
+        const segmentWidth = this.width / total;
+        this.x = (index * segmentWidth) + (Math.random() * segmentWidth * 0.5);
         
-        // Calculate cell size
-        const cellWidth = this.width / cols;
-        const cellHeight = this.height / rows;
+        // Spread particles vertically across the height with random distribution
+        this.y = (Math.random() * 0.6 + 0.2) * this.height; // Keep in middle 60% of height
         
-        // Position in cell with random offset for natural look
-        this.x = (col * cellWidth) + (Math.random() * cellWidth * 0.8) + (cellWidth * 0.1);
-        this.y = (row * cellHeight) + (Math.random() * cellHeight * 0.8) + (cellHeight * 0.1);
+        // Only horizontal movement (left to right)
+        this.vx = config.speed + (Math.random() * 0.2); // Slight variation in speed
         
-        // Random velocity for autonomous movement
-        this.vx = (Math.random() - 0.5) * config.speed;
-        this.vy = (Math.random() - 0.5) * config.speed;
-        
-        // Random phase for sine wave movement
-        this.phaseX = Math.random() * Math.PI * 2;
+        // Subtle vertical oscillation for floating effect
         this.phaseY = Math.random() * Math.PI * 2;
-        
-        // Random frequency for organic movement
-        this.freqX = 0.01 + Math.random() * 0.02;
-        this.freqY = 0.01 + Math.random() * 0.02;
+        this.freqY = 0.01 + Math.random() * 0.01;
+        this.oscillationRange = 10; // Max vertical oscillation in pixels
         
         this.time = 0;
+        this.baseY = this.y; // Store base Y position
         
         // Add to container
         container.appendChild(this.element);
@@ -80,19 +71,21 @@ class RowParticle {
     update() {
         this.time += 0.02;
         
-        // Add sine wave oscillation for organic floating effect
-        const oscillationX = Math.sin(this.time * this.freqX + this.phaseX) * 0.5;
-        const oscillationY = Math.cos(this.time * this.freqY + this.phaseY) * 0.5;
+        // Horizontal movement (left to right)
+        this.x += this.vx;
         
-        // Update position with base velocity + oscillation
-        this.x += this.vx + oscillationX;
-        this.y += this.vy + oscillationY;
+        // Wrap around when reaching end
+        if (this.x > this.width) {
+            this.x = 0;
+        }
         
-        // Wrap around container edges
-        if (this.x < 0) this.x = this.width;
-        if (this.x > this.width) this.x = 0;
-        if (this.y < 0) this.y = this.height;
-        if (this.y > this.height) this.y = 0;
+        // Subtle vertical oscillation for floating effect
+        const oscillationY = Math.sin(this.time * this.freqY + this.phaseY) * this.oscillationRange;
+        this.y = this.baseY + oscillationY;
+        
+        // Keep within bounds
+        if (this.y < 0) this.y = 0;
+        if (this.y > this.height) this.y = this.height;
         
         this.updatePosition();
     }
@@ -119,7 +112,7 @@ class ParticleSystem {
         this.particles = [];
         this.animationId = null;
         
-        // Create particles with grid distribution
+        // Create particles spread horizontally
         for (let i = 0; i < config.count; i++) {
             this.particles.push(new RowParticle(container, config, i, config.count));
         }
