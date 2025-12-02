@@ -5,7 +5,7 @@ const SECRET_EFFECT_CONFIG = {
     "Secret I": {
         enabled: true,
         sparkColor: '#ff0000',           // Red sparks
-        glowColor: 'rgba(255, 0, 0, 0.8)', // Red glow
+        glowColor: 'rgba(255, 0, 0, 0.15)', // Red glow (very low opacity)
         sparkCount: 20,                   // Number of spark particles
         sparkFrequency: 800,              // New spark every 800ms
         lightningFrequency: 1200,         // Lightning bolt every 1.2 seconds
@@ -61,24 +61,24 @@ function animateSpark(spark, duration) {
 }
 
 // ===== Create Branching Lightning Bolt =====
-function createBranchingLightning(color) {
+function createBranchingLightning(color, rowWidth, rowHeight) {
     const lightning = document.createElement('div');
     lightning.className = 'secret-lightning';
     
-    // Random start position anywhere in row
-    const x1 = Math.random() * 100;
-    const y1 = Math.random() * 100;
-    const x2 = Math.random() * 100;
-    const y2 = Math.random() * 100;
+    // Random start position in pixels
+    const x1 = Math.random() * rowWidth;
+    const y1 = Math.random() * rowHeight;
+    const x2 = Math.random() * rowWidth;
+    const y2 = Math.random() * rowHeight;
     
     // Generate jagged path with branches
     let pathData = '';
-    const segments = 4 + Math.floor(Math.random() * 3); // 4-6 segments
+    const segments = 4 + Math.floor(Math.random() * 3);
     const points = [];
     
     for (let i = 0; i <= segments; i++) {
         const t = i / segments;
-        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 15;
+        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 40;
         const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * 15;
         points.push({ x, y });
         
@@ -90,7 +90,7 @@ function createBranchingLightning(color) {
     }
     
     // Add random branches
-    const branchCount = 2 + Math.floor(Math.random() * 3); // 2-4 branches
+    const branchCount = 2 + Math.floor(Math.random() * 3);
     for (let i = 0; i < branchCount; i++) {
         const branchStart = points[1 + Math.floor(Math.random() * (points.length - 2))];
         const branchLength = 2 + Math.floor(Math.random() * 3);
@@ -98,20 +98,20 @@ function createBranchingLightning(color) {
         pathData += ` M ${branchStart.x},${branchStart.y}`;
         
         for (let j = 1; j <= branchLength; j++) {
-            const bx = branchStart.x + (Math.random() - 0.5) * 25;
-            const by = branchStart.y + (Math.random() - 0.5) * 25;
+            const bx = branchStart.x + (Math.random() - 0.5) * 60;
+            const by = branchStart.y + (Math.random() - 0.5) * 20;
             pathData += ` L ${bx},${by}`;
         }
     }
     
     lightning.innerHTML = `
-        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="${pathData}" stroke="${color}" stroke-width="0.5" fill="none" 
+        <svg width="${rowWidth}" height="${rowHeight}" style="position: absolute; top: 0; left: 0; pointer-events: none;">
+            <path d="${pathData}" stroke="${color}" stroke-width="2" fill="none" 
                   stroke-linecap="round" opacity="0.9"
                   filter="url(#glow-${Date.now()})" />
             <defs>
                 <filter id="glow-${Date.now()}">
-                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
                     <feMerge>
                         <feMergeNode in="coloredBlur"/>
                         <feMergeNode in="coloredBlur"/>
@@ -231,25 +231,29 @@ function applySecretEffect(row, rarity) {
     row.style.position = 'relative';
     row.style.overflow = 'visible';
     
-    // Create effect container that extends outside row
+    // Apply inner glow to row itself (doesn't overlap other cells)
+    row.style.boxShadow = `inset 0 0 20px ${config.glowColor}, inset 0 0 40px ${config.glowColor}`;
+    
+    // Create effect container (stays within row boundaries)
     const effectContainer = document.createElement('div');
     effectContainer.className = 'secret-effect-container';
     effectContainer.style.cssText = `
         position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         pointer-events: none;
         z-index: 1;
-        overflow: visible;
+        overflow: hidden;
     `;
     
     row.appendChild(effectContainer);
     
-    // Add outer glow (outside the row)
-    effectContainer.style.boxShadow = `0 0 25px ${config.glowColor}, 0 0 50px ${config.glowColor}`;
-    effectContainer.style.filter = `drop-shadow(0 0 15px ${config.glowColor})`;
+    // Get row dimensions for lightning
+    const rowRect = row.getBoundingClientRect();
+    const rowWidth = rowRect.width;
+    const rowHeight = rowRect.height;
     
     // Create static overlay
     const staticCanvas = createStaticOverlay(config.sparkColor, config.staticOpacity);
@@ -286,9 +290,9 @@ function applySecretEffect(row, rarity) {
         }, 1200);
     }, config.sparkFrequency);
     
-    // Lightning bolts (more frequent, branching)
+    // Lightning bolts (more frequent, branching, proper dimensions)
     setInterval(() => {
-        const lightning = createBranchingLightning(config.sparkColor);
+        const lightning = createBranchingLightning(config.sparkColor, rowWidth, rowHeight);
         effectContainer.appendChild(lightning);
         animateLightning(lightning);
     }, config.lightningFrequency);
