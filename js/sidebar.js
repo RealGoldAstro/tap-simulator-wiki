@@ -1,13 +1,15 @@
 // js/sidebar.js
 
+// -- Root/sidebar.js
+
 // ===== Sidebar Generation =====
-// Dynamically generates sidebar from WIKI_DATA
+// Dynamically generates sidebar from WIKI_DATA and handles Updates section + footer
 
 // Update log data with dates
 const UPDATE_LOGS = [
     {
         version: "Update 1",
-        date: "December 2, 2025",
+        date: "Dec 2, 2025",
         features: [
             { icon: "🏝️", text: "New Island" },
             { icon: "🥚", text: "2 New Eggs" },
@@ -15,17 +17,8 @@ const UPDATE_LOGS = [
             { icon: "⭐", text: "3 New Secrets" },
             { icon: "🛒", text: "Triple Hatch is now free!" }
         ]
-    },
-    {
-        version: "Update 2",
-        date: "December 10, 2025",
-        features: [
-            { icon: "🏝️", text: "Another Island" },
-            { icon: "🥚", text: "5 New Eggs" },
-            { icon: "🐾", text: "25 New Pets" }
-        ]
     }
-    // Add more updates here in the future
+    // Add more updates here (Update 2, 3, etc)
 ];
 
 // Creator information
@@ -48,22 +41,22 @@ const CREATORS = {
 
 (function initSidebar() {
     const sidebarContent = document.querySelector('.sidebar-content');
-    
+
     // Validation check
     if (!sidebarContent) {
         console.warn('⚠️ Sidebar content container not found');
         return;
     }
-    
-    if (!WIKI_DATA || Object.keys(WIKI_DATA).length === 0) {
+
+    if (!window.WIKI_DATA || Object.keys(WIKI_DATA).length === 0) {
         console.warn('⚠️ WIKI_DATA is empty or not loaded');
         sidebarContent.innerHTML = '<p>No data available</p>';
         return;
     }
-    
+
     // Generate sidebar HTML from data
     generateSidebar();
-    
+
     // Initialize footer
     initializeFooter();
 })();
@@ -72,175 +65,154 @@ const CREATORS = {
 function generateSidebar() {
     const sidebarContent = document.querySelector('.sidebar-content');
     sidebarContent.innerHTML = ''; // Clear existing content
-    
+
     // Loop through each world
     for (const worldName in WIKI_DATA) {
         const worldSection = createWorldSection(worldName, WIKI_DATA[worldName]);
         sidebarContent.appendChild(worldSection);
     }
-    
+
     // Add updates section at the bottom
     const updatesSection = createUpdatesSection();
     sidebarContent.appendChild(updatesSection);
 }
 
-// ===== Create Updates Section =====
+// ===== Create Updates Section (behaves like worlds/eggs) =====
 function createUpdatesSection() {
-    const updatesDiv = document.createElement('div');
-    updatesDiv.className = 'world-section';
-    
-    // Updates header (collapsible like worlds)
+    const updatesWrapper = document.createElement('div');
+    updatesWrapper.className = 'world-section updates-section-bottom';
+
+    // Header: "Updates" behaves like world headers
     const updatesHeader = document.createElement('div');
     updatesHeader.className = 'world-header collapsed';
     updatesHeader.textContent = 'Updates';
+
     updatesHeader.addEventListener('click', () => toggleWorld(updatesHeader));
-    
-    // Updates list container
+
+    // List of updates (looks like eggs)
     const updatesList = document.createElement('div');
     updatesList.className = 'egg-list collapsed';
-    
-    // Loop through each update
+
     UPDATE_LOGS.forEach((update, index) => {
-        const updateItem = createUpdateItem(update, index);
+        const updateItem = document.createElement('div');
+        updateItem.className = 'egg-item update-item';
+        updateItem.innerHTML = `
+            <span class="update-name">${update.version}</span>
+            <span class="update-date-small">• ${update.date}</span>
+        `;
+
+        updateItem.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectUpdate(updateItem, update, index);
+        });
+
         updatesList.appendChild(updateItem);
     });
-    
-    updatesDiv.appendChild(updatesHeader);
-    updatesDiv.appendChild(updatesList);
-    
-    return updatesDiv;
+
+    updatesWrapper.appendChild(updatesHeader);
+    updatesWrapper.appendChild(updatesList);
+
+    return updatesWrapper;
 }
 
-// ===== Create Update Item =====
-function createUpdateItem(update, index) {
-    const updateDiv = document.createElement('div');
-    updateDiv.className = 'egg-item';
-    updateDiv.innerHTML = `${update.version} <span class="update-date-small">• ${update.date}</span>`;
-    
-    updateDiv.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectUpdate(updateDiv, update, index);
-    });
-    
-    return updateDiv;
-}
+// ===== Select Update (sidebar item) =====
+function selectUpdate(updateElement, updateData) {
+    // Clear active from all egg/update items
+    document.querySelectorAll('.egg-item').forEach(item => item.classList.remove('active'));
 
-// ===== Select Update =====
-function selectUpdate(updateElement, update, index) {
-    // Remove active class from all eggs and updates
-    document.querySelectorAll('.egg-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // Add active class to selected update
+    // Mark selected update
     updateElement.classList.add('active');
-    
-    // Display update details in content area
-    displayUpdateDetails(update, index);
+
+    // Show update details in main content
+    displayUpdateDetails(updateData);
 }
 
-// ===== Display Update Details =====
-function displayUpdateDetails(update, index) {
+// ===== Display Update Details in Content Area =====
+function displayUpdateDetails(updateData) {
     const contentArea = document.getElementById('content');
-    
+
     if (!contentArea) {
         console.warn('⚠️ Content area not found');
         return;
     }
-    
-    const updateHTML = `
+
+    const html = `
         <div class="update-details">
             <div class="update-details-header">
                 <div class="update-title-section">
                     <span class="gem-icon-large">💎</span>
-                    <h2 class="update-details-title">${update.version} is out!</h2>
+                    <h2 class="update-details-title">${updateData.version} is out!</h2>
                 </div>
-                <div class="update-date-large">${update.date}</div>
+                <div class="update-date-large">${updateData.date}</div>
             </div>
-            
+
             <div class="update-features-grid">
-                ${update.features.map(feature => `
+                ${updateData.features.map(f => `
                     <div class="feature-card">
-                        <span class="feature-card-icon">${feature.icon}</span>
-                        <span class="feature-card-text">${feature.text}</span>
+                        <span class="feature-card-icon">${f.icon}</span>
+                        <span class="feature-card-text">${f.text}</span>
                     </div>
                 `).join('')}
             </div>
         </div>
     `;
-    
-    contentArea.innerHTML = updateHTML;
+
+    contentArea.innerHTML = html;
 }
 
-// ===== Create World Section =====
+// ===== World / Egg Logic (unchanged) =====
 function createWorldSection(worldName, eggs) {
-    // World container
     const worldDiv = document.createElement('div');
     worldDiv.className = 'world-section';
-    
-    // World header (clickable to collapse/expand) - collapsed by default
+
     const worldHeader = document.createElement('div');
     worldHeader.className = 'world-header collapsed';
     worldHeader.textContent = worldName;
     worldHeader.addEventListener('click', () => toggleWorld(worldHeader));
-    
-    // Egg list container - collapsed by default
+
     const eggList = document.createElement('div');
     eggList.className = 'egg-list collapsed';
-    
-    // Loop through each egg in this world
+
     for (const eggName in eggs) {
         const eggItem = createEggItem(eggName, eggs[eggName], worldName);
         eggList.appendChild(eggItem);
     }
-    
-    // Append header and list to world section
+
     worldDiv.appendChild(worldHeader);
     worldDiv.appendChild(eggList);
-    
+
     return worldDiv;
 }
 
-// ===== Create Egg Item =====
 function createEggItem(eggName, eggData, worldName) {
     const eggDiv = document.createElement('div');
     eggDiv.className = 'egg-item';
     eggDiv.textContent = eggName;
-    
-    // Click event to display egg details (passes entire egg data with cost and pets)
+
     eggDiv.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent world toggle
+        e.stopPropagation();
         selectEgg(eggDiv, eggName, eggData, worldName);
     });
-    
+
     return eggDiv;
 }
 
-// ===== Toggle World Collapse/Expand =====
 function toggleWorld(worldHeader) {
     const eggList = worldHeader.nextElementSibling;
-    
+
     if (!eggList) {
         console.warn('⚠️ Egg list not found for world section');
         return;
     }
-    
-    // Toggle collapsed state
+
     worldHeader.classList.toggle('collapsed');
     eggList.classList.toggle('collapsed');
 }
 
-// ===== Select Egg =====
 function selectEgg(eggElement, eggName, eggData, worldName) {
-    // Remove active class from all eggs
-    document.querySelectorAll('.egg-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // Add active class to selected egg
+    document.querySelectorAll('.egg-item').forEach(item => item.classList.remove('active'));
     eggElement.classList.add('active');
-    
-    // Trigger content display (content.js will handle this)
+
     if (typeof displayEggDetails === 'function') {
         displayEggDetails(eggName, eggData, worldName);
     } else {
@@ -248,21 +220,17 @@ function selectEgg(eggElement, eggName, eggData, worldName) {
     }
 }
 
-// ===== Show Welcome Page =====
+// ===== Welcome Page (header title click) =====
 function showWelcomePage() {
     const contentArea = document.getElementById('content');
-    
+
     if (!contentArea) {
         console.warn('⚠️ Content area not found');
         return;
     }
-    
-    // Remove active class from all eggs
-    document.querySelectorAll('.egg-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    
-    // Display welcome content
+
+    document.querySelectorAll('.egg-item').forEach(item => item.classList.remove('active'));
+
     contentArea.innerHTML = `
         <div class="welcome">
             <h2>Welcome to Tap Simulator Wiki</h2>
@@ -271,7 +239,7 @@ function showWelcomePage() {
     `;
 }
 
-// ===== Create Footer =====
+// ===== Footer Creation =====
 function createFooter() {
     const footer = document.createElement('footer');
     footer.className = 'site-footer';
@@ -295,26 +263,19 @@ function createFooter() {
     return footer;
 }
 
-// ===== Initialize Footer =====
 function initializeFooter() {
-    // Check if footer already exists
     let footer = document.querySelector('.site-footer');
-    if (footer) {
-        footer.remove();
-    }
-    
-    // Create and append new footer
+    if (footer) footer.remove();
     footer = createFooter();
     document.body.appendChild(footer);
 }
 
-// ===== Add Click Handler to Header Title =====
+// ===== Header title click handler =====
 document.addEventListener('DOMContentLoaded', () => {
     const headerTitle = document.querySelector('header h1');
     if (headerTitle) {
-        headerTitle.style.cursor = 'pointer';
         headerTitle.addEventListener('click', showWelcomePage);
     }
 });
 
-// js/sidebar.js
+// -- Root/sidebar.js
