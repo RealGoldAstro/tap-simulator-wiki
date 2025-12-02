@@ -6,8 +6,8 @@ const SECRET_EFFECT_CONFIG = {
         enabled: true,
         glowColor: 'rgba(255, 0, 0, 0.15)',  // Red inner glow (very low opacity)
         particles: {
-            count: 10,                         // Number of particles
-            size: 2,                           // Particle size in pixels
+            count: 15,                         // Number of particles
+            size: 3,                           // Particle size in pixels
             speed: 0.4,                        // Movement speed multiplier
             alpha: 0.6,                        // Particle opacity
             color: 'rgba(255, 0, 0, 1)'       // Red particle color
@@ -17,7 +17,7 @@ const SECRET_EFFECT_CONFIG = {
 
 // ===== Particle Class =====
 class RowParticle {
-    constructor(container, config) {
+    constructor(container, config, index, total) {
         this.container = container;
         this.config = config;
         
@@ -41,9 +41,19 @@ class RowParticle {
             box-shadow: 0 0 8px ${config.color};
         `;
         
-        // Random starting position
-        this.x = Math.random() * this.width;
-        this.y = Math.random() * this.height;
+        // Spread particles evenly across grid with randomization
+        const cols = Math.ceil(Math.sqrt(total));
+        const rows = Math.ceil(total / cols);
+        const col = index % cols;
+        const row = Math.floor(index / cols);
+        
+        // Calculate cell size
+        const cellWidth = this.width / cols;
+        const cellHeight = this.height / rows;
+        
+        // Position in cell with random offset for natural look
+        this.x = (col * cellWidth) + (Math.random() * cellWidth * 0.8) + (cellWidth * 0.1);
+        this.y = (row * cellHeight) + (Math.random() * cellHeight * 0.8) + (cellHeight * 0.1);
         
         // Random velocity for autonomous movement
         this.vx = (Math.random() - 0.5) * config.speed;
@@ -109,9 +119,9 @@ class ParticleSystem {
         this.particles = [];
         this.animationId = null;
         
-        // Create particles
+        // Create particles with grid distribution
         for (let i = 0; i < config.count; i++) {
-            this.particles.push(new RowParticle(container, config));
+            this.particles.push(new RowParticle(container, config, i, config.count));
         }
         
         // Start animation
