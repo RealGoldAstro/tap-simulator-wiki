@@ -174,7 +174,7 @@ function generatePetRows(petsArray, eggType) {
         
         // Generate row based on egg type
         if (eggType === "Robux" || eggType === "Leaderboard") {
-            // Robux/Leaderboard: Only show Petname, Rarity, Tier/Chance, Base, Max Level
+            // Robux/Leaderboard: Only show Petname, Rarity, Tier/Chance, Base, Max Level (number)
             return `
                 <tr>
                     <td><strong>${petData.petdisplayname}</strong></td>
@@ -185,11 +185,11 @@ function generatePetRows(petsArray, eggType) {
                     </td>
                     ${chanceOrTierColumn}
                     <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
-                    <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
+                    <td class="stat-value">${rarityInfo.maxLevel}</td>
                 </tr>
             `;
         } else {
-            // Base: Show all columns including evolution stats + Max Level
+            // Base: Show all columns including evolution stats + Max Level (number)
             return `
                 <tr>
                     <td><strong>${petData.petdisplayname}</strong></td>
@@ -205,7 +205,7 @@ function generatePetRows(petsArray, eggType) {
                     <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
                     <td class="stat-value">${formatStat(stats.goldenMaxLevel)}</td>
                     <td class="stat-value">${formatStat(stats.rainbowMaxLevel)}</td>
-                    <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
+                    <td class="stat-value">${rarityInfo.maxLevel}</td>
                 </tr>
             `;
         }
