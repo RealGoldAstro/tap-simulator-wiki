@@ -13,223 +13,227 @@ function displayEggDetails(eggName, eggData, worldName) {
     
     if (!eggData || !eggData.pets || !Array.isArray(eggData.pets) || eggData.pets.length === 0) {
         console.warn('⚠️ Invalid or empty egg data provided');
-        contentArea.innerHTML = '<div class="welcome"><h2>No pets found</h2></div>';
+        contentArea.innerHTML = `
+            <div class="welcome-screen">
+                <h2>⚠️ No Data Available</h2>
+                <p>This egg has no pets or invalid data.</p>
+            </div>
+        `;
         return;
     }
     
-    // Generate HTML for egg details with all pets
-    contentArea.innerHTML = generateEggHTML(eggName, eggData, worldName);
-}
-
-// ===== Generate Egg Details HTML =====
-function generateEggHTML(eggName, eggData, worldName) {
-    const eggType = eggData.type || "Base";
+    // Determine egg type (Base, Robux, or Leaderboard)
+    const eggType = eggData.type || 'Base';
     
-    // Format world/category display based on egg type
-    // In js/content.js, find this section and change it:
-    let categoryDisplay;
-    if (eggType === "Robux") {
-        categoryDisplay = `Robux Store: ${worldName}`;
-    } else if (eggType === "Leaderboard") {
-        categoryDisplay = "Weekly Leaderboard Pets"; // Custom name here
+    // Build table header based on egg type
+    let tableHeader;
+    
+    if (eggType === "Leaderboard" || eggType === "Robux") {
+        // Leaderboard and Robux: Remove Golden, Rainbow M, Base M, Golden M, Rainbow
+        tableHeader = `
+            |Pet|Rarity${eggType === "Leaderboard" ? '|Tier' : '|Chance'}|Base|M Base|M Rainbow|Max Level|
+            |--|--|--|--|--|--|--|
+        `;
     } else {
-        categoryDisplay = `World: ${worldName}`;
-    }
-
-    // Generate cost/pack display based on egg type
-    let costDisplay = '';
-    let noticeDisplay = '';
-    
-    if (eggType === "Base") {
-        // Base egg: show currency cost
-        const costFormatted = formatNumberAbbreviated(eggData.cost);
-        costDisplay = `
-            <div style="display: flex; align-items: center; gap: 0.3rem; margin-top: 0.8rem;">
-                <img src="assets/clicks.png" alt="Cost" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
-                <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">${costFormatted}</span>
-            </div>
-        `;
-    } else if (eggType === "Robux") {
-        // Robux egg: show pack options
-        const packsHTML = eggData.packs.map(pack => {
-            return `<span style="color: #E8EAED; font-weight: 600;">${pack.amount}x</span> <span style="color: #FFD700;">R$${pack.price}</span>`;
-        }).join(' • ');
-        
-        costDisplay = `
-            <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem; flex-wrap: wrap;">
-                <img src="assets/robux.png" alt="Robux" style="width: 20px; height: 20px;" onerror="this.style.display='none'">
-                <div style="font-size: 0.95rem;">${packsHTML}</div>
-            </div>
-        `;
-        
-        noticeDisplay = `
-            <div style="background: rgba(255, 215, 0, 0.1); border-left: 3px solid #FFD700; padding: 0.8rem; margin-bottom: 1.5rem; border-radius: 4px;">
-                <p style="color: #FFD700; font-size: 0.9rem; margin: 0;">
-                    <strong>⚠️ Notice:</strong> All percentages are based off your best pet's base stat
-                </p>
-            </div>
-        `;
-    } else if (eggType === "Leaderboard") {
-        // Leaderboard egg: no cost, just notice
-        noticeDisplay = `
-            <div style="background: rgba(114, 178, 255, 0.1); border-left: 3px solid #72B2FF; padding: 0.8rem; margin-bottom: 1.5rem; border-radius: 4px;">
-                <p style="color: #72B2FF; font-size: 0.9rem; margin: 0;">
-                    <strong>ℹ️ Notice:</strong> Leaderboard based off total pet power
-                </p>
-            </div>
+        // Base eggs: Show all columns + Max Level
+        tableHeader = `
+            |Pet|Rarity|Chance|Base|Golden|Rainbow|M Base|M Golden|M Rainbow|Max Level|
+            |--|--|--|--|--|--|--|--|--|--|
         `;
     }
     
-    return `
-        <div class="pet-details">
+    // Build HTML content
+    let htmlContent = `
+        <div class="egg-details">
             <div class="pet-header">
-                <h2 class="pet-title">${eggName}</h2>
-                <p class="pet-meta">
-                    ${categoryDisplay} • Contains ${eggData.pets.length} pet${eggData.pets.length > 1 ? 's' : ''}
-                </p>
-                ${costDisplay}
+                <h2>${eggName}</h2>
+                <span style="color: #FFD700; font-weight: 700; font-size: 1.1rem;">
+                    💰 ${eggData.cost ? formatNumber(eggData.cost) : 'N/A'}
+                </span>
             </div>
             
-            <div class="pet-info">
-                ${noticeDisplay}
-                <table class="pets-table">
+            <div class="pet-meta">
+                ${worldName ? `<span><strong>World:</strong> ${worldName}</span>` : ''}
+                ${eggType === "Robux" ? '<span><strong>Robux Store:</strong> Premium</span>' : ''}
+                ${eggType === "Leaderboard" ? `<span><strong>${eggName}</strong></span>` : ''}
+            </div>
+            
+            ${eggType === "Base" ? '<p class="notice">⚠️ <strong>Notice:</strong> All percentages are based off your best pet\'s base stat</p>' : ''}
+            ${eggType === "Leaderboard" ? '<p class="notice">ℹ️ <strong>Notice:</strong> Leaderboard based off total pet power</p>' : ''}
+            
+            <div class="pets-table">
+                <table>
                     <thead>
                         <tr>
-                            <th>Petname</th>
-                            <th>Rarity</th>
-                            ${eggType === "Leaderboard" ? '<th>Tier</th>' : '<th>Chance</th>'}
-                            <th>Base</th>
-                            <th>Golden</th>
-                            <th>Rainbow</th>
-                            <th>M Base</th>
-                            <th>M Golden</th>
-                            <th>M Rainbow</th>
+                            ${createTableHeaders(eggType)}
                         </tr>
                     </thead>
                     <tbody>
-                        ${generatePetRows(eggData.pets, eggType)}
+                        ${eggData.pets.map(pet => createPetRow(pet, eggType)).join('')}
                     </tbody>
                 </table>
             </div>
         </div>
     `;
-}
-
-// ===== Generate Pet Rows =====
-// Creates table rows for all pets in the egg
-function generatePetRows(petsArray, eggType) {
-    return petsArray.map(petData => {
-        // Get rarity info
-        const rarityInfo = RARITIES[petData.rarity];
-        
-        if (!rarityInfo) {
-            console.warn(`⚠️ Rarity "${petData.rarity}" not found for ${petData.petdisplayname}`);
-            return '';
-        }
-        
-        // Calculate all 6 stats for this pet based on egg type
-        const stats = calculatePetStats(petData.base, rarityInfo.maxLevel, eggType);
-        
-        // Get text color for rarity badge
-        const textColor = getTextColor(rarityInfo.color);
-        
-        // Determine if stats should show as percentages
-        const isPercentage = (eggType === "Robux" || eggType === "Leaderboard");
-        
-        // Format stats with appropriate suffix
-        const formatStat = (value) => {
-            if (isPercentage) {
-                return value.toFixed(1).replace(/\.0$/, '') + '%';
-            } else {
-                return formatNumberAbbreviated(value);
-            }
-        };
-        
-        // Chance/Tier column (depends on egg type)
-        let chanceOrTierColumn;
-        if (eggType === "Leaderboard") {
-            chanceOrTierColumn = `<td><span style="color: #72B2FF; font-weight: 600;">${petData.leaderboardTier}</span></td>`;
-        } else {
-            const chanceDisplay = formatChance(petData.chance);
-            chanceOrTierColumn = `<td>${chanceDisplay}</td>`;
-        }
-        
-        return `
-            <tr>
-                <td><strong>${petData.petdisplayname}</strong></td>
-                <td>
-                    <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
-                        ${petData.rarity}
-                    </span>
-                </td>
-                ${chanceOrTierColumn}
-                <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
-                <td class="stat-value">${formatStat(stats.goldenLevel0)}</td>
-                <td class="stat-value">${formatStat(stats.rainbowLevel0)}</td>
-                <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
-                <td class="stat-value">${formatStat(stats.goldenMaxLevel)}</td>
-                <td class="stat-value">${formatStat(stats.rainbowMaxLevel)}</td>
-            </tr>
-        `;
-    }).join('');
-}
-
-// ===== Calculate Pet Stats =====
-// Calculates all 6 states: Base/Golden/Rainbow × Level0/MaxLevel
-// Uses different multipliers based on egg type
-function calculatePetStats(baseStat, maxLevel, eggType) {
-    // Determine multipliers based on egg type
-    let baseMultiplier, goldenMultiplier, rainbowMultiplier;
     
-    if (eggType === "Robux" || eggType === "Leaderboard") {
-        // Percentage-based pets: smaller multipliers
-        baseMultiplier = 1;
-        goldenMultiplier = 1.25;
-        rainbowMultiplier = 1.5;
+    contentArea.innerHTML = htmlContent;
+}
+
+// ===== Create Table Headers =====
+function createTableHeaders(eggType) {
+    if (eggType === "Leaderboard") {
+        return `
+            <th>Pet</th>
+            <th>Rarity</th>
+            <th>Tier</th>
+            <th>Base</th>
+            <th>M Base</th>
+            <th>M Rainbow</th>
+            <th>Max Level</th>
+        `;
+    } else if (eggType === "Robux") {
+        return `
+            <th>Pet</th>
+            <th>Rarity</th>
+            <th>Chance</th>
+            <th>Base</th>
+            <th>M Base</th>
+            <th>M Rainbow</th>
+            <th>Max Level</th>
+        `;
     } else {
-        // Base eggs: standard multipliers
-        baseMultiplier = 1;
-        goldenMultiplier = 2;
-        rainbowMultiplier = 4;
+        // Base eggs
+        return `
+            <th>Pet</th>
+            <th>Rarity</th>
+            <th>Chance</th>
+            <th>Base</th>
+            <th>Golden</th>
+            <th>Rainbow</th>
+            <th>M Base</th>
+            <th>M Golden</th>
+            <th>M Rainbow</th>
+            <th>Max Level</th>
+        `;
+    }
+}
+
+// ===== Create Pet Row =====
+function createPetRow(pet, eggType) {
+    if (!pet || !pet.name) {
+        console.warn('⚠️ Invalid pet data:', pet);
+        return '';
     }
     
-    return {
-        // Level 0 stats
-        baseLevel0: calculateStat(baseStat, baseMultiplier, 0),
-        goldenLevel0: calculateStat(baseStat, goldenMultiplier, 0),
-        rainbowLevel0: calculateStat(baseStat, rainbowMultiplier, 0),
-        
-        // Max level stats
-        baseMaxLevel: calculateStat(baseStat, baseMultiplier, maxLevel),
-        goldenMaxLevel: calculateStat(baseStat, goldenMultiplier, maxLevel),
-        rainbowMaxLevel: calculateStat(baseStat, rainbowMultiplier, maxLevel)
+    // Format numbers with commas
+    const formatStat = (value) => {
+        if (!value && value !== 0) return 'N/A';
+        return typeof value === 'number' ? formatNumber(value) : value;
     };
+    
+    // Build row based on egg type
+    if (eggType === "Leaderboard") {
+        return `
+            <tr>
+                <td>${pet.name || 'Unknown'}</td>
+                <td><span class="rarity-badge rarity-${(pet.rarity || 'common').toLowerCase().replace(/\s+/g, '-')}">${pet.rarity || 'Common'}</span></td>
+                <td>${pet.tier || 'N/A'}</td>
+                <td>${formatStat(pet.base)}</td>
+                <td>${formatStat(pet.mBase)}</td>
+                <td>${formatStat(pet.mRainbow)}</td>
+                <td>${formatStat(pet.maxLevel)}</td>
+            </tr>
+        `;
+    } else if (eggType === "Robux") {
+        return `
+            <tr>
+                <td>${pet.name || 'Unknown'}</td>
+                <td><span class="rarity-badge rarity-${(pet.rarity || 'common').toLowerCase().replace(/\s+/g, '-')}">${pet.rarity || 'Common'}</span></td>
+                <td>${pet.chance || 'N/A'}</td>
+                <td>${formatStat(pet.base)}</td>
+                <td>${formatStat(pet.mBase)}</td>
+                <td>${formatStat(pet.mRainbow)}</td>
+                <td>${formatStat(pet.maxLevel)}</td>
+            </tr>
+        `;
+    } else {
+        // Base eggs - all columns
+        return `
+            <tr>
+                <td>${pet.name || 'Unknown'}</td>
+                <td><span class="rarity-badge rarity-${(pet.rarity || 'common').toLowerCase().replace(/\s+/g, '-')}">${pet.rarity || 'Common'}</span></td>
+                <td>${pet.chance || 'N/A'}</td>
+                <td>${formatStat(pet.base)}</td>
+                <td>${formatStat(pet.golden)}</td>
+                <td>${formatStat(pet.rainbow)}</td>
+                <td>${formatStat(pet.mBase)}</td>
+                <td>${formatStat(pet.mGolden)}</td>
+                <td>${formatStat(pet.mRainbow)}</td>
+                <td>${formatStat(pet.maxLevel)}</td>
+            </tr>
+        `;
+    }
 }
 
-// ===== Calculate Single Stat =====
-// Formula: BaseStat × EvolutionMultiplier × (1 + (Level × 0.005))
-function calculateStat(baseStat, evolutionMultiplier, level) {
-    const levelBonus = 1 + (level * 0.005);
-    const finalStat = baseStat * evolutionMultiplier * levelBonus;
-    return finalStat; // Keep decimals for percentages
+// ===== Format Number with Commas =====
+function formatNumber(num) {
+    if (num === null || num === undefined) return 'N/A';
+    
+    // Handle percentage strings (e.g., "50%")
+    if (typeof num === 'string') {
+        return num;
+    }
+    
+    // Convert to number if possible
+    const number = Number(num);
+    if (isNaN(number)) return 'N/A';
+    
+    // Format with commas
+    return number.toLocaleString('en-US');
 }
 
-// ===== Get Text Color Based on Background =====
-// Returns white or black depending on background brightness
-function getTextColor(rgbColor) {
-    // Extract RGB values
-    const match = rgbColor.match(/\d+/g);
-    if (!match || match.length < 3) return '#ffffff';
+// ===== Display Welcome Screen =====
+function displayWelcomeScreen() {
+    const contentArea = document.getElementById('content');
     
-    const r = parseInt(match[0]);
-    const g = parseInt(match[1]);
-    const b = parseInt(match[2]);
+    if (!contentArea) {
+        console.warn('⚠️ Content area not found');
+        return;
+    }
     
-    // Calculate brightness (perceived luminance)
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    
-    // Return white for dark backgrounds, black for light backgrounds
-    return brightness < 128 ? '#ffffff' : '#000000';
+    contentArea.innerHTML = `
+        <div class="welcome-screen">
+            <div class="game-icon-container">
+                <div class="game-icon-placeholder">
+                    🐾
+                </div>
+            </div>
+            <h2>Welcome to Tap Simulator Wiki</h2>
+            <p>Select an egg from the sidebar to view pet details</p>
+            <div class="welcome-features">
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>Complete Stats</h3>
+                    <p>View base, golden, rainbow, and mega variants</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Accurate Chances</h3>
+                    <p>See exact drop rates for each pet</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Quick Navigation</h3>
+                    <p>Organize by worlds and egg types</p>
+                </div>
+            </div>
+        </div>
+    `;
 }
+
+// ===== Initialize Content Area =====
+(function initContent() {
+    displayWelcomeScreen();
+})();
 
 // js/content.js
