@@ -14,6 +14,9 @@ if (!iconElement) {
     console.warn('⚠️ Game icon element not found');
 }
 
+// Track last played animation
+let lastAnimationIndex = -1;
+
 // ===== Animation 1: Excited Walker =====
 function walkingPatrol() {
     return new Promise((resolve) => {
@@ -152,7 +155,7 @@ function screenPeeker() {
                     setTimeout(() => {
                         // Peek out from left screen boundary slightly with forward tilt (looking at viewer)
                         iconElement.style.transition = 'all 1s ease-out';
-                        iconElement.style.transform = `translateX(${leftEdgePeekPosition}px) rotate(-25deg) scaleX(1)`;
+                        iconElement.style.transform = `translateX(${leftEdgePeekPosition}px) rotate(15deg) scaleX(1)`;
                         
                         // Stay peeking for 3-5 seconds (random)
                         const peekDuration = 3000 + Math.random() * 2000; // 3-5 seconds
@@ -212,8 +215,16 @@ const animations = [
 async function playRandomAnimation() {
     if (!iconElement) return;
     
-    // Pick random animation
-    const randomIndex = Math.floor(Math.random() * animations.length);
+    let randomIndex;
+    
+    // Pick random animation that's different from last one
+    do {
+        randomIndex = Math.floor(Math.random() * animations.length);
+    } while (randomIndex === lastAnimationIndex && animations.length > 1);
+    
+    // Update last animation tracker
+    lastAnimationIndex = randomIndex;
+    
     const selectedAnimation = animations[randomIndex];
     
     // Play animation and wait for completion
