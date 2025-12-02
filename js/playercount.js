@@ -4,7 +4,7 @@
 // ===== Player Count Configuration =====
 // Use your Vercel URL here (after you deploy the proxy):
 // Example: const API_URL = 'https://tap-sim-playercount.vercel.app/api/players';
-const API_URL = 'https://roblox-playercount-proxy-6jogcampq-astros-projects-7d607cbf.vercel.app/api/players';
+const API_URL = 'https://roblox-playercount-proxy-g58hluxb0-astros-projects-7d607cbf.vercel.app/api/players';
 const UPDATE_INTERVAL = 30000; // 30 seconds
 
 // ===== Initialize Player Count =====
