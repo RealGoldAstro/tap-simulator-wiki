@@ -134,7 +134,7 @@ function screenPeeker() {
         
         // Calculate position for left edge peek (barely visible)
         const leftEdgeHidePosition = -iconCenterX - 60; // Fully hidden on left
-        const leftEdgePeekPosition = -iconCenterX + 1; // Just peeking out slightly
+        const leftEdgePeekPosition = -iconCenterX + 0; // Just peeking out slightly
         
         // Walk off to the right with dynamic bobbing
         iconElement.style.transition = 'all 0.5s ease-in-out';
@@ -155,7 +155,7 @@ function screenPeeker() {
                     setTimeout(() => {
                         // Peek out from left screen boundary slightly with forward tilt (looking at viewer)
                         iconElement.style.transition = 'all 1s ease-out';
-                        iconElement.style.transform = `translateX(${leftEdgePeekPosition}px) rotate(15deg) scaleX(1)`;
+                        iconElement.style.transform = `translateX(${leftEdgePeekPosition}px) rotate(20deg) scaleX(1)`;
                         
                         // Stay peeking for 3-5 seconds (random)
                         const peekDuration = 3000 + Math.random() * 2000; // 3-5 seconds
