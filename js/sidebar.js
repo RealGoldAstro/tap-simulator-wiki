@@ -19,11 +19,11 @@ const UPDATE_LOGS = [
     },
     {
         version: "Update 2",
-        date: "December 10, 2025",
+        date: "December 99, 2025",
         features: [
             { icon: "🏝️", text: "Another Island" },
-            { icon: "🥚", text: "5 New Eggs" },
-            { icon: "🐾", text: "25 New Pets" }
+            { icon: "🥚", text: "- New Eggs" },
+            { icon: "🐾", text: "- New Pets" }
         ]
     }
     // Add more updates here in the future
