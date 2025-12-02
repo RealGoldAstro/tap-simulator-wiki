@@ -1,6 +1,142 @@
 /* css/styles.css */
 
 /* ===== CSS Reset & Base Styles ===== */
+/* ===== Update Date in Sidebar Item ===== */
+
+.update-date-small {
+    color: #9CA3AF;
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+/* ===== Update Details Display (Content Area) ===== */
+
+.update-details {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 2rem;
+    border: 1px solid rgba(114, 178, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.update-details-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
+    padding-bottom: 1.5rem;
+}
+
+.update-title-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.gem-icon-large {
+    font-size: 2.5rem;
+    animation: gemPulse 2s ease-in-out infinite;
+}
+
+@keyframes gemPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+.update-details-title {
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.update-date-large {
+    color: #9CA3AF;
+    font-size: 1rem;
+    padding-left: 3.5rem;
+}
+
+/* Update Features Grid */
+
+.update-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.feature-card {
+    background: rgba(18, 44, 103, 0.4);
+    border: 1px solid rgba(114, 178, 255, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border-left: 4px solid #72B2FF;
+}
+
+.feature-card:hover {
+    background: rgba(18, 44, 103, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(114, 178, 255, 0.3);
+    border-left-width: 6px;
+}
+
+.feature-card-icon {
+    font-size: 2rem;
+    min-width: 40px;
+    text-align: center;
+}
+
+.feature-card-text {
+    color: #E8EAED;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+/* ===== Responsive Design for Update Details ===== */
+
+@media (max-width: 768px) {
+    .update-details {
+        padding: 1.5rem;
+    }
+
+    .update-details-title {
+        font-size: 1.5rem;
+    }
+
+    .gem-icon-large {
+        font-size: 2rem;
+    }
+
+    .update-date-large {
+        font-size: 0.9rem;
+        padding-left: 0;
+    }
+
+    .update-features-grid {
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+    }
+
+    .feature-card {
+        padding: 1.2rem;
+    }
+
+    .feature-card-icon {
+        font-size: 1.5rem;
+    }
+
+    .feature-card-text {
+        font-size: 1rem;
+    }
+}
 
 * {
     margin: 0;
