@@ -44,7 +44,7 @@ const RARITIES = {
         maxLevel: 150
     },
     "Secret II": {
-        color: "rgb(0, 0, 0)",
+        color: "rgb(228, 228, 228)",
         maxLevel: 150
     },
     "Secret III": {
