@@ -69,7 +69,7 @@ function tapInBubble() {
         bubble.style.cssText = `
             position: absolute;
             top: 50%;
-            left: 60px;
+            right: 60px;
             transform: translateY(-50%);
             background: rgba(255, 255, 255, 0.05);
             color: white;
@@ -84,18 +84,18 @@ function tapInBubble() {
             white-space: nowrap;
         `;
         
-        // Add triangle pointer (pointing left to icon)
+        // Add triangle pointer (pointing right to icon)
         const pointer = document.createElement('div');
         pointer.style.cssText = `
             position: absolute;
             top: 50%;
-            left: -6px;
+            right: -6px;
             transform: translateY(-50%);
             width: 0;
             height: 0;
             border-top: 6px solid transparent;
             border-bottom: 6px solid transparent;
-            border-right: 6px solid rgba(255, 255, 255, 0.05);
+            border-left: 6px solid rgba(255, 255, 255, 0.05);
         `;
         bubble.appendChild(pointer);
         
@@ -129,9 +129,9 @@ function screenPeeker() {
         // Calculate distance to walk off right edge
         const distanceToRightEdge = screenWidth - iconCenterX + 60; // Extra 60px to fully exit
         
-        // Calculate position for left edge peek (icon width/2 + small peek amount)
-        const leftEdgePeekPosition = -iconCenterX + 30; // Just barely peeking in
+        // Calculate position for left edge peek (barely visible)
         const leftEdgeHidePosition = -iconCenterX - 60; // Fully hidden on left
+        const leftEdgePeekPosition = -iconCenterX + 15; // Just peeking out slightly
         
         // Walk off to the right with dynamic bobbing
         iconElement.style.transition = 'all 0.5s ease-in-out';
@@ -150,47 +150,44 @@ function screenPeeker() {
                     iconElement.style.transform = `translateX(${leftEdgeHidePosition}px) scaleX(1) rotate(0deg)`;
                     
                     setTimeout(() => {
-                        // Peek out from left screen boundary with suspicious tilt
-                        iconElement.style.transition = 'all 0.8s ease-out';
-                        iconElement.style.transform = `translateX(${leftEdgePeekPosition}px) rotate(-15deg) scaleX(1)`;
+                        // Peek out from left screen boundary slightly with forward tilt (looking at viewer)
+                        iconElement.style.transition = 'all 1s ease-out';
+                        iconElement.style.transform = `translateX(${leftEdgePeekPosition}px) rotate(-25deg) scaleX(1)`;
+                        
+                        // Stay peeking for 3-5 seconds (random)
+                        const peekDuration = 3000 + Math.random() * 2000; // 3-5 seconds
                         
                         setTimeout(() => {
-                            // Peek a bit more (being curious/sneaky)
-                            iconElement.style.transition = 'all 0.4s ease-out';
-                            iconElement.style.transform = `translateX(${leftEdgePeekPosition + 20}px) rotate(-20deg) scaleX(1)`;
+                            // Go back hiding quickly
+                            iconElement.style.transition = 'all 0.5s ease-in';
+                            iconElement.style.transform = `translateX(${leftEdgeHidePosition}px) rotate(0deg) scaleX(1)`;
                             
                             setTimeout(() => {
-                                // Go back hiding (sus)
-                                iconElement.style.transition = 'all 0.6s ease-in';
-                                iconElement.style.transform = `translateX(${leftEdgeHidePosition}px) rotate(0deg) scaleX(1)`;
+                                // Jump back to right side (off screen)
+                                iconElement.style.transition = 'none';
+                                iconElement.style.transform = `translateX(${distanceToRightEdge}px) scaleX(-1) rotate(0deg)`;
                                 
                                 setTimeout(() => {
-                                    // Jump back to right side (off screen)
-                                    iconElement.style.transition = 'none';
-                                    iconElement.style.transform = `translateX(${distanceToRightEdge}px) scaleX(-1) rotate(0deg)`;
+                                    // Walk back in from right with bobbing
+                                    iconElement.style.transition = 'all 0.5s ease-in-out';
+                                    iconElement.style.transform = `translateX(${distanceToRightEdge * 0.6}px) translateY(-5px) rotate(8deg) scaleX(-1)`;
                                     
                                     setTimeout(() => {
-                                        // Walk back in from right with bobbing
-                                        iconElement.style.transition = 'all 0.5s ease-in-out';
-                                        iconElement.style.transform = `translateX(${distanceToRightEdge * 0.6}px) translateY(-5px) rotate(8deg) scaleX(-1)`;
+                                        iconElement.style.transform = `translateX(${distanceToRightEdge * 0.3}px) translateY(0px) rotate(-5deg) scaleX(-1)`;
                                         
                                         setTimeout(() => {
-                                            iconElement.style.transform = `translateX(${distanceToRightEdge * 0.3}px) translateY(0px) rotate(-5deg) scaleX(-1)`;
+                                            iconElement.style.transition = 'all 0.6s ease-out';
+                                            iconElement.style.transform = 'translateX(0px) translateY(0px) rotate(0deg) scaleX(1)';
                                             
                                             setTimeout(() => {
-                                                iconElement.style.transition = 'all 0.6s ease-out';
-                                                iconElement.style.transform = 'translateX(0px) translateY(0px) rotate(0deg) scaleX(1)';
-                                                
-                                                setTimeout(() => {
-                                                    resetIcon();
-                                                    resolve();
-                                                }, 600);
-                                            }, 500);
+                                                resetIcon();
+                                                resolve();
+                                            }, 600);
                                         }, 500);
-                                    }, 100);
-                                }, 600);
-                            }, 600);
-                        }, 800);
+                                    }, 500);
+                                }, 100);
+                            }, 500);
+                        }, peekDuration);
                     }, 100);
                 }, 600);
             }, 500);
