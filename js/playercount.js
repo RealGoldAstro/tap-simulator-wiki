@@ -2,10 +2,10 @@
 // -- Web/Client/playercount.js
 
 // ===== Player Count Configuration =====
-// Roblox universe + proxy + refresh interval
-const UNIVERSE_ID = '8779464785';
-const API_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(`https://games.roblox.com/v1/games?universeIds=${UNIVERSE_ID}`);
-const UPDATE_INTERVAL = 60000; // 60 seconds
+// Use your Vercel URL here (after you deploy the proxy):
+// Example: const API_URL = 'https://tap-sim-playercount.vercel.app/api/players';
+const API_URL = 'https://your-vercel-app-name.vercel.app/api/players'; // TODO: replace with real URL
+const UPDATE_INTERVAL = 30000; // 30 seconds
 
 // ===== Initialize Player Count =====
 // Puts "1,384 Active" in the middle of the header row (between title and icon)
@@ -18,38 +18,31 @@ function initPlayerCount() {
         return;
     }
 
-    // Ensure header row is flex so we can place the counter in the middle
-    const style = getComputedStyle(headerContent);
-    if (style.display !== 'flex') {
-        console.warn('⚠️ .header-content is not flex - centering may not be perfect');
-    }
-
-    // Create a flex spacer that will live between title and icon
+    // Create a flex spacer for the counter if it doesn't exist
     let playerCountWrapper = document.getElementById('player-count-wrapper');
     if (!playerCountWrapper) {
         playerCountWrapper = document.createElement('div');
         playerCountWrapper.id = 'player-count-wrapper';
-        playerCountWrapper.style.flex = '1'; // takes available space between title and icon
+        playerCountWrapper.style.flex = '1'; // take remaining space between title and icon
         playerCountWrapper.style.display = 'flex';
-        playerCountWrapper.style.justifyContent = 'center'; // centers inside that space
+        playerCountWrapper.style.justifyContent = 'center';
         playerCountWrapper.style.alignItems = 'center';
-        playerCountWrapper.style.pointerEvents = 'none'; // no interaction needed
+        playerCountWrapper.style.pointerEvents = 'none';
 
-        // Inner container just for the text
         const inner = document.createElement('div');
         inner.id = 'player-count-container';
         inner.style.display = 'flex';
         inner.style.alignItems = 'baseline';
         inner.style.gap = '0.25rem';
-        inner.style.fontSize = '0.8rem'; // slightly smaller than title
+        inner.style.fontSize = '0.8rem'; // smaller than title
 
-        // Green number
+        // Green number (full value with commas)
         const numberSpan = document.createElement('span');
         numberSpan.id = 'player-count-number';
         numberSpan.style.color = '#22c55e'; // green
         numberSpan.style.fontWeight = '600';
 
-        // Light gray "Active"
+        // Light gray "Active" label
         const labelSpan = document.createElement('span');
         labelSpan.id = 'player-count-label';
         labelSpan.textContent = 'Active';
@@ -60,19 +53,24 @@ function initPlayerCount() {
         inner.appendChild(labelSpan);
         playerCountWrapper.appendChild(inner);
 
-        // Insert wrapper between title and icon (assumes layout: [title][icon-container])
-        // title is first child, icon container should already be last
+        // Insert the wrapper between title and icon (assumes icon container is last child)
         headerContent.insertBefore(playerCountWrapper, headerContent.lastElementChild);
     }
 
-    // Initial fetch + interval
+    // Initial fetch + start interval (no tight loops)
     fetchPlayerCount();
     setInterval(fetchPlayerCount, UPDATE_INTERVAL);
 }
 
 // ===== Fetch Player Count =====
-// Calls Roblox API through public CORS proxy
+// Calls your Vercel proxy (which talks to Roblox)
 function fetchPlayerCount() {
+    if (!API_URL || API_URL.indexOf('your-vercel-app-name') !== -1) {
+        console.warn('⚠️ API_URL for player count is not set to your real Vercel URL');
+        updatePlayerCountDisplay('N/A');
+        return;
+    }
+
     fetch(API_URL)
         .then(response => {
             if (!response.ok) {
@@ -81,18 +79,17 @@ function fetchPlayerCount() {
             return response.json();
         })
         .then(data => {
-            if (!data || !data.data || data.data.length === 0) {
-                console.warn('⚠️ Invalid API response - no game data found');
+            if (!data || typeof data.playing !== 'number') {
+                console.warn('⚠️ Invalid proxy response for player count');
                 updatePlayerCountDisplay('N/A');
                 return;
             }
 
-            const gameData = data.data[0];
-            const playerCount = typeof gameData.playing === 'number' ? gameData.playing : 0;
+            const playerCount = data.playing;
             updatePlayerCountDisplay(playerCount);
         })
         .catch(error => {
-            console.warn('⚠️ Failed to fetch player count:', error.message);
+            console.warn('⚠️ Failed to fetch player count from proxy:', error.message);
             updatePlayerCountDisplay('N/A');
         });
 }
@@ -109,7 +106,7 @@ function updatePlayerCountDisplay(count) {
     }
 
     if (typeof count === 'number') {
-        // Full number with commas (e.g., 1,384)
+        // Full number with commas (e.g., 1,826)
         numberSpan.textContent = count.toLocaleString();
     } else {
         // For N/A or other fallback text
@@ -118,7 +115,7 @@ function updatePlayerCountDisplay(count) {
 }
 
 // ===== Auto-Initialize on DOM Load =====
-// Ensures script runs after DOM is available
+// Ensures script runs after DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPlayerCount);
 } else {
