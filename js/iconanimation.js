@@ -134,7 +134,7 @@ function screenPeeker() {
         
         // Calculate position for left edge peek (barely visible)
         const leftEdgeHidePosition = -iconCenterX - 60; // Fully hidden on left
-        const leftEdgePeekPosition = -iconCenterX + 10; // Just peeking out slightly
+        const leftEdgePeekPosition = -iconCenterX + 7; // Just peeking out slightly
         
         // Walk off to the right with dynamic bobbing
         iconElement.style.transition = 'all 0.5s ease-in-out';
