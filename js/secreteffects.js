@@ -15,10 +15,10 @@ const SECRET_EFFECT_CONFIG = {
     },
     "Secret II": {
         enabled: true,
-        glowColor: 'rgba(0, 0, 0, 0.10)',  // White inner glow (very low opacity)
+        glowColor: 'rgba(0, 0, 0, 0.20)',  // White inner glow (very low opacity)
         particles: {
             count: 10,                             // Number of particles
-            size: 2,                               // Particle size in pixels
+            size: 3,                               // Particle size in pixels
             speed: 0.4,                            // Movement speed multiplier
             alpha: 0.6,                            // Particle opacity
             color: 'rgba(0, 0, 0, 1)'       // White particle color
@@ -29,7 +29,7 @@ const SECRET_EFFECT_CONFIG = {
         glowColor: 'rgba(255, 28, 28, 0.10)',  // White inner glow (very low opacity)
         particles: {
             count: 10,                             // Number of particles
-            size: 2,                               // Particle size in pixels
+            size: 3,                               // Particle size in pixels
             speed: 0.4,                            // Movement speed multiplier
             alpha: 0.6,                            // Particle opacity
             color: 'rgba(255, 28, 28, 1)'       // White particle color
@@ -39,7 +39,7 @@ const SECRET_EFFECT_CONFIG = {
         enabled: true,
         glowColor: 'rgba(255, 215, 0, 0.10)',  // White inner glow (very low opacity)
         particles: {
-            count: 10,                             // Number of particles
+            count: 12,                             // Number of particles
             size: 2,                               // Particle size in pixels
             speed: 0.4,                            // Movement speed multiplier
             alpha: 0.6,                            // Particle opacity
@@ -50,7 +50,7 @@ const SECRET_EFFECT_CONFIG = {
         enabled: true,
         glowColor: 'rgba(200, 0, 255, 0.10)',  // White inner glow (very low opacity)
         particles: {
-            count: 10,                             // Number of particles
+            count: 12,                             // Number of particles
             size: 2,                               // Particle size in pixels
             speed: 0.4,                            // Movement speed multiplier
             alpha: 0.6,                            // Particle opacity
