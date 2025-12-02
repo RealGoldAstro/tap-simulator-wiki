@@ -6,61 +6,49 @@
 // Update log data
 const UPDATE_LOG = {
     version: "Update 1",
-    gem: "💎",
     features: [
-        { icon: "🏝️", text: "New Island", highlight: true },
-        { icon: "🥚", text: "2 New Eggs", highlight: false },
-        { icon: "🐾", text: "17 New Pets", highlight: true },
-        { icon: "⭐", text: "3 New Secrets", highlight: false },
-        { icon: "🛒", text: "Triple Hatch is now free!", highlight: true }
-    ],
-    playLink: "https://www.roblox.com/games/75992362647444/Tap-Simulator"
+        { icon: "🏝️", text: "New Island" },
+        { icon: "🥚", text: "2 New Eggs" },
+        { icon: "🐾", text: "17 New Pets" },
+        { icon: "⭐", text: "3 New Secrets" },
+        { icon: "🛒", text: "Triple Hatch is now free!" }
+    ]
 };
 
 // Creator information
 const CREATORS = {
     studio: {
         name: "Cursor Makers",
-        url: "https://www.roblox.com/communities/35881183/Cursor-Makers#!/about",
-        badge: "🎮"
+        url: "https://www.roblox.com/communities/35881183/Cursor-Makers#!/about"
     },
     owners: [
         {
             name: "Dob",
-            url: "https://www.roblox.com/users/63531881/profile",
-            role: "Lead Developer"
+            url: "https://www.roblox.com/users/63531881/profile"
         },
         {
             name: "Zood",
-            url: "https://www.roblox.com/users/85126038/profile",
-            role: "Co-Developer"
+            url: "https://www.roblox.com/users/85126038/profile"
         }
     ]
 };
 
-// Generate update features HTML with staggered animation
+// Generate update features HTML
 function generateUpdateFeatures() {
-    return UPDATE_LOG.features.map((feature, index) => {
-        const highlightClass = feature.highlight ? 'feature-highlight' : '';
-        return `
-            <li class="feature-item ${highlightClass}" style="animation-delay: ${index * 0.1}s;">
-                <span class="feature-icon">${feature.icon}</span>
-                <span class="feature-text">${feature.text}</span>
-                ${feature.highlight ? '<span class="new-badge">NEW</span>' : ''}
-            </li>
-        `;
-    }).join('');
+    return UPDATE_LOG.features.map(feature => `
+        <li>
+            <span class="feature-icon">${feature.icon}</span>
+            ${feature.text}
+        </li>
+    `).join('');
 }
 
 // Generate creator links HTML
 function generateCreatorLinks() {
-    return CREATORS.owners.map((owner, index) => `
-        <div class="owner-card" style="animation-delay: ${0.3 + index * 0.1}s;">
-            <a href="${owner.url}" target="_blank" rel="noopener noreferrer" class="creator-link owner-link">
-                <span class="owner-name">${owner.name}</span>
-                <span class="owner-role">${owner.role}</span>
-            </a>
-        </div>
+    return CREATORS.owners.map(owner => `
+        <a href="${owner.url}" target="_blank" rel="noopener noreferrer" class="creator-link">
+            ${owner.name}
+        </a>
     `).join('');
 }
 
@@ -68,53 +56,25 @@ function generateCreatorLinks() {
 function buildWelcomePageHTML() {
     return `
         <div class="welcome">
-            <div class="welcome-header">
-                <h2 class="welcome-title">Welcome to Tap Simulator Wiki</h2>
-                <p class="welcome-subtitle">Select an egg from the sidebar to view pet details and evolution stats.</p>
-            </div>
+            <h2>Welcome to Tap Simulator Wiki</h2>
+            <p>Select an egg from the sidebar to view pet details and evolution stats.</p>
             
             <!-- Update Log Section -->
-            <div class="update-log-container">
-                <div class="update-log-header">
-                    <span class="gem-icon">${UPDATE_LOG.gem}</span>
-                    <h3 class="update-title">${UPDATE_LOG.version} is out!</h3>
-                </div>
-                
-                <ul class="update-features">
+            <div class="update-section">
+                <h3><span class="gem-icon">💎</span> ${UPDATE_LOG.version} is out!</h3>
+                <ul class="update-list">
                     ${generateUpdateFeatures()}
                 </ul>
-
-                <div class="play-now-section">
-                    <a href="${UPDATE_LOG.playLink}" target="_blank" rel="noopener noreferrer" class="play-now-btn">
-                        <span class="play-icon">🎮</span>
-                        <span>Play Now on Roblox</span>
-                        <span class="arrow">→</span>
-                    </a>
-                </div>
             </div>
 
             <!-- Creator Information Section -->
-            <div class="creator-info-container">
-                <div class="creator-section studio-section">
-                    <h4 class="section-title">
-                        <span class="title-icon">${CREATORS.studio.badge}</span>
-                        Game Studio
-                    </h4>
-                    <a href="${CREATORS.studio.url}" target="_blank" rel="noopener noreferrer" class="creator-link studio-link">
-                        <span class="studio-name">${CREATORS.studio.name}</span>
-                        <span class="external-link">↗</span>
+            <div class="creator-section">
+                <p class="creator-text">
+                    Created by ${generateCreatorLinks()} • Studio: 
+                    <a href="${CREATORS.studio.url}" target="_blank" rel="noopener noreferrer" class="creator-link">
+                        ${CREATORS.studio.name}
                     </a>
-                </div>
-                
-                <div class="creator-section owners-section">
-                    <h4 class="section-title">
-                        <span class="title-icon">👥</span>
-                        Game Creators
-                    </h4>
-                    <div class="owners-list">
-                        ${generateCreatorLinks()}
-                    </div>
-                </div>
+                </p>
             </div>
         </div>
     `;
@@ -130,16 +90,6 @@ function displayUpdateLogOnWelcome() {
     }
 
     contentArea.innerHTML = buildWelcomePageHTML();
-    
-    // Add entrance animations
-    requestAnimationFrame(() => {
-        const containers = contentArea.querySelectorAll('.update-log-container, .creator-info-container');
-        containers.forEach((container, index) => {
-            setTimeout(() => {
-                container.classList.add('fade-in-up');
-            }, index * 150);
-        });
-    });
 }
 
 // Initialize update log display
@@ -157,11 +107,6 @@ function initializeUpdateLog() {
         displayUpdateLogOnWelcome();
     }
 }
-
-// Public function to refresh update log (callable from other scripts)
-window.refreshUpdateLog = function() {
-    displayUpdateLogOnWelcome();
-};
 
 // Initialize on DOM ready
 if (document.readyState === 'loading') {
