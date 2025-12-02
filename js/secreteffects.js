@@ -5,11 +5,12 @@ const SECRET_EFFECT_CONFIG = {
     "Secret I": {
         enabled: true,
         sparkColor: '#ff0000',           // Red sparks
-        glowColor: 'rgba(255, 0, 0, 0.6)', // Red glow
-        sparkCount: 12,                   // Number of spark particles
-        lightningFrequency: 2000,         // Lightning bolt every 2 seconds
-        glitchFrequency: 1500,            // Glitch effect every 1.5 seconds
-        staticOpacity: 0.15               // Background static opacity
+        glowColor: 'rgba(255, 0, 0, 0.8)', // Red glow
+        sparkCount: 20,                   // Number of spark particles
+        sparkFrequency: 800,              // New spark every 800ms
+        lightningFrequency: 1200,         // Lightning bolt every 1.2 seconds
+        glitchFrequency: 900,             // Glitch effect every 900ms
+        staticOpacity: 0.2                // Background static opacity
     }
 };
 
@@ -18,39 +19,19 @@ function createSpark(color) {
     const spark = document.createElement('div');
     spark.className = 'secret-spark';
     
-    // Random position along edges
-    const side = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
-    let startX, startY, endX, endY;
-    
-    if (side === 0) { // Top edge
-        startX = Math.random() * 100;
-        startY = -2;
-        endX = startX + (Math.random() - 0.5) * 30;
-        endY = Math.random() * 15;
-    } else if (side === 1) { // Right edge
-        startX = 102;
-        startY = Math.random() * 100;
-        endX = 100 - Math.random() * 15;
-        endY = startY + (Math.random() - 0.5) * 30;
-    } else if (side === 2) { // Bottom edge
-        startX = Math.random() * 100;
-        startY = 102;
-        endX = startX + (Math.random() - 0.5) * 30;
-        endY = 100 - Math.random() * 15;
-    } else { // Left edge
-        startX = -2;
-        startY = Math.random() * 100;
-        endX = Math.random() * 15;
-        endY = startY + (Math.random() - 0.5) * 30;
-    }
+    // Random position across entire row area
+    const startX = Math.random() * 100;
+    const startY = Math.random() * 100;
+    const endX = startX + (Math.random() - 0.5) * 50;
+    const endY = startY + (Math.random() - 0.5) * 50;
     
     spark.style.cssText = `
         position: absolute;
-        width: 3px;
-        height: 3px;
+        width: 4px;
+        height: 4px;
         background: ${color};
         border-radius: 50%;
-        box-shadow: 0 0 6px ${color}, 0 0 12px ${color};
+        box-shadow: 0 0 8px ${color}, 0 0 16px ${color};
         left: ${startX}%;
         top: ${startY}%;
         pointer-events: none;
@@ -74,60 +55,65 @@ function animateSpark(spark, duration) {
     spark.style.left = endX + '%';
     spark.style.top = endY + '%';
     
-    // Fade out at end
     setTimeout(() => {
         spark.style.opacity = '0';
     }, duration * 0.7);
 }
 
-// ===== Create Lightning Bolt =====
-function createLightningBolt(color) {
+// ===== Create Branching Lightning Bolt =====
+function createBranchingLightning(color) {
     const lightning = document.createElement('div');
     lightning.className = 'secret-lightning';
     
-    // Random edge position
-    const side = Math.floor(Math.random() * 4);
-    const position = Math.random() * 100;
+    // Random start position anywhere in row
+    const x1 = Math.random() * 100;
+    const y1 = Math.random() * 100;
+    const x2 = Math.random() * 100;
+    const y2 = Math.random() * 100;
     
-    let x1, y1, x2, y2;
+    // Generate jagged path with branches
+    let pathData = '';
+    const segments = 4 + Math.floor(Math.random() * 3); // 4-6 segments
+    const points = [];
     
-    if (side === 0) { // Top
-        x1 = position;
-        y1 = 0;
-        x2 = position + (Math.random() - 0.5) * 40;
-        y2 = 30 + Math.random() * 40;
-    } else if (side === 1) { // Right
-        x1 = 100;
-        y1 = position;
-        x2 = 70 - Math.random() * 40;
-        y2 = position + (Math.random() - 0.5) * 40;
-    } else if (side === 2) { // Bottom
-        x1 = position;
-        y1 = 100;
-        x2 = position + (Math.random() - 0.5) * 40;
-        y2 = 70 - Math.random() * 40;
-    } else { // Left
-        x1 = 0;
-        y1 = position;
-        x2 = 30 + Math.random() * 40;
-        y2 = position + (Math.random() - 0.5) * 40;
+    for (let i = 0; i <= segments; i++) {
+        const t = i / segments;
+        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 15;
+        const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * 15;
+        points.push({ x, y });
+        
+        if (i === 0) {
+            pathData += `M ${x},${y}`;
+        } else {
+            pathData += ` L ${x},${y}`;
+        }
     }
     
-    // Create jagged lightning path
-    const midX = (x1 + x2) / 2 + (Math.random() - 0.5) * 20;
-    const midY = (y1 + y2) / 2 + (Math.random() - 0.5) * 20;
-    
-    const path = `M ${x1},${y1} L ${midX},${midY} L ${x2},${y2}`;
+    // Add random branches
+    const branchCount = 2 + Math.floor(Math.random() * 3); // 2-4 branches
+    for (let i = 0; i < branchCount; i++) {
+        const branchStart = points[1 + Math.floor(Math.random() * (points.length - 2))];
+        const branchLength = 2 + Math.floor(Math.random() * 3);
+        
+        pathData += ` M ${branchStart.x},${branchStart.y}`;
+        
+        for (let j = 1; j <= branchLength; j++) {
+            const bx = branchStart.x + (Math.random() - 0.5) * 25;
+            const by = branchStart.y + (Math.random() - 0.5) * 25;
+            pathData += ` L ${bx},${by}`;
+        }
+    }
     
     lightning.innerHTML = `
-        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none;">
-            <path d="${path}" stroke="${color}" stroke-width="2" fill="none" 
-                  stroke-linecap="round" opacity="0.8"
-                  filter="url(#glow)" />
+        <svg width="100%" height="100%" style="position: absolute; top: 0; left: 0; pointer-events: none;" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <path d="${pathData}" stroke="${color}" stroke-width="0.5" fill="none" 
+                  stroke-linecap="round" opacity="0.9"
+                  filter="url(#glow-${Date.now()})" />
             <defs>
-                <filter id="glow">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                <filter id="glow-${Date.now()}">
+                    <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
                     <feMerge>
+                        <feMergeNode in="coloredBlur"/>
                         <feMergeNode in="coloredBlur"/>
                         <feMergeNode in="SourceGraphic"/>
                     </feMerge>
@@ -152,23 +138,23 @@ function createLightningBolt(color) {
 
 // ===== Animate Lightning =====
 function animateLightning(lightning) {
-    lightning.style.transition = 'opacity 100ms ease-out';
+    lightning.style.transition = 'opacity 80ms ease-out';
     lightning.style.opacity = '1';
     
     setTimeout(() => {
         lightning.style.opacity = '0';
-    }, 150);
+    }, 120);
     
     setTimeout(() => {
         lightning.remove();
-    }, 250);
+    }, 200);
 }
 
 // ===== Create Static Overlay =====
 function createStaticOverlay(color, opacity) {
     const static = document.createElement('canvas');
     static.className = 'secret-static';
-    static.width = 400;
+    static.width = 800;
     static.height = 60;
     
     static.style.cssText = `
@@ -191,18 +177,17 @@ function animateStatic(canvas, color) {
     const ctx = canvas.getContext('2d');
     
     function drawStatic() {
-        if (!canvas.parentElement) return; // Stop if removed from DOM
+        if (!canvas.parentElement) return;
         
         const imageData = ctx.createImageData(canvas.width, canvas.height);
         const data = imageData.data;
         
-        // Parse color
         const r = parseInt(color.slice(1, 3), 16);
         const g = parseInt(color.slice(3, 5), 16);
         const b = parseInt(color.slice(5, 7), 16);
         
         for (let i = 0; i < data.length; i += 4) {
-            if (Math.random() > 0.97) { // Sparse static
+            if (Math.random() > 0.96) {
                 const intensity = Math.random();
                 data[i] = r * intensity;
                 data[i + 1] = g * intensity;
@@ -213,7 +198,7 @@ function animateStatic(canvas, color) {
         
         ctx.putImageData(imageData, 0, 0);
         
-        setTimeout(() => requestAnimationFrame(drawStatic), 50);
+        setTimeout(() => requestAnimationFrame(drawStatic), 40);
     }
     
     drawStatic();
@@ -222,19 +207,17 @@ function animateStatic(canvas, color) {
 // ===== Create Glitch Effect =====
 function createGlitchEffect(row, color) {
     const originalTransform = row.style.transform || '';
-    const glitchShift = (Math.random() - 0.5) * 4;
+    const glitchShift = (Math.random() - 0.5) * 5;
     
-    // Apply glitch
     row.style.transition = 'none';
     row.style.transform = `translateX(${glitchShift}px)`;
-    row.style.filter = `hue-rotate(${Math.random() * 20}deg)`;
+    row.style.filter = `hue-rotate(${Math.random() * 30}deg) brightness(1.1)`;
     
-    // Reset after short duration
     setTimeout(() => {
-        row.style.transition = 'all 100ms ease-out';
+        row.style.transition = 'all 80ms ease-out';
         row.style.transform = originalTransform;
         row.style.filter = 'none';
-    }, 80);
+    }, 60);
 }
 
 // ===== Apply Secret Effect to Row =====
@@ -245,19 +228,18 @@ function applySecretEffect(row, rarity) {
         return;
     }
     
-    // Make row position relative for absolute positioned effects
     row.style.position = 'relative';
     row.style.overflow = 'visible';
     
-    // Create effect container
+    // Create effect container that extends outside row
     const effectContainer = document.createElement('div');
     effectContainer.className = 'secret-effect-container';
     effectContainer.style.cssText = `
         position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
         pointer-events: none;
         z-index: 1;
         overflow: visible;
@@ -265,56 +247,56 @@ function applySecretEffect(row, rarity) {
     
     row.appendChild(effectContainer);
     
-    // Add red glow to row
-    row.style.boxShadow = `0 0 15px ${config.glowColor}, inset 0 0 10px ${config.glowColor}`;
+    // Add outer glow (outside the row)
+    effectContainer.style.boxShadow = `0 0 25px ${config.glowColor}, 0 0 50px ${config.glowColor}`;
+    effectContainer.style.filter = `drop-shadow(0 0 15px ${config.glowColor})`;
     
     // Create static overlay
     const staticCanvas = createStaticOverlay(config.sparkColor, config.staticOpacity);
     effectContainer.appendChild(staticCanvas);
     animateStatic(staticCanvas, config.sparkColor);
     
-    // Create initial sparks
+    // Create initial sparks throughout entire row
     for (let i = 0; i < config.sparkCount; i++) {
         setTimeout(() => {
             const spark = createSpark(config.sparkColor);
             effectContainer.appendChild(spark);
             
             setTimeout(() => {
-                animateSpark(spark, 800 + Math.random() * 400);
+                animateSpark(spark, 600 + Math.random() * 400);
             }, 50);
             
-            // Remove spark after animation
             setTimeout(() => {
                 spark.remove();
-            }, 1500);
-        }, Math.random() * 2000);
+            }, 1200);
+        }, Math.random() * 1000);
     }
     
-    // Continuous spark generation
+    // Continuous spark generation (more frequent)
     setInterval(() => {
         const spark = createSpark(config.sparkColor);
         effectContainer.appendChild(spark);
         
         setTimeout(() => {
-            animateSpark(spark, 800 + Math.random() * 400);
+            animateSpark(spark, 600 + Math.random() * 400);
         }, 50);
         
         setTimeout(() => {
             spark.remove();
-        }, 1500);
-    }, 2000 + Math.random() * 1000);
+        }, 1200);
+    }, config.sparkFrequency);
     
-    // Lightning bolts
+    // Lightning bolts (more frequent, branching)
     setInterval(() => {
-        const lightning = createLightningBolt(config.sparkColor);
+        const lightning = createBranchingLightning(config.sparkColor);
         effectContainer.appendChild(lightning);
         animateLightning(lightning);
-    }, config.lightningFrequency + Math.random() * 1000);
+    }, config.lightningFrequency);
     
-    // Random glitch effects
+    // Random glitch effects (more frequent)
     setInterval(() => {
         createGlitchEffect(row, config.sparkColor);
-    }, config.glitchFrequency + Math.random() * 1000);
+    }, config.glitchFrequency);
 }
 
 // ===== Observe Pet Table and Apply Effects =====
@@ -323,12 +305,10 @@ function observeAndApplyEffects() {
         const rows = document.querySelectorAll('.pets-table tbody tr');
         
         rows.forEach(row => {
-            // Check if already has effect
             if (row.querySelector('.secret-effect-container')) {
                 return;
             }
             
-            // Find rarity badge
             const rarityBadge = row.querySelector('.rarity-badge');
             if (!rarityBadge) {
                 return;
@@ -336,7 +316,6 @@ function observeAndApplyEffects() {
             
             const rarity = rarityBadge.textContent.trim();
             
-            // Apply effect if it's a Secret rarity
             if (SECRET_EFFECT_CONFIG[rarity]) {
                 applySecretEffect(row, rarity);
             }
@@ -356,10 +335,8 @@ function observeAndApplyEffects() {
 
 // ===== Initialize Secret Effects System =====
 (function initSecretEffects() {
-    // Start observing immediately
     observeAndApplyEffects();
     
-    // Also check for existing tables
     setTimeout(() => {
         const rows = document.querySelectorAll('.pets-table tbody tr');
         
