@@ -8,7 +8,7 @@ const SECRET_EFFECT_CONFIG = {
         particles: {
             count: 15,                         // Number of particles
             size: 3,                           // Particle size in pixels
-            speed: 0.5,                        // Horizontal movement speed
+            speed: 0.5,                        // Movement speed multiplier
             alpha: 0.6,                        // Particle opacity
             color: 'rgba(255, 0, 0, 1)'       // Red particle color
         }
@@ -41,24 +41,24 @@ class RowParticle {
             box-shadow: 0 0 8px ${config.color};
         `;
         
-        // Spread particles evenly along the row horizontally
-        // Divide width into segments and position each particle in its segment
+        // Spread particles evenly across row initially
         const segmentWidth = this.width / total;
-        this.x = (index * segmentWidth) + (Math.random() * segmentWidth * 0.5);
+        this.x = (index * segmentWidth) + (Math.random() * segmentWidth);
+        this.y = (Math.random() * 0.7 + 0.15) * this.height; // Middle 70% of height
         
-        // Spread particles vertically across the height with random distribution
-        this.y = (Math.random() * 0.6 + 0.2) * this.height; // Keep in middle 60% of height
+        // Random velocity in ALL directions (not just horizontal)
+        this.vx = (Math.random() - 0.5) * config.speed * 2;
+        this.vy = (Math.random() - 0.5) * config.speed * 2;
         
-        // Only horizontal movement (left to right)
-        this.vx = config.speed + (Math.random() * 0.2); // Slight variation in speed
-        
-        // Subtle vertical oscillation for floating effect
+        // Random phase for sine wave movement (organic floating)
+        this.phaseX = Math.random() * Math.PI * 2;
         this.phaseY = Math.random() * Math.PI * 2;
-        this.freqY = 0.01 + Math.random() * 0.01;
-        this.oscillationRange = 10; // Max vertical oscillation in pixels
+        
+        // Random frequency for organic movement
+        this.freqX = 0.01 + Math.random() * 0.02;
+        this.freqY = 0.01 + Math.random() * 0.02;
         
         this.time = 0;
-        this.baseY = this.y; // Store base Y position
         
         // Add to container
         container.appendChild(this.element);
@@ -71,21 +71,19 @@ class RowParticle {
     update() {
         this.time += 0.02;
         
-        // Horizontal movement (left to right)
-        this.x += this.vx;
+        // Add sine wave oscillation for organic floating effect
+        const oscillationX = Math.sin(this.time * this.freqX + this.phaseX) * 0.5;
+        const oscillationY = Math.cos(this.time * this.freqY + this.phaseY) * 0.5;
         
-        // Wrap around when reaching end
-        if (this.x > this.width) {
-            this.x = 0;
-        }
+        // Update position with base velocity + oscillation (random directions)
+        this.x += this.vx + oscillationX;
+        this.y += this.vy + oscillationY;
         
-        // Subtle vertical oscillation for floating effect
-        const oscillationY = Math.sin(this.time * this.freqY + this.phaseY) * this.oscillationRange;
-        this.y = this.baseY + oscillationY;
-        
-        // Keep within bounds
-        if (this.y < 0) this.y = 0;
-        if (this.y > this.height) this.y = this.height;
+        // Wrap around edges (particles loop around)
+        if (this.x < 0) this.x = this.width;
+        if (this.x > this.width) this.x = 0;
+        if (this.y < 0) this.y = this.height;
+        if (this.y > this.height) this.y = 0;
         
         this.updatePosition();
     }
@@ -112,7 +110,7 @@ class ParticleSystem {
         this.particles = [];
         this.animationId = null;
         
-        // Create particles spread horizontally
+        // Create particles spread evenly
         for (let i = 0; i < config.count; i++) {
             this.particles.push(new RowParticle(container, config, i, config.count));
         }
