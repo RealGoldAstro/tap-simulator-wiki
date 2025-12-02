@@ -14,6 +14,52 @@ if (!iconElement) {
     console.warn('⚠️ Game icon element not found');
 }
 
+// ===== Animation 1: Excited Walker =====
+function walkingPatrol() {
+    return new Promise((resolve) => {
+        // Walk left with head bob
+        iconElement.style.transition = 'all 0.4s ease-in-out';
+        iconElement.style.transform = 'translateX(-30px) translateY(-5px) rotate(-5deg) scaleX(1)';
+        
+        setTimeout(() => {
+            iconElement.style.transform = 'translateX(-60px) translateY(0px) rotate(5deg) scaleX(1)';
+            
+            setTimeout(() => {
+                iconElement.style.transform = 'translateX(-90px) translateY(-5px) rotate(-8deg) scaleX(1)';
+                
+                setTimeout(() => {
+                    // Arrive and spin around excitedly
+                    iconElement.style.transition = 'all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55)';
+                    iconElement.style.transform = 'translateX(-90px) rotate(360deg) scale(1.2)';
+                    
+                    setTimeout(() => {
+                        iconElement.style.transform = 'translateX(-90px) rotate(0deg) scale(1)';
+                        
+                        setTimeout(() => {
+                            // Walk back while looking back
+                            iconElement.style.transition = 'all 0.4s ease-in-out';
+                            iconElement.style.transform = 'translateX(-60px) rotate(15deg) scaleX(-1)';
+                            
+                            setTimeout(() => {
+                                iconElement.style.transform = 'translateX(-30px) rotate(-10deg) scaleX(-1)';
+                                
+                                setTimeout(() => {
+                                    iconElement.style.transform = 'translateX(0px) rotate(0deg) scaleX(1)';
+                                    
+                                    setTimeout(() => {
+                                        resetIcon();
+                                        resolve();
+                                    }, 400);
+                                }, 400);
+                            }, 400);
+                        }, 500);
+                    }, 500);
+                }, 400);
+            }, 400);
+        }, 400);
+    });
+}
+
 // ===== Animation 7: Number Speech Bubble =====
 function numberBubble() {
     return new Promise((resolve) => {
@@ -181,10 +227,9 @@ function resetIcon() {
 // ===== Animation Selection =====
 const animations = [
     walkingPatrol,
-    drunkWobble,
-    happyBounce,
-    curiousWanderer,
-    smoothDancer
+    numberBubble,
+    tapInBubble,
+    screenPeeker
 ];
 
 // ===== Play Random Animation =====
