@@ -26,12 +26,11 @@ function generateEggHTML(eggName, eggData, worldName) {
     const eggType = eggData.type || "Base";
     
     // Format world/category display based on egg type
-    // In js/content.js, find this section and change it:
     let categoryDisplay;
     if (eggType === "Robux") {
         categoryDisplay = `Robux Store: ${worldName}`;
     } else if (eggType === "Leaderboard") {
-        categoryDisplay = "Weekly Leaderboard Pets"; // Custom name here
+        categoryDisplay = "Weekly Leaderboard Pets";
     } else {
         categoryDisplay = `World: ${worldName}`;
     }
@@ -80,6 +79,33 @@ function generateEggHTML(eggName, eggData, worldName) {
         `;
     }
     
+    // Generate table headers based on egg type
+    let tableHeaders;
+    if (eggType === "Robux" || eggType === "Leaderboard") {
+        // Robux/Leaderboard: Only show Petname, Rarity, Tier/Chance, Base, Max Level
+        tableHeaders = `
+            <th>Petname</th>
+            <th>Rarity</th>
+            ${eggType === "Leaderboard" ? '<th>Tier</th>' : '<th>Chance</th>'}
+            <th>Base</th>
+            <th>Max Level</th>
+        `;
+    } else {
+        // Base: Show all columns including evolution stats + Max Level
+        tableHeaders = `
+            <th>Petname</th>
+            <th>Rarity</th>
+            <th>Chance</th>
+            <th>Base</th>
+            <th>Golden</th>
+            <th>Rainbow</th>
+            <th>M Base</th>
+            <th>M Golden</th>
+            <th>M Rainbow</th>
+            <th>Max Level</th>
+        `;
+    }
+    
     return `
         <div class="pet-details">
             <div class="pet-header">
@@ -95,15 +121,7 @@ function generateEggHTML(eggName, eggData, worldName) {
                 <table class="pets-table">
                     <thead>
                         <tr>
-                            <th>Petname</th>
-                            <th>Rarity</th>
-                            ${eggType === "Leaderboard" ? '<th>Tier</th>' : '<th>Chance</th>'}
-                            <th>Base</th>
-                            <th>Golden</th>
-                            <th>Rainbow</th>
-                            <th>M Base</th>
-                            <th>M Golden</th>
-                            <th>M Rainbow</th>
+                            ${tableHeaders}
                         </tr>
                     </thead>
                     <tbody>
@@ -116,7 +134,7 @@ function generateEggHTML(eggName, eggData, worldName) {
 }
 
 // ===== Generate Pet Rows =====
-// Creates table rows for all pets in the egg
+// Creates table rows for all pets in the egg - columns vary by egg type
 function generatePetRows(petsArray, eggType) {
     return petsArray.map(petData => {
         // Get rarity info
@@ -127,7 +145,7 @@ function generatePetRows(petsArray, eggType) {
             return '';
         }
         
-        // Calculate all 6 stats for this pet based on egg type
+        // Calculate all stats for this pet based on egg type
         const stats = calculatePetStats(petData.base, rarityInfo.maxLevel, eggType);
         
         // Get text color for rarity badge
@@ -154,23 +172,43 @@ function generatePetRows(petsArray, eggType) {
             chanceOrTierColumn = `<td>${chanceDisplay}</td>`;
         }
         
-        return `
-            <tr>
-                <td><strong>${petData.petdisplayname}</strong></td>
-                <td>
-                    <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
-                        ${petData.rarity}
-                    </span>
-                </td>
-                ${chanceOrTierColumn}
-                <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
-                <td class="stat-value">${formatStat(stats.goldenLevel0)}</td>
-                <td class="stat-value">${formatStat(stats.rainbowLevel0)}</td>
-                <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
-                <td class="stat-value">${formatStat(stats.goldenMaxLevel)}</td>
-                <td class="stat-value">${formatStat(stats.rainbowMaxLevel)}</td>
-            </tr>
-        `;
+        // Generate row based on egg type
+        if (eggType === "Robux" || eggType === "Leaderboard") {
+            // Robux/Leaderboard: Only show Petname, Rarity, Tier/Chance, Base, Max Level
+            return `
+                <tr>
+                    <td><strong>${petData.petdisplayname}</strong></td>
+                    <td>
+                        <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
+                            ${petData.rarity}
+                        </span>
+                    </td>
+                    ${chanceOrTierColumn}
+                    <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
+                    <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
+                </tr>
+            `;
+        } else {
+            // Base: Show all columns including evolution stats + Max Level
+            return `
+                <tr>
+                    <td><strong>${petData.petdisplayname}</strong></td>
+                    <td>
+                        <span class="rarity-badge" style="background-color: ${rarityInfo.color}; color: ${textColor};">
+                            ${petData.rarity}
+                        </span>
+                    </td>
+                    ${chanceOrTierColumn}
+                    <td class="stat-value">${formatStat(stats.baseLevel0)}</td>
+                    <td class="stat-value">${formatStat(stats.goldenLevel0)}</td>
+                    <td class="stat-value">${formatStat(stats.rainbowLevel0)}</td>
+                    <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
+                    <td class="stat-value">${formatStat(stats.goldenMaxLevel)}</td>
+                    <td class="stat-value">${formatStat(stats.rainbowMaxLevel)}</td>
+                    <td class="stat-value">${formatStat(stats.baseMaxLevel)}</td>
+                </tr>
+            `;
+        }
     }).join('');
 }
 
