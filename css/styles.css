@@ -1,11 +1,8 @@
-/* css/styles.css */
-
-/* ===== CSS Reset & Base Styles ===== */
 /* ===== Update Date in Sidebar Item ===== */
 
 .update-date-small {
     color: #9CA3AF;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 400;
 }
 
@@ -57,7 +54,7 @@
 
 .update-date-large {
     color: #9CA3AF;
-    font-size: 1rem;
+    font-size: 0.85rem;
     padding-left: 3.5rem;
 }
 
@@ -100,6 +97,14 @@
     font-weight: 500;
 }
 
+/* ===== Updates Section at Bottom of Sidebar ===== */
+
+.updates-section-bottom {
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(114, 178, 255, 0.2);
+}
+
 /* ===== Responsive Design for Update Details ===== */
 
 @media (max-width: 768px) {
@@ -116,7 +121,7 @@
     }
 
     .update-date-large {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
         padding-left: 0;
     }
 
@@ -137,6 +142,7 @@
         font-size: 1rem;
     }
 }
+
 
 * {
     margin: 0;
