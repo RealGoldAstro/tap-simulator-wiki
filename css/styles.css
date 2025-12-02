@@ -1,55 +1,258 @@
 /* css/styles.css */
 
-/* ===== Update Log & Creator Info Styles ===== */
-/* ===== Update Log Center Styles ===== */
+/* ===== CSS Reset & Base Styles ===== */
 
-.update-log-center {
-    margin: 2rem auto;
-    max-width: 600px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* Update dropdown container */
-.update-dropdown-container {
-    position: relative;
-    margin-bottom: 1.5rem;
-}
-
-/* Update dropdown button */
-.update-dropdown-btn {
+html, body {
     width: 100%;
-    background: rgba(18, 44, 103, 0.4);
-    border: 1px solid rgba(114, 178, 255, 0.3);
-    border-radius: 8px;
-    padding: 1rem 1.5rem;
-    cursor: pointer;
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 25%, #0f1623 50%, #151b2e 75%, #0a0e1a 100%);
+    background-size: 400% 400%;
+    background-attachment: fixed;
+    animation: gradientShift 15s ease infinite;
+    color: #E8EAED;
+    line-height: 1.5;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Canvas for particle effect (behind everything) */
+#particles-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Pattern overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(114, 178, 255, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(114, 178, 255, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ===== Header Styles ===== */
+
+header {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
+    padding: 0.6rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.3s ease;
-    color: #E8EAED;
+    max-width: 1900px;
+    margin: 0 auto;
 }
 
-.update-dropdown-btn:hover {
+header h1 {
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+header h1:hover {
+    opacity: 0.8;
+}
+
+/* Game icon (top right) */
+.game-icon-container {
+    width: 45px;
+    height: 45px;
+}
+
+.game-icon-placeholder {
+    width: 100%;
+    height: 100%;
+    background-image: url('../assets/GameIcon.png');
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    border: 2px solid rgba(114, 178, 255, 0.4);
+    box-shadow: 0 0 15px rgba(114, 178, 255, 0.3);
+}
+
+/* ===== Main Container ===== */
+
+.container {
+    display: flex;
+    max-width: 1900px;
+    margin: 0 auto;
+    height: calc(100vh - 70px - 40px);
+    padding-bottom: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== Sidebar Styles ===== */
+
+#sidebar {
+    width: 220px;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(114, 178, 255, 0.2);
+    overflow-y: auto;
+    padding: 0.8rem;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-height: 100%;
+}
+
+/* World section (collapsible) */
+.world-section {
+    background: rgba(18, 44, 103, 0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid rgba(114, 178, 255, 0.15);
+    transition: all 0.2s;
+}
+
+.world-section:hover {
+    border-color: rgba(114, 178, 255, 0.4);
+    box-shadow: 0 0 10px rgba(114, 178, 255, 0.2);
+}
+
+.world-header {
+    padding: 0.5rem 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #72B2FF;
+    background: rgba(18, 44, 103, 0.4);
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.world-header:hover {
     background: rgba(18, 44, 103, 0.6);
-    border-color: rgba(114, 178, 255, 0.5);
-    box-shadow: 0 4px 12px rgba(114, 178, 255, 0.2);
 }
 
-.update-dropdown-btn.active {
-    border-color: #72B2FF;
-    box-shadow: 0 4px 16px rgba(114, 178, 255, 0.3);
+.world-header::before {
+    content: '▼';
+    display: inline-block;
+    margin-right: 0.5rem;
+    transition: transform 0.2s;
+    font-size: 0.7rem;
 }
 
-/* Update info section */
-.update-info {
+.world-header.collapsed::before {
+    transform: rotate(-90deg);
+}
+
+/* Egg list */
+.egg-list {
+    display: flex;
+    flex-direction: column;
+    background: rgba(7, 12, 29, 0.4);
+    max-height: 500px;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.egg-list.collapsed {
+    max-height: 0;
+}
+
+.egg-item {
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: #C5C7CA;
+    transition: all 0.2s;
+    border-left: 2px solid transparent;
+    font-size: 0.85rem;
+}
+
+.egg-item:hover {
+    background: rgba(18, 44, 103, 0.4);
+    border-left-color: #72B2FF;
+    color: #72B2FF;
+    padding-left: 1.2rem;
+}
+
+.egg-item.active {
+    background: rgba(18, 44, 103, 0.5);
+    border-left-color: #72B2FF;
+    color: #72B2FF;
+    font-weight: 600;
+}
+
+/* ===== Update Section in Sidebar (Bottom) ===== */
+
+.update-section-sidebar {
+    margin-top: auto;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(114, 178, 255, 0.2);
+}
+
+.update-header-sidebar {
+    padding: 0.7rem 0.8rem;
+    cursor: pointer;
+    background: rgba(18, 44, 103, 0.4);
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.6rem;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(114, 178, 255, 0.2);
 }
 
-.gem-icon {
-    font-size: 1.3rem;
-    display: inline-block;
+.update-header-sidebar:hover {
+    background: rgba(18, 44, 103, 0.6);
+    border-color: rgba(114, 178, 255, 0.4);
+}
+
+.update-header-sidebar.active {
+    border-color: #72B2FF;
+    box-shadow: 0 0 10px rgba(114, 178, 255, 0.2);
+}
+
+.update-header-sidebar .gem-icon {
+    font-size: 1.1rem;
     animation: gemPulse 2s ease-in-out infinite;
 }
 
@@ -58,57 +261,55 @@
     50% { transform: scale(1.15); }
 }
 
-.update-version-text {
-    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 700;
-    font-size: 1.1rem;
+.update-info-sidebar {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
 }
 
-.update-date-text {
-    color: #9CA3AF;
+.update-version-sidebar {
+    color: #72B2FF;
+    font-weight: 600;
     font-size: 0.85rem;
 }
 
-/* Dropdown arrow */
-.dropdown-arrow {
+.update-date-sidebar {
+    color: #9CA3AF;
+    font-size: 0.7rem;
+}
+
+.dropdown-arrow-sidebar {
     color: #72B2FF;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     transition: transform 0.3s ease;
 }
 
-.update-dropdown-btn.active .dropdown-arrow {
+.update-header-sidebar.active .dropdown-arrow-sidebar {
     transform: rotate(180deg);
 }
 
-/* Dropdown menu */
-.update-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    right: 0;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(114, 178, 255, 0.3);
-    border-radius: 8px;
+.update-dropdown-sidebar {
+    max-height: 400px;
     overflow: hidden;
+    transition: max-height 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+.update-dropdown-sidebar.collapsed {
     max-height: 0;
-    opacity: 0;
-    transition: all 0.3s ease;
-    z-index: 50;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
-.update-dropdown-menu.show {
-    max-height: 300px;
-    opacity: 1;
+.update-options-sidebar {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+    border: 1px solid rgba(114, 178, 255, 0.15);
 }
 
-/* Update option */
-.update-option {
-    padding: 0.9rem 1.5rem;
+.update-option-sidebar {
+    padding: 0.6rem 0.8rem;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -117,67 +318,170 @@
     transition: all 0.2s ease;
 }
 
-.update-option:last-child {
+.update-option-sidebar:last-child {
     border-bottom: none;
 }
 
-.update-option:hover {
+.update-option-sidebar:hover {
     background: rgba(18, 44, 103, 0.5);
-    padding-left: 2rem;
+    padding-left: 1rem;
 }
 
-.update-option .update-version {
+.update-option-sidebar .update-version {
     color: #72B2FF;
     font-weight: 600;
-    font-size: 0.95rem;
-}
-
-.update-option .update-date {
-    color: #9CA3AF;
     font-size: 0.8rem;
 }
 
-/* Update content */
-.update-content {
-    background: rgba(18, 44, 103, 0.3);
-    border: 1px solid rgba(114, 178, 255, 0.2);
-    border-radius: 8px;
-    padding: 1.5rem;
+.update-option-sidebar .update-date {
+    color: #9CA3AF;
+    font-size: 0.7rem;
 }
 
-/* Update list */
-.update-list {
+.update-content-sidebar {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 6px;
+    padding: 0.8rem;
+    border: 1px solid rgba(114, 178, 255, 0.15);
+}
+
+.update-list-sidebar {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.update-list li {
-    padding: 0.7rem 0;
+.update-list-sidebar li {
+    padding: 0.5rem 0;
     color: #E8EAED;
-    font-size: 1rem;
+    font-size: 0.8rem;
     display: flex;
     align-items: center;
-    transition: all 0.2s ease;
+    gap: 0.5rem;
     border-bottom: 1px solid rgba(114, 178, 255, 0.1);
+    transition: all 0.2s ease;
 }
 
-.update-list li:last-child {
+.update-list-sidebar li:last-child {
     border-bottom: none;
 }
 
-.update-list li:hover {
+.update-list-sidebar li:hover {
     color: #72B2FF;
-    padding-left: 0.5rem;
+    padding-left: 0.3rem;
 }
 
-.feature-icon {
-    margin-right: 0.8rem;
-    font-size: 1.2rem;
-    min-width: 24px;
+.update-list-sidebar .feature-icon {
+    font-size: 1rem;
+    min-width: 20px;
 }
 
-/* ===== Footer Styles ===== */
+.update-list-sidebar .feature-text {
+    flex: 1;
+}
+
+/* ===== Content Area Styles ===== */
+
+#content {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: transparent;
+}
+
+.welcome {
+    text-align: center;
+    padding: 3rem 2rem;
+}
+
+.welcome h2 {
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.welcome p {
+    color: #9CA3AF;
+    font-size: 1rem;
+}
+
+/* Pet details display */
+.pet-details {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid rgba(114, 178, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.pet-header {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
+    padding-bottom: 1rem;
+}
+
+.pet-title {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.3rem;
+}
+
+.pet-meta {
+    color: #9CA3AF;
+    font-size: 0.85rem;
+}
+
+/* Pet stats table */
+.pets-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.pets-table th {
+    padding: 0.7rem 0.5rem;
+    text-align: left;
+    background: rgba(18, 44, 103, 0.5);
+    color: #72B2FF;
+    font-weight: 600;
+    border-bottom: 2px solid rgba(114, 178, 255, 0.3);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.pets-table td {
+    padding: 0.7rem 0.5rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.1);
+    color: #E8EAED;
+}
+
+.pets-table tr:hover {
+    background: rgba(18, 44, 103, 0.3);
+}
+
+.rarity-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.stat-value {
+    font-family: 'Courier New', monospace;
+    color: #72B2FF;
+    font-weight: 600;
+}
+
+/* ===== Footer Styles (Plain, No Card) ===== */
 
 .site-footer {
     position: fixed;
@@ -186,17 +490,16 @@
     right: 0;
     background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(114, 178, 255, 0.2);
-    padding: 0.8rem 1.5rem;
+    border-top: 1px solid rgba(114, 178, 255, 0.15);
+    padding: 0.5rem 1rem;
     z-index: 100;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .footer-content {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     max-width: 1900px;
     margin: 0 auto;
     flex-wrap: wrap;
@@ -204,309 +507,107 @@
 
 .footer-text {
     color: #9CA3AF;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .footer-link {
     color: #72B2FF;
     text-decoration: none;
-    font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border: 1px solid rgba(114, 178, 255, 0.3);
-    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.8rem;
     transition: all 0.2s ease;
-    font-size: 0.9rem;
 }
 
 .footer-link:hover {
-    background: rgba(18, 44, 103, 0.5);
-    border-color: #72B2FF;
-    box-shadow: 0 2px 8px rgba(114, 178, 255, 0.2);
+    color: #4a9eff;
+    text-decoration: underline;
 }
 
 .footer-separator {
-    color: rgba(114, 178, 255, 0.4);
-    font-size: 0.9rem;
+    color: rgba(114, 178, 255, 0.3);
+    font-size: 0.8rem;
 }
 
-/* Adjust main container to account for footer */
-.container {
-    height: calc(100vh - 70px - 50px); /* header height - footer height */
-    padding-bottom: 50px;
+/* ===== Scrollbar Styling ===== */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(7, 12, 29, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(114, 178, 255, 0.4);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(114, 178, 255, 0.6);
 }
 
 /* ===== Responsive Design ===== */
 
 @media (max-width: 768px) {
-    .update-log-center {
-        margin: 1.5rem 1rem;
+    .container {
+        flex-direction: column;
+        height: calc(100vh - 70px - 35px);
+        padding-bottom: 35px;
     }
 
-    .update-dropdown-btn {
-        padding: 0.8rem 1rem;
+    #sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid rgba(114, 178, 255, 0.2);
     }
 
-    .update-info {
-        gap: 0.5rem;
-    }
-
-    .update-version-text {
-        font-size: 0.95rem;
-    }
-
-    .update-date-text {
+    .pets-table {
         font-size: 0.75rem;
     }
 
-    .update-list li {
-        font-size: 0.9rem;
-        padding: 0.6rem 0;
+    .update-section-sidebar {
+        padding-top: 0.6rem;
     }
 
-    .feature-icon {
-        font-size: 1.1rem;
+    .update-header-sidebar {
+        padding: 0.6rem;
+    }
+
+    .update-version-sidebar {
+        font-size: 0.8rem;
+    }
+
+    .update-date-sidebar {
+        font-size: 0.65rem;
+    }
+
+    .update-list-sidebar li {
+        font-size: 0.75rem;
+        padding: 0.4rem 0;
+    }
+
+    .update-list-sidebar .feature-icon {
+        font-size: 0.9rem;
     }
 
     .footer-content {
-        font-size: 0.8rem;
-        padding: 0.5rem;
+        font-size: 0.7rem;
+        padding: 0.4rem;
     }
 
     .footer-link,
     .footer-text {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
 
-    .footer-link {
-        padding: 0.2rem 0.5rem;
-    }
-}
-
-/* Update section */
-.update-section {
-    margin: 2.5rem auto;
-    max-width: 700px;
-    text-align: center;
-}
-
-.update-section h3 {
-    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-}
-
-.gem-icon {
-    font-size: 1.3rem;
-    display: inline-block;
-    animation: gemPulse 2s ease-in-out infinite;
-}
-
-@keyframes gemPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-}
-
-/* Update list */
-.update-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: inline-block;
-    text-align: left;
-}
-
-.update-list li {
-    padding: 0.6rem 0;
-    color: #E8EAED;
-    font-size: 1rem;
-    transition: all 0.2s ease;
-}
-
-.update-list li:hover {
-    color: #72B2FF;
-    transform: translateX(5px);
-}
-
-.feature-icon {
-    margin-right: 0.6rem;
-    font-size: 1.1rem;
-}
-
-/* Creator section */
-.creator-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(114, 178, 255, 0.2);
-}
-
-.creator-text {
-    color: #9CA3AF;
-    font-size: 0.95rem;
-    text-align: center;
-}
-
-.creator-link {
-    color: #72B2FF;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    border-bottom: 1px solid transparent;
-}
-
-.creator-link:hover {
-    color: #4a9eff;
-    border-bottom-color: #4a9eff;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .update-section h3 {
-        font-size: 1.2rem;
-    }
-
-    .update-list li {
-        font-size: 0.9rem;
-    }
-
-    .creator-text {
-        font-size: 0.85rem;
+    .site-footer {
+        padding: 0.4rem 0.8rem;
     }
 }
 
-
-/* Update log container */
-.update-log-container {
-    background: rgba(18, 44, 103, 0.4);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin: 2rem auto;
-    max-width: 600px;
-    border: 1px solid rgba(114, 178, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-/* Update log header */
-.update-log-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1.2rem;
-}
-
-.gem-icon {
-    font-size: 1.5rem;
-    animation: gemPulse 2s ease-in-out infinite;
-}
-
-@keyframes gemPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-}
-
-.update-log-header h3 {
-    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin: 0;
-}
-
-/* Update features list */
-.update-features {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.update-features li {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    padding: 0.7rem 1rem;
-    margin-bottom: 0.5rem;
-    background: rgba(15, 23, 42, 0.5);
-    border-radius: 8px;
-    border-left: 3px solid #72B2FF;
-    transition: all 0.3s ease;
-}
-
-.update-features li:hover {
-    background: rgba(18, 44, 103, 0.6);
-    transform: translateX(5px);
-    box-shadow: 0 4px 12px rgba(114, 178, 255, 0.2);
-}
-
-.feature-icon {
-    font-size: 1.2rem;
-    min-width: 24px;
-    text-align: center;
-}
-
-.feature-text {
-    color: #E8EAED;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-
-/* Creator information container */
-.creator-info-container {
-    background: rgba(18, 44, 103, 0.4);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin: 2rem auto;
-    max-width: 600px;
-    border: 1px solid rgba(114, 178, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-/* Creator sections */
-.creator-section {
-    margin-bottom: 1.5rem;
-}
-
-.creator-section:last-child {
-    margin-bottom: 0;
-}
-
-.creator-section h4 {
-    color: #72B2FF;
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Creator links */
-.creator-link {
-    display: inline-block;
-    padding: 0.6rem 1.2rem;
-    background: rgba(15, 23, 42, 0.6);
-    border: 1px solid rgba(114, 178, 255, 0.4);
-    border-radius: 8px;
-    color: #72B2FF;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.creator-link:hover {
-    background: rgba(18, 44, 103, 0.8);
-    border-color: #72B2FF;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(114, 178, 255, 0.3);
-}
+/* css/styles.css */
 
 /* Studio link specific styling */
 .studio-link {
