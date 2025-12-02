@@ -6,8 +6,8 @@ const SECRET_EFFECT_CONFIG = {
         enabled: true,
         glowColor: 'rgba(255, 0, 0, 0.15)',  // Red inner glow (very low opacity)
         particles: {
-            count: 15,                         // Number of particles
-            size: 3,                           // Particle size in pixels
+            count: 10,                         // Number of particles
+            size: 2,                           // Particle size in pixels
             speed: 0.4,                        // Movement speed multiplier
             alpha: 0.6,                        // Particle opacity
             color: 'rgba(255, 0, 0, 1)'       // Red particle color
