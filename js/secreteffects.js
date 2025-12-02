@@ -4,220 +4,137 @@
 const SECRET_EFFECT_CONFIG = {
     "Secret I": {
         enabled: true,
-        sparkColor: '#ff0000',           // Red sparks
-        glowColor: 'rgba(255, 0, 0, 0.15)', // Red glow (very low opacity)
-        sparkCount: 20,                   // Number of spark particles
-        sparkFrequency: 800,              // New spark every 800ms
-        lightningFrequency: 1200,         // Lightning bolt every 1.2 seconds
-        glitchFrequency: 900,             // Glitch effect every 900ms
-        staticOpacity: 0.2                // Background static opacity
+        glowColor: 'rgba(255, 0, 0, 0.15)',  // Red inner glow (very low opacity)
+        particles: {
+            count: 15,                         // Number of particles
+            size: 3,                           // Particle size in pixels
+            speed: 0.4,                        // Movement speed multiplier
+            alpha: 0.6,                        // Particle opacity
+            color: 'rgba(255, 0, 0, 1)'       // Red particle color
+        }
     }
 };
 
-// ===== Create Spark Particle =====
-function createSpark(color) {
-    const spark = document.createElement('div');
-    spark.className = 'secret-spark';
-    
-    // Random position across entire row area
-    const startX = Math.random() * 100;
-    const startY = Math.random() * 100;
-    const endX = startX + (Math.random() - 0.5) * 50;
-    const endY = startY + (Math.random() - 0.5) * 50;
-    
-    spark.style.cssText = `
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: ${color};
-        border-radius: 50%;
-        box-shadow: 0 0 8px ${color}, 0 0 16px ${color};
-        left: ${startX}%;
-        top: ${startY}%;
-        pointer-events: none;
-        z-index: 10;
-        opacity: 0;
-    `;
-    
-    spark.dataset.endX = endX;
-    spark.dataset.endY = endY;
-    
-    return spark;
-}
-
-// ===== Animate Spark =====
-function animateSpark(spark, duration) {
-    const endX = parseFloat(spark.dataset.endX);
-    const endY = parseFloat(spark.dataset.endY);
-    
-    spark.style.transition = `all ${duration}ms ease-out, opacity ${duration * 0.3}ms ease-in`;
-    spark.style.opacity = '1';
-    spark.style.left = endX + '%';
-    spark.style.top = endY + '%';
-    
-    setTimeout(() => {
-        spark.style.opacity = '0';
-    }, duration * 0.7);
-}
-
-// ===== Create Branching Lightning Bolt =====
-function createBranchingLightning(color, rowWidth, rowHeight) {
-    const lightning = document.createElement('div');
-    lightning.className = 'secret-lightning';
-    
-    // Random start position in pixels
-    const x1 = Math.random() * rowWidth;
-    const y1 = Math.random() * rowHeight;
-    const x2 = Math.random() * rowWidth;
-    const y2 = Math.random() * rowHeight;
-    
-    // Generate jagged path with branches
-    let pathData = '';
-    const segments = 4 + Math.floor(Math.random() * 3);
-    const points = [];
-    
-    for (let i = 0; i <= segments; i++) {
-        const t = i / segments;
-        const x = x1 + (x2 - x1) * t + (Math.random() - 0.5) * 40;
-        const y = y1 + (y2 - y1) * t + (Math.random() - 0.5) * 15;
-        points.push({ x, y });
+// ===== Particle Class =====
+class RowParticle {
+    constructor(container, config) {
+        this.container = container;
+        this.config = config;
         
-        if (i === 0) {
-            pathData += `M ${x},${y}`;
-        } else {
-            pathData += ` L ${x},${y}`;
-        }
+        // Get container dimensions
+        const rect = container.getBoundingClientRect();
+        this.width = rect.width;
+        this.height = rect.height;
+        
+        // Create particle element
+        this.element = document.createElement('div');
+        this.element.className = 'secret-particle';
+        this.element.style.cssText = `
+            position: absolute;
+            width: ${config.size}px;
+            height: ${config.size}px;
+            background: ${config.color};
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            opacity: ${config.alpha};
+            box-shadow: 0 0 8px ${config.color};
+        `;
+        
+        // Random starting position
+        this.x = Math.random() * this.width;
+        this.y = Math.random() * this.height;
+        
+        // Random velocity for autonomous movement
+        this.vx = (Math.random() - 0.5) * config.speed;
+        this.vy = (Math.random() - 0.5) * config.speed;
+        
+        // Random phase for sine wave movement
+        this.phaseX = Math.random() * Math.PI * 2;
+        this.phaseY = Math.random() * Math.PI * 2;
+        
+        // Random frequency for organic movement
+        this.freqX = 0.01 + Math.random() * 0.02;
+        this.freqY = 0.01 + Math.random() * 0.02;
+        
+        this.time = 0;
+        
+        // Add to container
+        container.appendChild(this.element);
+        
+        // Update position immediately
+        this.updatePosition();
     }
     
-    // Add random branches
-    const branchCount = 2 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < branchCount; i++) {
-        const branchStart = points[1 + Math.floor(Math.random() * (points.length - 2))];
-        const branchLength = 2 + Math.floor(Math.random() * 3);
+    // Update particle position
+    update() {
+        this.time += 0.02;
         
-        pathData += ` M ${branchStart.x},${branchStart.y}`;
+        // Add sine wave oscillation for organic floating effect
+        const oscillationX = Math.sin(this.time * this.freqX + this.phaseX) * 0.5;
+        const oscillationY = Math.cos(this.time * this.freqY + this.phaseY) * 0.5;
         
-        for (let j = 1; j <= branchLength; j++) {
-            const bx = branchStart.x + (Math.random() - 0.5) * 60;
-            const by = branchStart.y + (Math.random() - 0.5) * 20;
-            pathData += ` L ${bx},${by}`;
-        }
+        // Update position with base velocity + oscillation
+        this.x += this.vx + oscillationX;
+        this.y += this.vy + oscillationY;
+        
+        // Wrap around container edges
+        if (this.x < 0) this.x = this.width;
+        if (this.x > this.width) this.x = 0;
+        if (this.y < 0) this.y = this.height;
+        if (this.y > this.height) this.y = 0;
+        
+        this.updatePosition();
     }
     
-    lightning.innerHTML = `
-        <svg width="${rowWidth}" height="${rowHeight}" style="position: absolute; top: 0; left: 0; pointer-events: none;">
-            <path d="${pathData}" stroke="${color}" stroke-width="2" fill="none" 
-                  stroke-linecap="round" opacity="0.9"
-                  filter="url(#glow-${Date.now()})" />
-            <defs>
-                <filter id="glow-${Date.now()}">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                    <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-            </defs>
-        </svg>
-    `;
-    
-    lightning.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 10;
-        opacity: 0;
-    `;
-    
-    return lightning;
-}
-
-// ===== Animate Lightning =====
-function animateLightning(lightning) {
-    lightning.style.transition = 'opacity 80ms ease-out';
-    lightning.style.opacity = '1';
-    
-    setTimeout(() => {
-        lightning.style.opacity = '0';
-    }, 120);
-    
-    setTimeout(() => {
-        lightning.remove();
-    }, 200);
-}
-
-// ===== Create Static Overlay =====
-function createStaticOverlay(color, opacity) {
-    const static = document.createElement('canvas');
-    static.className = 'secret-static';
-    static.width = 800;
-    static.height = 60;
-    
-    static.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 5;
-        opacity: ${opacity};
-        mix-blend-mode: screen;
-    `;
-    
-    return static;
-}
-
-// ===== Animate Static Noise =====
-function animateStatic(canvas, color) {
-    const ctx = canvas.getContext('2d');
-    
-    function drawStatic() {
-        if (!canvas.parentElement) return;
-        
-        const imageData = ctx.createImageData(canvas.width, canvas.height);
-        const data = imageData.data;
-        
-        const r = parseInt(color.slice(1, 3), 16);
-        const g = parseInt(color.slice(3, 5), 16);
-        const b = parseInt(color.slice(5, 7), 16);
-        
-        for (let i = 0; i < data.length; i += 4) {
-            if (Math.random() > 0.96) {
-                const intensity = Math.random();
-                data[i] = r * intensity;
-                data[i + 1] = g * intensity;
-                data[i + 2] = b * intensity;
-                data[i + 3] = 255 * intensity;
-            }
-        }
-        
-        ctx.putImageData(imageData, 0, 0);
-        
-        setTimeout(() => requestAnimationFrame(drawStatic), 40);
+    // Update DOM element position
+    updatePosition() {
+        this.element.style.left = this.x + 'px';
+        this.element.style.top = this.y + 'px';
     }
     
-    drawStatic();
+    // Remove particle from DOM
+    destroy() {
+        if (this.element && this.element.parentElement) {
+            this.element.remove();
+        }
+    }
 }
 
-// ===== Create Glitch Effect =====
-function createGlitchEffect(row, color) {
-    const originalTransform = row.style.transform || '';
-    const glitchShift = (Math.random() - 0.5) * 5;
+// ===== Particle System Manager =====
+class ParticleSystem {
+    constructor(container, config) {
+        this.container = container;
+        this.config = config;
+        this.particles = [];
+        this.animationId = null;
+        
+        // Create particles
+        for (let i = 0; i < config.count; i++) {
+            this.particles.push(new RowParticle(container, config));
+        }
+        
+        // Start animation
+        this.animate();
+    }
     
-    row.style.transition = 'none';
-    row.style.transform = `translateX(${glitchShift}px)`;
-    row.style.filter = `hue-rotate(${Math.random() * 30}deg) brightness(1.1)`;
+    // Animation loop
+    animate() {
+        // Update all particles
+        this.particles.forEach(particle => particle.update());
+        
+        // Continue animation
+        this.animationId = requestAnimationFrame(() => this.animate());
+    }
     
-    setTimeout(() => {
-        row.style.transition = 'all 80ms ease-out';
-        row.style.transform = originalTransform;
-        row.style.filter = 'none';
-    }, 60);
+    // Cleanup
+    destroy() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+        }
+        this.particles.forEach(particle => particle.destroy());
+        this.particles = [];
+    }
 }
 
 // ===== Apply Secret Effect to Row =====
@@ -229,12 +146,12 @@ function applySecretEffect(row, rarity) {
     }
     
     row.style.position = 'relative';
-    row.style.overflow = 'visible';
+    row.style.overflow = 'hidden';
     
-    // Apply inner glow to row itself (doesn't overlap other cells)
+    // Apply inner glow to row
     row.style.boxShadow = `inset 0 0 20px ${config.glowColor}, inset 0 0 40px ${config.glowColor}`;
     
-    // Create effect container (stays within row boundaries)
+    // Create effect container for particles
     const effectContainer = document.createElement('div');
     effectContainer.className = 'secret-effect-container';
     effectContainer.style.cssText = `
@@ -250,57 +167,11 @@ function applySecretEffect(row, rarity) {
     
     row.appendChild(effectContainer);
     
-    // Get row dimensions for lightning
-    const rowRect = row.getBoundingClientRect();
-    const rowWidth = rowRect.width;
-    const rowHeight = rowRect.height;
+    // Create particle system
+    const particleSystem = new ParticleSystem(effectContainer, config.particles);
     
-    // Create static overlay
-    const staticCanvas = createStaticOverlay(config.sparkColor, config.staticOpacity);
-    effectContainer.appendChild(staticCanvas);
-    animateStatic(staticCanvas, config.sparkColor);
-    
-    // Create initial sparks throughout entire row
-    for (let i = 0; i < config.sparkCount; i++) {
-        setTimeout(() => {
-            const spark = createSpark(config.sparkColor);
-            effectContainer.appendChild(spark);
-            
-            setTimeout(() => {
-                animateSpark(spark, 600 + Math.random() * 400);
-            }, 50);
-            
-            setTimeout(() => {
-                spark.remove();
-            }, 1200);
-        }, Math.random() * 1000);
-    }
-    
-    // Continuous spark generation (more frequent)
-    setInterval(() => {
-        const spark = createSpark(config.sparkColor);
-        effectContainer.appendChild(spark);
-        
-        setTimeout(() => {
-            animateSpark(spark, 600 + Math.random() * 400);
-        }, 50);
-        
-        setTimeout(() => {
-            spark.remove();
-        }, 1200);
-    }, config.sparkFrequency);
-    
-    // Lightning bolts (more frequent, branching, proper dimensions)
-    setInterval(() => {
-        const lightning = createBranchingLightning(config.sparkColor, rowWidth, rowHeight);
-        effectContainer.appendChild(lightning);
-        animateLightning(lightning);
-    }, config.lightningFrequency);
-    
-    // Random glitch effects (more frequent)
-    setInterval(() => {
-        createGlitchEffect(row, config.sparkColor);
-    }, config.glitchFrequency);
+    // Store reference for cleanup if needed
+    row.dataset.particleSystem = 'active';
 }
 
 // ===== Observe Pet Table and Apply Effects =====
