@@ -1,6 +1,103 @@
 /* css/styles.css */
 
 /* ===== Update Log & Creator Info Styles ===== */
+/* ===== Update Log & Creator Info Styles ===== */
+
+/* Update section */
+.update-section {
+    margin: 2.5rem auto;
+    max-width: 700px;
+    text-align: center;
+}
+
+.update-section h3 {
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.gem-icon {
+    font-size: 1.3rem;
+    display: inline-block;
+    animation: gemPulse 2s ease-in-out infinite;
+}
+
+@keyframes gemPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* Update list */
+.update-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    text-align: left;
+}
+
+.update-list li {
+    padding: 0.6rem 0;
+    color: #E8EAED;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.update-list li:hover {
+    color: #72B2FF;
+    transform: translateX(5px);
+}
+
+.feature-icon {
+    margin-right: 0.6rem;
+    font-size: 1.1rem;
+}
+
+/* Creator section */
+.creator-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(114, 178, 255, 0.2);
+}
+
+.creator-text {
+    color: #9CA3AF;
+    font-size: 0.95rem;
+    text-align: center;
+}
+
+.creator-link {
+    color: #72B2FF;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.creator-link:hover {
+    color: #4a9eff;
+    border-bottom-color: #4a9eff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .update-section h3 {
+        font-size: 1.2rem;
+    }
+
+    .update-list li {
+        font-size: 0.9rem;
+    }
+
+    .creator-text {
+        font-size: 0.85rem;
+    }
+}
+
 
 /* Update log container */
 .update-log-container {
