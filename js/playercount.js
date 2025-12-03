@@ -1,125 +1,165 @@
 // js/playercount.js
-// -- Web/Client/playercount.js
 
 // ===== Player Count Configuration =====
-// Use your Vercel URL here (after you deploy the proxy):
-// Example: const API_URL = 'https://tap-sim-playercount.vercel.app/api/players';
 const API_URL = 'https://roblox-playercount-proxy-4256f4dse-astros-projects-7d607cbf.vercel.app/api/players';
-const UPDATE_INTERVAL = 30000; // 30 seconds
+const UPDATE_INTERVAL = 30000; // 30 seconds (display refresh only, backend saves every 10 min)
 
 // ===== Initialize Player Count =====
-// Puts "1,384 Active" in the middle of the header row (between title and icon)
+// Creates 3 stacked lines: Active, 24hr Peak, 7d Peak
 function initPlayerCount() {
-    const headerContent = document.querySelector('.header-content');
-    const headerTitle = document.querySelector('header h1');
+  const headerContent = document.querySelector('.header-content');
+  const headerTitle = document.querySelector('header h1');
+  if (!headerContent || !headerTitle) {
+    console.warn('⚠️ Header content or title element not found - player count cannot be displayed');
+    return;
+  }
 
-    if (!headerContent || !headerTitle) {
-        console.warn('⚠️ Header content or title element not found - player count cannot be displayed');
-        return;
-    }
+  // Create wrapper for centered player count
+  let playerCountWrapper = document.getElementById('player-count-wrapper');
+  if (!playerCountWrapper) {
+    playerCountWrapper = document.createElement('div');
+    playerCountWrapper.id = 'player-count-wrapper';
+    playerCountWrapper.style.flex = '1'; // Take remaining space between title and icon
+    playerCountWrapper.style.display = 'flex';
+    playerCountWrapper.style.justifyContent = 'center';
+    playerCountWrapper.style.alignItems = 'center';
+    playerCountWrapper.style.pointerEvents = 'none';
 
-    // Create a flex spacer for the counter if it doesn't exist
-    let playerCountWrapper = document.getElementById('player-count-wrapper');
-    if (!playerCountWrapper) {
-        playerCountWrapper = document.createElement('div');
-        playerCountWrapper.id = 'player-count-wrapper';
-        playerCountWrapper.style.flex = '1'; // take remaining space between title and icon
-        playerCountWrapper.style.display = 'flex';
-        playerCountWrapper.style.justifyContent = 'center';
-        playerCountWrapper.style.alignItems = 'center';
-        playerCountWrapper.style.pointerEvents = 'none';
+    // Inner container - VERTICAL stack
+    const inner = document.createElement('div');
+    inner.id = 'player-count-container';
+    inner.style.display = 'flex';
+    inner.style.flexDirection = 'column'; // Stack vertically
+    inner.style.alignItems = 'center';
+    inner.style.gap = '0.15rem';
+    inner.style.fontSize = '0.75rem';
 
-        const inner = document.createElement('div');
-        inner.id = 'player-count-container';
-        inner.style.display = 'flex';
-        inner.style.alignItems = 'baseline';
-        inner.style.gap = '0.25rem';
-        inner.style.fontSize = '0.8rem'; // smaller than title
+    // Line 1: Active Players (green number + gray "Active")
+    const activeLine = document.createElement('div');
+    activeLine.style.display = 'flex';
+    activeLine.style.alignItems = 'baseline';
+    activeLine.style.gap = '0.25rem';
 
-        // Green number (full value with commas)
-        const numberSpan = document.createElement('span');
-        numberSpan.id = 'player-count-number';
-        numberSpan.style.color = '#22c55e'; // green
-        numberSpan.style.fontWeight = '600';
+    const activeNumber = document.createElement('span');
+    activeNumber.id = 'player-count-number';
+    activeNumber.style.color = '#22c55e'; // Green
+    activeNumber.style.fontWeight = '600';
+    activeNumber.style.fontSize = '0.8rem';
 
-        // Light gray "Active" label
-        const labelSpan = document.createElement('span');
-        labelSpan.id = 'player-count-label';
-        labelSpan.textContent = 'Active';
-        labelSpan.style.color = '#E5E7EB'; // white-gray
-        labelSpan.style.fontWeight = '500';
+    const activeLabel = document.createElement('span');
+    activeLabel.id = 'player-count-label';
+    activeLabel.textContent = 'Active';
+    activeLabel.style.color = '#E5E7EB'; // White-gray
+    activeLabel.style.fontWeight = '500';
 
-        inner.appendChild(numberSpan);
-        inner.appendChild(labelSpan);
-        playerCountWrapper.appendChild(inner);
+    activeLine.appendChild(activeNumber);
+    activeLine.appendChild(activeLabel);
 
-        // Insert the wrapper between title and icon (assumes icon container is last child)
-        headerContent.insertBefore(playerCountWrapper, headerContent.lastElementChild);
-    }
+    // Line 2: 24hr Peak
+    const peak24hLine = document.createElement('div');
+    peak24hLine.id = 'peak24h-line';
+    peak24hLine.style.color = '#9CA3AF'; // Gray
+    peak24hLine.style.fontWeight = '500';
+    peak24hLine.style.fontSize = '0.7rem';
+    peak24hLine.textContent = '24hr Peak • ---';
 
-    // Initial fetch + start interval (no tight loops)
-    fetchPlayerCount();
-    setInterval(fetchPlayerCount, UPDATE_INTERVAL);
+    // Line 3: 7d Peak
+    const peak7dLine = document.createElement('div');
+    peak7dLine.id = 'peak7d-line';
+    peak7dLine.style.color = '#9CA3AF'; // Gray
+    peak7dLine.style.fontWeight = '500';
+    peak7dLine.style.fontSize = '0.7rem';
+    peak7dLine.textContent = '7d Peak • ---';
+
+    // Append all lines to container
+    inner.appendChild(activeLine);
+    inner.appendChild(peak24hLine);
+    inner.appendChild(peak7dLine);
+    playerCountWrapper.appendChild(inner);
+
+    // Insert between title and icon
+    headerContent.insertBefore(playerCountWrapper, headerContent.lastElementChild);
+  }
+
+  // Initial fetch + start interval
+  fetchPlayerCount();
+  setInterval(fetchPlayerCount, UPDATE_INTERVAL);
 }
 
 // ===== Fetch Player Count =====
-// Calls your Vercel proxy (which talks to Roblox)
+// Calls Vercel proxy to get current + peak data
 function fetchPlayerCount() {
-    if (!API_URL || API_URL.indexOf('your-vercel-app-name') !== -1) {
-        console.warn('⚠️ API_URL for player count is not set to your real Vercel URL');
-        updatePlayerCountDisplay('N/A');
+  if (!API_URL || API_URL.indexOf('your-vercel-app-name') !== -1) {
+    console.warn('⚠️ API_URL for player count is not set to your real Vercel URL');
+    updatePlayerCountDisplay(null, null, null);
+    return;
+  }
+
+  fetch(API_URL)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (!data || typeof data.playing !== 'number') {
+        console.warn('⚠️ Invalid proxy response for player count');
+        updatePlayerCountDisplay(null, null, null);
         return;
-    }
+      }
 
-    fetch(API_URL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (!data || typeof data.playing !== 'number') {
-                console.warn('⚠️ Invalid proxy response for player count');
-                updatePlayerCountDisplay('N/A');
-                return;
-            }
-
-            const playerCount = data.playing;
-            updatePlayerCountDisplay(playerCount);
-        })
-        .catch(error => {
-            console.warn('⚠️ Failed to fetch player count from proxy:', error.message);
-            updatePlayerCountDisplay('N/A');
-        });
+      const currentPlayers = data.playing;
+      const peak24h = data.peak24h || 0;
+      const peak7d = data.peak7d || 0;
+      
+      updatePlayerCountDisplay(currentPlayers, peak24h, peak7d);
+    })
+    .catch(error => {
+      console.warn('⚠️ Failed to fetch player count from proxy:', error.message);
+      updatePlayerCountDisplay(null, null, null);
+    });
 }
 
 // ===== Update Player Count Display =====
-// Shows full number with commas in green, "Active" in white-gray
-function updatePlayerCountDisplay(count) {
-    const numberSpan = document.getElementById('player-count-number');
-    const labelSpan = document.getElementById('player-count-label');
+// Updates all 3 lines with current and peak data
+function updatePlayerCountDisplay(current, peak24h, peak7d) {
+  const activeNumber = document.getElementById('player-count-number');
+  const peak24hLine = document.getElementById('peak24h-line');
+  const peak7dLine = document.getElementById('peak7d-line');
 
-    if (!numberSpan || !labelSpan) {
-        console.warn('⚠️ Player count elements not found for update');
-        return;
-    }
+  if (!activeNumber || !peak24hLine || !peak7dLine) {
+    console.warn('⚠️ Player count elements not found for update');
+    return;
+  }
 
-    if (typeof count === 'number') {
-        // Full number with commas (e.g., 1,826)
-        numberSpan.textContent = count.toLocaleString();
-    } else {
-        // For N/A or other fallback text
-        numberSpan.textContent = count;
-    }
+  // Update active players (current)
+  if (typeof current === 'number') {
+    activeNumber.textContent = current.toLocaleString();
+  } else {
+    activeNumber.textContent = 'N/A';
+  }
+
+  // Update 24hr peak
+  if (typeof peak24h === 'number') {
+    peak24hLine.textContent = `24hr Peak • ${peak24h.toLocaleString()}`;
+  } else {
+    peak24hLine.textContent = '24hr Peak • ---';
+  }
+
+  // Update 7d peak
+  if (typeof peak7d === 'number') {
+    peak7dLine.textContent = `7d Peak • ${peak7d.toLocaleString()}`;
+  } else {
+    peak7dLine.textContent = '7d Peak • ---';
+  }
 }
 
 // ===== Auto-Initialize on DOM Load =====
-// Ensures script runs after DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPlayerCount);
+  document.addEventListener('DOMContentLoaded', initPlayerCount);
 } else {
-    initPlayerCount();
+  initPlayerCount();
 }
 
-// -- Web/Client/playercount.js
+// js/playercount.js
