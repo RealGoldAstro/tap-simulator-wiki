@@ -10,8 +10,8 @@ const UPDATE_LOGS = [
         version: "Update 1",
         date: "December 2, 2025",
         features: [
-            { icon: "🏝️", text: "New Island" },
-            { icon: "🥚", text: "2 New Eggs" },
+            { icon: "🏝️", text: "New Island", subtext: "Sakura Island Added" },
+            { icon: "🥚", text: "2 New Eggs", subtext: "Sakura Egg & Void Egg" },
             { icon: "🐾", text: "17 New Pets" },
             { icon: "⭐", text: "3 New Secrets" },
             { icon: "🛒", text: "Triple Hatch is now free!" }
@@ -81,58 +81,30 @@ function createUpdatesSection() {
     const updatesDiv = document.createElement('div');
     updatesDiv.className = 'world-section updates-section';
 
-    // Updates header (collapsible like worlds)
+    // Updates header (clickable button, no dropdown)
     const updatesHeader = document.createElement('div');
-    updatesHeader.className = 'world-header collapsed';
+    updatesHeader.className = 'world-header no-arrow'; // Added no-arrow class
     updatesHeader.textContent = 'Updates';
-    updatesHeader.addEventListener('click', () => toggleWorld(updatesHeader));
 
-    // Updates list container
-    const updatesList = document.createElement('div');
-    updatesList.className = 'egg-list collapsed';
+    // Remove the arrow/collapsed class logic
+    updatesHeader.classList.remove('collapsed');
 
-    // Loop through each update
-    UPDATE_LOGS.forEach((update, index) => {
-        const updateItem = createUpdateItem(update, index);
-        updatesList.appendChild(updateItem);
+    // Add click event to show all updates
+    updatesHeader.addEventListener('click', () => {
+        // Highlight this section
+        document.querySelectorAll('.world-header').forEach(h => h.classList.remove('active-section'));
+        updatesHeader.classList.add('active-section');
+
+        // Show the updates page
+        displayAllUpdates();
     });
 
     updatesDiv.appendChild(updatesHeader);
-    updatesDiv.appendChild(updatesList);
-
     return updatesDiv;
 }
 
-// ===== Create Update Item =====
-function createUpdateItem(update, index) {
-    const updateDiv = document.createElement('div');
-    updateDiv.className = 'egg-item';
-    updateDiv.innerHTML = `${update.version} <span class="update-date-small">• ${update.date}</span>`;
-
-    updateDiv.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selectUpdate(updateDiv, update, index);
-    });
-
-    return updateDiv;
-}
-
-// ===== Select Update =====
-function selectUpdate(updateElement, update, index) {
-    // Remove active class from all eggs and updates
-    document.querySelectorAll('.egg-item').forEach(item => {
-        item.classList.remove('active');
-    });
-
-    // Add active class to selected update
-    updateElement.classList.add('active');
-
-    // Display update details in content area
-    displayUpdateDetails(update, index);
-}
-
-// ===== Display Update Details =====
-function displayUpdateDetails(update, index) {
+// ===== Display All Updates (Single Page) =====
+function displayAllUpdates() {
     const contentArea = document.getElementById('content');
 
     if (!contentArea) {
@@ -140,31 +112,55 @@ function displayUpdateDetails(update, index) {
         return;
     }
 
-    const updateHTML = `
-        <div class="update-details">
-            <div class="update-details-header">
-                <div class="update-title-section">
-                    <span class="gem-icon-large">💎</span>
-                    <h2 class="update-details-title">${update.version}</h2>
-                </div>
-                <div class="update-date-large">Released ${update.date}</div>
+    // Generate HTML for all updates
+    let updatesHTML = `
+        <div class="updates-page-container">
+            <div class="updates-page-header">
+                <h2>Update Log</h2>
+                <p>Track the latest changes and additions to the game.</p>
             </div>
+            <div class="updates-timeline">
+    `;
 
-            <div class="update-features-list">
-                <h3 class="features-heading">What's New</h3>
-                <ul class="features-items">
-                    ${update.features.map(feature => `
-                        <li class="feature-item">
-                            <span class="feature-icon">${feature.icon}</span>
-                            <span class="feature-text">${feature.text}</span>
-                        </li>
-                    `).join('')}
-                </ul>
+    // Loop through updates (assuming UPDATE_LOGS is ordered new -> old, if not we might need to sort)
+    // If UPDATE_LOGS[0] is "Update 1" (oldest), we should reverse it to show latest first.
+    // Based on the file content "Update 1" was at index 0. If the user adds "Update 2" it would likely be appended.
+    // So we should probably reverse the array for display purposes to show latest first.
+    const reversedLogs = [...UPDATE_LOGS].reverse();
+
+    reversedLogs.forEach((update) => {
+        updatesHTML += `
+            <div class="update-entry">
+                <div class="update-entry-header">
+                    <div class="update-version-title">${update.version}</div>
+                    <div class="update-timestamp">${update.date}</div>
+                </div>
+                <div class="update-entry-content">
+                    <ul class="update-features-list-page">
+                        ${update.features.map(feature => `
+                            <li>
+                                <span class="feature-icon-page">${feature.icon}</span>
+                                <div class="feature-content-wrapper">
+                                    <span class="feature-text-page">${feature.text}</span>
+                                    ${feature.subtext ? `<span class="feature-subtext-page">${feature.subtext}</span>` : ''}
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+    });
+
+    updatesHTML += `
             </div>
         </div>
     `;
 
-    contentArea.innerHTML = updateHTML;
+    contentArea.innerHTML = updatesHTML;
+
+    // Scroll to top
+    contentArea.scrollTop = 0;
 }
 
 // ===== Create World Section =====

@@ -6,117 +6,157 @@
     font-weight: 400;
 }
 
-/* ===== Update Details Display (Content Area) ===== */
+/* ===== Update Log Page (Single Page View) ===== */
 
-.update-details {
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 1.8rem;
-    border: 1px solid rgba(114, 178, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    max-width: 650px;
+.updates-page-container {
+    max-width: 800px;
     margin: 0 auto;
+    padding: 1rem;
 }
 
-.update-details-header {
-    margin-bottom: 1.8rem;
-    border-bottom: 2px solid rgba(114, 178, 255, 0.3);
-    padding-bottom: 1.2rem;
+.updates-page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
 }
 
-.update-title-section {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 0.6rem;
-}
-
-.gem-icon-large {
-    font-size: 2rem;
-    animation: gemPulse 2s ease-in-out infinite;
-}
-
-@keyframes gemPulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.15);
-    }
-}
-
-.update-details-title {
+.updates-page-header h2 {
     background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    font-size: 1.8rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    margin: 0;
+    margin-bottom: 0.5rem;
 }
 
-.update-date-large {
+.updates-page-header p {
     color: #9CA3AF;
-    font-size: 0.85rem;
-    padding-left: 2.8rem;
-    font-weight: 500;
-}
-
-/* Update Features List */
-
-.update-features-list {
-    margin-top: 1.2rem;
-}
-
-.features-heading {
-    color: #72B2FF;
     font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid rgba(114, 178, 255, 0.15);
 }
 
-.features-items {
+.updates-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: relative;
+}
+
+.updates-timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(114, 178, 255, 0.1);
+    z-index: 0;
+}
+
+.update-entry {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(114, 178, 255, 0.15);
+    padding: 1.5rem;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    margin-left: 0;
+    /* Reset margin if needed */
+}
+
+.update-entry:hover {
+    transform: translateY(-2px);
+    border-color: rgba(114, 178, 255, 0.3);
+    background: rgba(18, 44, 103, 0.3);
+}
+
+.update-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.1);
+}
+
+.update-version-title {
+    color: #72B2FF;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.update-timestamp {
+    color: #9CA3AF;
+    font-size: 0.9rem;
+    font-weight: 500;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1px solid rgba(114, 178, 255, 0.1);
+}
+
+.update-entry-content {
+    padding-left: 0.5rem;
+}
+
+.update-features-list-page {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.feature-item {
+.update-features-list-page li {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 1rem;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid rgba(114, 178, 255, 0.1);
-    transition: all 0.2s ease;
+    padding: 0.6rem 0;
+    color: #E8EAED;
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
-.feature-item:last-child {
-    border-bottom: none;
-}
-
-.feature-item:hover {
-    padding-left: 0.5rem;
-    background: rgba(18, 44, 103, 0.2);
-    border-radius: 6px;
-}
-
-.feature-item .feature-icon {
-    font-size: 1.5rem;
-    min-width: 35px;
+.feature-icon-page {
+    font-size: 1.2rem;
+    min-width: 30px;
     text-align: center;
 }
 
-.feature-item .feature-text {
-    color: #E8EAED;
-    font-size: 0.95rem;
+.feature-text-page {
+    flex: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .updates-timeline::before {
+        display: none;
+    }
+
+    .update-entry-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .update-timestamp {
+        font-size: 0.8rem;
+        padding: 0.2rem 0.6rem;
+    }
+}
+
+.feature-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.feature-subtext-page {
+    color: #9CA3AF;
+    font-size: 0.85rem;
     font-weight: 400;
-    line-height: 1.5;
 }
 
 /* ===== Updates Section at Bottom of Sidebar ===== */
@@ -357,6 +397,11 @@ header h1:hover {
 
 .world-header.collapsed::before {
     transform: rotate(-90deg);
+}
+
+/* Hide arrow for specific headers (like Updates) */
+.world-header.no-arrow::before {
+    display: none;
 }
 
 /* Egg list */
