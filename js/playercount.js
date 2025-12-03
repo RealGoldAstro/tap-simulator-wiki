@@ -31,14 +31,14 @@ function initPlayerCount() {
     inner.style.display = 'flex';
     inner.style.flexDirection = 'column'; // Stack vertically
     inner.style.alignItems = 'center';
-    inner.style.gap = '0.15rem';
+    inner.style.gap = '0.09rem';
     inner.style.fontSize = '0.60rem';
 
     // Line 1: Active Players (green number + gray "Active")
     const activeLine = document.createElement('div');
     activeLine.style.display = 'flex';
     activeLine.style.alignItems = 'baseline';
-    activeLine.style.gap = '0.25rem';
+    activeLine.style.gap = '0.18rem';
 
     const activeNumber = document.createElement('span');
     activeNumber.id = 'player-count-number';
