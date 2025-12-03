@@ -59,12 +59,11 @@
     backdrop-filter: blur(10px);
     border-radius: 12px;
     border: 1px solid rgba(114, 178, 255, 0.15);
-    padding: 1.5rem;
+    padding: 1.2rem;
     position: relative;
     z-index: 1;
     transition: transform 0.2s ease, border-color 0.2s ease;
     margin-left: 0;
-    /* Reset margin if needed */
 }
 
 .update-entry:hover {
@@ -128,6 +127,40 @@
     flex: 1;
 }
 
+.feature-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.feature-subtext-page {
+    color: #9CA3AF;
+    font-size: 0.85rem;
+    font-weight: 400;
+}
+
+.load-more-btn {
+    display: block;
+    margin: 2rem auto 0;
+    padding: 0.8rem 2rem;
+    background: rgba(18, 44, 103, 0.5);
+    border: 1px solid rgba(114, 178, 255, 0.3);
+    border-radius: 8px;
+    color: #72B2FF;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.load-more-btn:hover {
+    background: rgba(18, 44, 103, 0.8);
+    border-color: #72B2FF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(114, 178, 255, 0.2);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .updates-timeline::before {
@@ -144,19 +177,6 @@
         font-size: 0.8rem;
         padding: 0.2rem 0.6rem;
     }
-}
-
-.feature-content-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    flex: 1;
-}
-
-.feature-subtext-page {
-    color: #9CA3AF;
-    font-size: 0.85rem;
-    font-weight: 400;
 }
 
 /* Rich Content Styles */
@@ -387,6 +407,7 @@ header h1:hover {
     border-right: 1px solid rgba(114, 178, 255, 0.2);
     overflow-y: auto;
     padding: 0.8rem;
+    padding-bottom: 3.5rem;
 }
 
 .sidebar-content {
@@ -837,468 +858,51 @@ header h1:hover {
     }
 
     .update-header-sidebar {
-        padding: 0.6rem;
-    }
-
-    .update-version-sidebar {
-        font-size: 0.8rem;
-    }
-
-    .update-date-sidebar {
-        font-size: 0.65rem;
-    }
-
-    .update-list-sidebar li {
-        font-size: 0.75rem;
-        padding: 0.4rem 0;
-    }
-
-    .update-list-sidebar .feature-icon {
-        font-size: 0.9rem;
-    }
-
-    .footer-content {
-        font-size: 0.7rem;
-        padding: 0.4rem;
-    }
-
-    .footer-link,
-    .footer-text {
-        font-size: 0.7rem;
-    }
-
-    .site-footer {
-        padding: 0.4rem 0.8rem;
+        padding: 0.6rem 0.7rem;
     }
 }
 
-/* css/styles.css */
+/* ===== Additional Overrides ===== */
 
-/* Studio link specific styling */
-.studio-link {
-    display: block;
-    text-align: center;
-    max-width: 300px;
-    margin: 0 auto;
+/* Remove arrow from Updates button */
+.updates-section-bottom .world-header::before {
+    display: none !important;
 }
 
-/* Owners list */
-.owners-list {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
+/* Improved Footer Styling */
+.site-footer {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(10, 14, 26, 0.95) 100%) !important;
+    backdrop-filter: blur(15px) !important;
+    border-top: 2px solid rgba(114, 178, 255, 0.25) !important;
+    padding: 0.8rem 1.5rem !important;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
-.owner-link {
-    min-width: 120px;
-    text-align: center;
+.footer-content {
+    gap: 0.8rem !important;
 }
 
-/* Responsive adjustments for update log */
-@media (max-width: 768px) {
-
-    .update-log-container,
-    .creator-info-container {
-        margin: 1.5rem 1rem;
-        padding: 1.2rem;
-    }
-
-    .update-log-header h3 {
-        font-size: 1.1rem;
-    }
-
-    .feature-text {
-        font-size: 0.85rem;
-    }
-
-    .owners-list {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .owner-link {
-        width: 100%;
-        max-width: 250px;
-    }
+.footer-text {
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
 }
 
-/* ===== CSS Reset & Base Styles ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.footer-link {
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+    padding: 0.2rem 0.5rem !important;
+    border-radius: 4px !important;
 }
 
-html,
-body {
-    width: 100%;
-    height: 100%;
-    overflow-x: hidden;
+.footer-link:hover {
+    color: #fff !important;
+    background: rgba(114, 178, 255, 0.2) !important;
+    transform: translateY(-1px) !important;
+    text-decoration: none !important;
 }
 
-body {
-    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0a0e1a 0%, #1a1f35 25%, #0f1623 50%, #151b2e 75%, #0a0e1a 100%);
-    background-size: 400% 400%;
-    background-attachment: fixed;
-    animation: gradientShift 15s ease infinite;
-    color: #E8EAED;
-    line-height: 1.5;
-    min-height: 100vh;
-    position: relative;
+.footer-separator {
+    color: rgba(114, 178, 255, 0.4) !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
 }
-
-/* Animated gradient background */
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
-    }
-
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* Canvas for particle effect (behind everything) */
-#particles-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* Pattern overlay */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle at 20% 50%, rgba(114, 178, 255, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(114, 178, 255, 0.03) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-/* ===== Header Styles ===== */
-header {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
-    padding: 0.6rem 1.5rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1900px;
-    margin: 0 auto;
-}
-
-header h1 {
-    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-/* Game icon (top right) */
-.game-icon-container {
-    width: 45px;
-    height: 45px;
-}
-
-.game-icon-placeholder {
-    width: 100%;
-    height: 100%;
-    background-image: url('../assets/GameIcon.png');
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-    border: 2px solid rgba(114, 178, 255, 0.4);
-    box-shadow: 0 0 15px rgba(114, 178, 255, 0.3);
-}
-
-/* ===== Main Container ===== */
-.container {
-    display: flex;
-    max-width: 1900px;
-    margin: 0 auto;
-    height: calc(100vh - 70px);
-    position: relative;
-    z-index: 1;
-}
-
-/* ===== Sidebar Styles ===== */
-#sidebar {
-    width: 220px;
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(10px);
-    border-right: 1px solid rgba(114, 178, 255, 0.2);
-    overflow-y: auto;
-    padding: 0.8rem;
-}
-
-.sidebar-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-}
-
-/* World section (collapsible) */
-.world-section {
-    background: rgba(18, 44, 103, 0.3);
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid rgba(114, 178, 255, 0.15);
-    transition: all 0.2s;
-}
-
-.world-section:hover {
-    border-color: rgba(114, 178, 255, 0.4);
-    box-shadow: 0 0 10px rgba(114, 178, 255, 0.2);
-}
-
-.world-header {
-    padding: 0.5rem 0.8rem;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #72B2FF;
-    background: rgba(18, 44, 103, 0.4);
-    transition: all 0.2s;
-    user-select: none;
-}
-
-.world-header:hover {
-    background: rgba(18, 44, 103, 0.6);
-}
-
-.world-header::before {
-    content: '▼';
-    display: inline-block;
-    margin-right: 0.5rem;
-    transition: transform 0.2s;
-    font-size: 0.7rem;
-}
-
-.world-header.collapsed::before {
-    transform: rotate(-90deg);
-}
-
-/* Updates section arrow points up when collapsed, down when expanded */
-.updates-section .world-header::before {
-    content: '▲';
-}
-
-.updates-section .world-header.collapsed::before {
-    content: '▼';
-    transform: rotate(0deg);
-}
-
-/* Egg list */
-.egg-list {
-    display: flex;
-    flex-direction: column;
-    background: rgba(7, 12, 29, 0.4);
-    max-height: 500px;
-    overflow: hidden;
-    transition: max-height 0.2s ease-in-out;
-    will-change: max-height;
-}
-
-.egg-list.collapsed {
-    max-height: 0;
-}
-
-/* Updates section - dropdown expands upward */
-.updates-section {
-    margin-top: auto;
-    display: flex;
-    flex-direction: column-reverse;
-}
-
-.updates-section .egg-list {
-    flex-direction: column-reverse;
-}
-
-
-
-.egg-item {
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    color: #C5C7CA;
-    transition: all 0.2s;
-    border-left: 2px solid transparent;
-    font-size: 0.85rem;
-}
-
-.egg-item:hover {
-    background: rgba(18, 44, 103, 0.4);
-    border-left-color: #72B2FF;
-    color: #72B2FF;
-    padding-left: 1.2rem;
-}
-
-.egg-item.active {
-    background: rgba(18, 44, 103, 0.5);
-    border-left-color: #72B2FF;
-    color: #72B2FF;
-    font-weight: 600;
-}
-
-/* ===== Content Area Styles ===== */
-#content {
-    flex: 1;
-    padding: 1.5rem;
-    overflow-y: auto;
-    background: transparent;
-}
-
-.welcome {
-    text-align: center;
-    padding: 3rem 2rem;
-}
-
-.welcome h2 {
-    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-size: 1.8rem;
-    margin-bottom: 0.8rem;
-}
-
-.welcome p {
-    color: #9CA3AF;
-    font-size: 1rem;
-}
-
-/* Pet details display */
-.pet-details {
-    background: rgba(15, 23, 42, 0.7);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 1.5rem;
-    border: 1px solid rgba(114, 178, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-}
-
-.pet-header {
-    margin-bottom: 1.5rem;
-    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
-    padding-bottom: 1rem;
-}
-
-.pet-title {
-    font-size: 1.5rem;
-    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.3rem;
-}
-
-.pet-meta {
-    color: #9CA3AF;
-    font-size: 0.85rem;
-}
-
-/* Pet stats table */
-.pets-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-}
-
-.pets-table th {
-    padding: 0.7rem 0.5rem;
-    text-align: left;
-    background: rgba(18, 44, 103, 0.5);
-    color: #72B2FF;
-    font-weight: 600;
-    border-bottom: 2px solid rgba(114, 178, 255, 0.3);
-    font-size: 0.8rem;
-    white-space: nowrap;
-}
-
-.pets-table td {
-    padding: 0.7rem 0.5rem;
-    border-bottom: 1px solid rgba(114, 178, 255, 0.1);
-    color: #E8EAED;
-}
-
-.pets-table tr:hover {
-    background: rgba(18, 44, 103, 0.3);
-}
-
-.rarity-badge {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-weight: 600;
-    font-size: 0.75rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.stat-value {
-    font-family: 'Courier New', monospace;
-    color: #72B2FF;
-    font-weight: 600;
-}
-
-/* ===== Scrollbar Styling ===== */
-::-webkit-scrollbar {
-    width: 6px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(7, 12, 29, 0.5);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(114, 178, 255, 0.4);
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(114, 178, 255, 0.6);
-}
-
-/* ===== Responsive Design ===== */
-@media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-    }
-
-    #sidebar {
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid rgba(114, 178, 255, 0.2);
-    }
-
-    .pets-table {
-        font-size: 0.75rem;
-    }
-}
-
-/* css/styles.css */

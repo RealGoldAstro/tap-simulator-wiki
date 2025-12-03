@@ -7,9 +7,23 @@
 // Update log data with dates
 const UPDATE_LOGS = [
     {
+        version: "Update 1.1",
+        priority: 2,
+        date: { date: "December 2, 2025", time: "21:00 GMT" },
+        content: [
+            {
+                type: 'feature-list',
+                items: [
+                    { icon: "�", text: "Rainbow Machine change", subtext: "Changed Rainbow machine time with 5 pets from 3 Minutes to 30 Seconds" },
+                    { icon: "🤖", text: "Added some small Anti Cheat measures", subtext: "Added some small Anti Cheat measure for pet power leaderboard" }
+                ]
+            }
+        ]
+    },
+    {
         version: "Update 1",
-
-        date: { date: "December 2, 2025", time: "8:00 GMT" },
+        priority: 1,
+        date: { date: "December 1, 2025", time: "3:00 GMT" },
         content: [
             {
                 type: 'feature-list',
@@ -20,18 +34,7 @@ const UPDATE_LOGS = [
                     { icon: "⭐", text: "3 New Secrets" },
                     { icon: "🛒", text: "Triple Hatch is now free!" }
                 ]
-            },
-            // Example of how to add an image:
-            // { 
-            //     type: 'image', 
-            //     src: 'assets/update1_preview.png', 
-            //     caption: 'New Sakura Island Preview' 
-            // },
-            // Example of text block:
-            // {
-            //     type: 'text',
-            //     text: 'Explore the new island and discover hidden secrets!'
-            // }
+            }
         ]
     }
     // Add more updates here in the future
@@ -88,8 +91,9 @@ function generateSidebar() {
         sidebarContent.appendChild(worldSection);
     }
 
-    // Add updates section at the bottom
+    // Add updates section at the bottom with special class
     const updatesSection = createUpdatesSection();
+    updatesSection.classList.add('updates-section-bottom');
     sidebarContent.appendChild(updatesSection);
 }
 
@@ -100,7 +104,7 @@ function createUpdatesSection() {
 
     // Updates header (clickable button, no dropdown)
     const updatesHeader = document.createElement('div');
-    updatesHeader.className = 'world-header no-arrow'; // Added no-arrow class
+    updatesHeader.className = 'world-header no-arrow';
     updatesHeader.textContent = 'Updates';
 
     // Remove the arrow/collapsed class logic
@@ -112,6 +116,9 @@ function createUpdatesSection() {
         document.querySelectorAll('.world-header').forEach(h => h.classList.remove('active-section'));
         updatesHeader.classList.add('active-section');
 
+        // Reset pagination when opening updates
+        updatesVisibleCount = 10;
+
         // Show the updates page
         displayAllUpdates();
     });
@@ -119,6 +126,9 @@ function createUpdatesSection() {
     updatesDiv.appendChild(updatesHeader);
     return updatesDiv;
 }
+
+// Global variable for pagination
+let updatesVisibleCount = 10;
 
 // ===== Display All Updates (Single Page) =====
 function displayAllUpdates() {
@@ -139,10 +149,14 @@ function displayAllUpdates() {
             <div class="updates-timeline">
     `;
 
-    // Loop through updates (assuming UPDATE_LOGS is ordered new -> old, if not we might need to sort)
-    const reversedLogs = [...UPDATE_LOGS].reverse();
+    // Sort by priority (high to low)
+    const sortedLogs = [...UPDATE_LOGS].sort((a, b) => (b.priority || 0) - (a.priority || 0));
 
-    reversedLogs.forEach((update) => {
+    // Pagination logic
+    const visibleLogs = sortedLogs.slice(0, updatesVisibleCount);
+    const hasMore = sortedLogs.length > updatesVisibleCount;
+
+    visibleLogs.forEach((update) => {
         updatesHTML += `
             <div class="update-entry">
                 <div class="update-entry-header">
@@ -192,13 +206,29 @@ function displayAllUpdates() {
 
     updatesHTML += `
             </div>
+            ${hasMore ? '<button id="load-more-updates" class="load-more-btn">Load More</button>' : ''}
         </div>
     `;
 
     contentArea.innerHTML = updatesHTML;
 
-    // Scroll to top
-    contentArea.scrollTop = 0;
+    // Add event listener for Load More button
+    if (hasMore) {
+        const loadMoreBtn = document.getElementById('load-more-updates');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                updatesVisibleCount += 10;
+                displayAllUpdates(); // Re-render with more items
+            });
+        }
+    }
+
+    // Scroll to top only if it's the initial load (or maybe not at all to keep position?)
+    // If we re-render on load more, we probably shouldn't scroll to top.
+    // Let's only scroll to top if visibleCount is 10 (reset)
+    if (updatesVisibleCount === 10) {
+        contentArea.scrollTop = 0;
+    }
 }
 
 // ===== Format Local Time =====

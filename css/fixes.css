@@ -1,0 +1,81 @@
+/* CRITICAL FIXES - Load this file AFTER styles.css */
+
+/* Fix #1: Make sidebar extend ALL THE WAY down - no gaps! */
+.container {
+    height: calc(100vh - 70px) !important;
+    padding-bottom: 0 !important;
+}
+
+#sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    padding-bottom: 0 !important;
+    height: 97% !important;
+}
+
+.sidebar-content {
+    flex: 1 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Fix #2: Remove weird border/background from Updates section */
+.updates-section-bottom {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin-top: auto !important;
+    padding-top: 0.8rem !important;
+    padding-bottom: 1rem !important;
+    border-top: 1px solid rgba(114, 178, 255, 0.2) !important;
+    overflow: visible !important;
+    transition: none !important;
+}
+
+/* Fix #3: Only button should light up on hover, NOT the line */
+.updates-section-bottom:hover {
+    background: transparent !important;
+    border-top-color: rgba(114, 178, 255, 0.2) !important;
+    box-shadow: none !important;
+}
+
+.updates-section-bottom .world-header {
+    background: rgba(18, 44, 103, 0.4) !important;
+    border: 1px solid rgba(114, 178, 255, 0.15) !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    transition: all 0.2s !important;
+}
+
+.updates-section-bottom .world-header:hover {
+    background: rgba(18, 44, 103, 0.6) !important;
+    border-color: rgba(114, 178, 255, 0.4) !important;
+    box-shadow: 0 0 10px rgba(114, 178, 255, 0.2) !important;
+}
+
+/* Fix #4: Compact, better-looking footer */
+.site-footer {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(10, 14, 26, 0.98) 100%) !important;
+    border-top: 1px solid rgba(114, 178, 255, 0.3) !important;
+    padding: 0.4rem 1rem !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.footer-content {
+    gap: 0.5rem !important;
+}
+
+.footer-text {
+    font-size: 0.7rem !important;
+}
+
+.footer-link {
+    font-size: 0.7rem !important;
+    padding: 0.1rem 0.3rem !important;
+}
+
+.footer-separator {
+    font-size: 0.7rem !important;
+    font-weight: 500 !important;
+}
