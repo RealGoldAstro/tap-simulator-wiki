@@ -32,7 +32,7 @@ function initPlayerCount() {
     inner.style.flexDirection = 'column'; // Stack vertically
     inner.style.alignItems = 'center';
     inner.style.gap = '0.15rem';
-    inner.style.fontSize = '0.75rem';
+    inner.style.fontSize = '0.60rem';
 
     // Line 1: Active Players (green number + gray "Active")
     const activeLine = document.createElement('div');
@@ -44,7 +44,7 @@ function initPlayerCount() {
     activeNumber.id = 'player-count-number';
     activeNumber.style.color = '#22c55e'; // Green
     activeNumber.style.fontWeight = '600';
-    activeNumber.style.fontSize = '0.8rem';
+    activeNumber.style.fontSize = '0.58rem';
 
     const activeLabel = document.createElement('span');
     activeLabel.id = 'player-count-label';
@@ -60,7 +60,7 @@ function initPlayerCount() {
     peak24hLine.id = 'peak24h-line';
     peak24hLine.style.color = '#9CA3AF'; // Gray
     peak24hLine.style.fontWeight = '500';
-    peak24hLine.style.fontSize = '0.7rem';
+    peak24hLine.style.fontSize = '0.55rem';
     peak24hLine.textContent = '24hr Peak • ---';
 
     // Line 3: 7d Peak
@@ -68,7 +68,7 @@ function initPlayerCount() {
     peak7dLine.id = 'peak7d-line';
     peak7dLine.style.color = '#9CA3AF'; // Gray
     peak7dLine.style.fontWeight = '500';
-    peak7dLine.style.fontSize = '0.7rem';
+    peak7dLine.style.fontSize = '0.55rem';
     peak7dLine.textContent = '7d Peak • ---';
 
     // Append all lines to container
