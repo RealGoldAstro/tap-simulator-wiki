@@ -8,7 +8,8 @@
 const UPDATE_LOGS = [
     {
         version: "Update 1",
-        date: "December 2, 2025",
+
+        date: { date: "December 2, 2025", time: "8:00 GMT" },
         content: [
             {
                 type: 'feature-list',
@@ -146,7 +147,7 @@ function displayAllUpdates() {
             <div class="update-entry">
                 <div class="update-entry-header">
                     <div class="update-version-title">${update.version}</div>
-                    <div class="update-timestamp">${update.date}</div>
+                    <div class="update-timestamp">${formatLocalTime(update.date)}</div>
                 </div>
                 <div class="update-entry-content">
         `;
@@ -198,6 +199,30 @@ function displayAllUpdates() {
 
     // Scroll to top
     contentArea.scrollTop = 0;
+}
+
+// ===== Format Local Time =====
+function formatLocalTime(dateObj) {
+    // Handle legacy string format
+    if (typeof dateObj === 'string') return dateObj;
+
+    const { date, time } = dateObj;
+    const fullString = `${date} ${time}`;
+    const dateObjParsed = new Date(fullString);
+
+    // Check if valid
+    if (isNaN(dateObjParsed.getTime())) {
+        return `${date} (${time})`; // Fallback
+    }
+
+    // Format to local string
+    return dateObjParsed.toLocaleString(undefined, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+    });
 }
 
 // ===== Create World Section =====
