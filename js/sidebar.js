@@ -14,7 +14,7 @@ const UPDATE_LOGS = [
             {
                 type: 'feature-list',
                 items: [
-                    { icon: "�", text: "Rainbow Machine change", subtext: "Changed Rainbow machine time with 5 pets from 3 Minutes to 30 Seconds" },
+                    { icon: "🌈", text: "Rainbow Machine change", subtext: "Changed Rainbow machine time with 5 pets from 3 Minutes to 30 Seconds" },
                     { icon: "🤖", text: "Added some small Anti Cheat measures", subtext: "Added some small Anti Cheat measure for pet power leaderboard" }
                 ]
             }
@@ -55,7 +55,11 @@ const CREATORS = {
             name: "Zood",
             url: "https://www.roblox.com/users/85126038/profile"
         }
-    ]
+    ],
+    madeby: {
+        name: "goldastro",
+        url: "https://www.roblox.com/users/1129452280/profile"
+    }
 };
 
 (function initSidebar() {
@@ -372,6 +376,11 @@ function createFooter() {
             <span class="footer-text">Studio:</span>
             <a href="${CREATORS.studio.url}" target="_blank" rel="noopener noreferrer" class="footer-link">
                 ${CREATORS.studio.name}
+            </a>
+            <span class="footer-separator">•</span>
+            <span class="footer-text">Made by:</span>
+            <a href="${CREATORS.madeby.url}" target="_blank" rel="noopener noreferrer" class="footer-link">
+                ${CREATORS.madeby.name}
             </a>
         </div>
     `;
