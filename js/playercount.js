@@ -1,7 +1,7 @@
 // js/playercount.js
 
 // ===== Player Count Configuration =====
-const API_URL = 'https://roblox-playercount-proxy-lgk9rplyj-astros-projects-7d607cbf.vercel.app/api/players';
+const API_URL = 'https://roblox-playercount-proxy-au61sl3pz-astros-projects-7d607cbf.vercel.app/api/players';
 const UPDATE_INTERVAL = 30000; // 30 seconds (display refresh only, backend saves every 10 min)
 
 // ===== Initialize Player Count =====
