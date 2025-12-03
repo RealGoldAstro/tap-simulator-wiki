@@ -39,7 +39,7 @@
 .updates-timeline {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     position: relative;
 }
 
@@ -157,6 +157,44 @@
     color: #9CA3AF;
     font-size: 0.85rem;
     font-weight: 400;
+}
+
+/* Rich Content Styles */
+.update-content-image-wrapper {
+    margin: 1rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.update-content-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.update-image-caption {
+    background: rgba(15, 23, 42, 0.8);
+    color: #9CA3AF;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.update-content-header {
+    color: #72B2FF;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 1.2rem 0 0.5rem 0;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.15);
+}
+
+.update-content-text {
+    color: #E8EAED;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.8rem;
 }
 
 /* ===== Updates Section at Bottom of Sidebar ===== */

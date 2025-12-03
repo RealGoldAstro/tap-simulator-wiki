@@ -9,12 +9,28 @@ const UPDATE_LOGS = [
     {
         version: "Update 1",
         date: "December 2, 2025",
-        features: [
-            { icon: "🏝️", text: "New Island", subtext: "Sakura Island Added" },
-            { icon: "🥚", text: "2 New Eggs", subtext: "Sakura Egg & Void Egg" },
-            { icon: "🐾", text: "17 New Pets" },
-            { icon: "⭐", text: "3 New Secrets" },
-            { icon: "🛒", text: "Triple Hatch is now free!" }
+        content: [
+            {
+                type: 'feature-list',
+                items: [
+                    { icon: "🏝️", text: "New Island", subtext: "Sakura Island Added" },
+                    { icon: "🥚", text: "2 New Eggs", subtext: "Sakura Egg & Void Egg" },
+                    { icon: "🐾", text: "17 New Pets" },
+                    { icon: "⭐", text: "3 New Secrets" },
+                    { icon: "🛒", text: "Triple Hatch is now free!" }
+                ]
+            },
+            // Example of how to add an image:
+            // { 
+            //     type: 'image', 
+            //     src: 'assets/update1_preview.png', 
+            //     caption: 'New Sakura Island Preview' 
+            // },
+            // Example of text block:
+            // {
+            //     type: 'text',
+            //     text: 'Explore the new island and discover hidden secrets!'
+            // }
         ]
     }
     // Add more updates here in the future
@@ -123,9 +139,6 @@ function displayAllUpdates() {
     `;
 
     // Loop through updates (assuming UPDATE_LOGS is ordered new -> old, if not we might need to sort)
-    // If UPDATE_LOGS[0] is "Update 1" (oldest), we should reverse it to show latest first.
-    // Based on the file content "Update 1" was at index 0. If the user adds "Update 2" it would likely be appended.
-    // So we should probably reverse the array for display purposes to show latest first.
     const reversedLogs = [...UPDATE_LOGS].reverse();
 
     reversedLogs.forEach((update) => {
@@ -136,17 +149,41 @@ function displayAllUpdates() {
                     <div class="update-timestamp">${update.date}</div>
                 </div>
                 <div class="update-entry-content">
-                    <ul class="update-features-list-page">
-                        ${update.features.map(feature => `
-                            <li>
-                                <span class="feature-icon-page">${feature.icon}</span>
-                                <div class="feature-content-wrapper">
-                                    <span class="feature-text-page">${feature.text}</span>
-                                    ${feature.subtext ? `<span class="feature-subtext-page">${feature.subtext}</span>` : ''}
-                                </div>
-                            </li>
-                        `).join('')}
-                    </ul>
+        `;
+
+        // Render content based on type
+        if (update.content && Array.isArray(update.content)) {
+            update.content.forEach(block => {
+                if (block.type === 'feature-list') {
+                    updatesHTML += `
+                        <ul class="update-features-list-page">
+                            ${block.items.map(feature => `
+                                <li>
+                                    <span class="feature-icon-page">${feature.icon}</span>
+                                    <div class="feature-content-wrapper">
+                                        <span class="feature-text-page">${feature.text}</span>
+                                        ${feature.subtext ? `<span class="feature-subtext-page">${feature.subtext}</span>` : ''}
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                } else if (block.type === 'image') {
+                    updatesHTML += `
+                        <div class="update-content-image-wrapper">
+                            <img src="${block.src}" alt="${block.caption || 'Update Image'}" class="update-content-image">
+                            ${block.caption ? `<div class="update-image-caption">${block.caption}</div>` : ''}
+                        </div>
+                    `;
+                } else if (block.type === 'header') {
+                    updatesHTML += `<h3 class="update-content-header">${block.text}</h3>`;
+                } else if (block.type === 'text') {
+                    updatesHTML += `<p class="update-content-text">${block.text}</p>`;
+                }
+            });
+        }
+
+        updatesHTML += `
                 </div>
             </div>
         `;
