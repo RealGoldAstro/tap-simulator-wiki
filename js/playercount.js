@@ -3,7 +3,7 @@
 // ===== Player Count Configuration =====
 
 // Your deployed Vercel proxy URL
-const API_URL = 'https://roblox-playercount-proxy-fwsamj40t-astros-projects-7d607cbf.vercel.app/api/players';
+const API_URL = 'https://roblox-playercount-proxy-8osadymui-astros-projects-7d607cbf.vercel.app/api/players';
 
 // Display refresh interval (UI updates only, not necessarily a real network call every time)
 const UPDATE_INTERVAL = 120000; // 120 seconds (2 minutes)
