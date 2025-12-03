@@ -1,4 +1,7 @@
 /* ===== Update Date in Sidebar Item ===== */
+.credits-section-bottom {
+    margin-bottom: 1rem !important;
+}
 
 .update-date-small {
     color: #9CA3AF;
@@ -11,12 +14,12 @@
 .updates-page-container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 1rem;
+    padding: 0.8rem;
 }
 
 .updates-page-header {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     padding-bottom: 2rem;
     border-bottom: 1px solid rgba(114, 178, 255, 0.2);
 }
@@ -767,51 +770,158 @@ header h1:hover {
     font-weight: 600;
 }
 
-/* ===== Footer Styles (Plain, No Card) ===== */
+/* ===== Credits Page Styles ===== */
 
-.site-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: rgba(15, 23, 42, 0.95);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(114, 178, 255, 0.15);
-    padding: 0.5rem 1rem;
-    z-index: 100;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    max-width: 1900px;
+.credits-page-container {
+    max-width: 900px;
     margin: 0 auto;
-    flex-wrap: wrap;
+    padding: 2rem;
+    animation: fadeIn 0.3s ease;
 }
 
-.footer-text {
+.credits-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(114, 178, 255, 0.2);
+}
+
+.credits-header h2 {
+    background: linear-gradient(135deg, #72B2FF 0%, #4a9eff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.credits-header p {
     color: #9CA3AF;
-    font-size: 0.8rem;
+    font-size: 1.1rem;
 }
 
-.footer-link {
-    color: #72B2FF;
+.credits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.credit-card {
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(114, 178, 255, 0.15);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.credit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(114, 178, 255, 0.1) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.credit-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(114, 178, 255, 0.4);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    background: rgba(18, 44, 103, 0.4);
+}
+
+.credit-card:hover::before {
+    opacity: 1;
+}
+
+.credit-icon {
+    font-size: 2.5rem;
+    background: rgba(15, 23, 42, 0.5);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    border: 1px solid rgba(114, 178, 255, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.credit-card:hover .credit-icon {
+    transform: scale(1.1) rotate(5deg);
+    border-color: rgba(114, 178, 255, 0.3);
+    background: rgba(114, 178, 255, 0.1);
+}
+
+.credit-info {
+    flex: 1;
+    z-index: 1;
+}
+
+.credit-name {
+    color: #E8EAED;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+    transition: color 0.3s ease;
+}
+
+.credit-card:hover .credit-name {
+    color: #72B2FF;
+}
+
+.credit-role {
+    color: #9CA3AF;
+    font-size: 0.85rem;
     font-weight: 500;
-    font-size: 0.8rem;
-    transition: all 0.2s ease;
 }
 
-.footer-link:hover {
-    color: #4a9eff;
-    text-decoration: underline;
+/* Specific Card Styles */
+.owner-card {
+    border-left: 3px solid #FFD700;
 }
 
-.footer-separator {
-    color: rgba(114, 178, 255, 0.3);
-    font-size: 0.8rem;
+.studio-card {
+    border-left: 3px solid #72B2FF;
+}
+
+.dev-card {
+    border-left: 3px solid #10B981;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .credits-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .credit-card {
+        padding: 1.2rem;
+    }
 }
 
 /* ===== Scrollbar Styling ===== */
@@ -867,42 +977,4 @@ header h1:hover {
 /* Remove arrow from Updates button */
 .updates-section-bottom .world-header::before {
     display: none !important;
-}
-
-/* Improved Footer Styling */
-.site-footer {
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(10, 14, 26, 0.95) 100%) !important;
-    backdrop-filter: blur(15px) !important;
-    border-top: 2px solid rgba(114, 178, 255, 0.25) !important;
-    padding: 0.8rem 1.5rem !important;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4) !important;
-}
-
-.footer-content {
-    gap: 0.8rem !important;
-}
-
-.footer-text {
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-}
-
-.footer-link {
-    font-weight: 600 !important;
-    font-size: 0.85rem !important;
-    padding: 0.2rem 0.5rem !important;
-    border-radius: 4px !important;
-}
-
-.footer-link:hover {
-    color: #fff !important;
-    background: rgba(114, 178, 255, 0.2) !important;
-    transform: translateY(-1px) !important;
-    text-decoration: none !important;
-}
-
-.footer-separator {
-    color: rgba(114, 178, 255, 0.4) !important;
-    font-size: 0.85rem !important;
-    font-weight: 600 !important;
 }

@@ -57,7 +57,7 @@ const CREATORS = {
         }
     ],
     madeby: {
-        name: "goldastro",
+        name: "Goldastro",
         url: "https://www.roblox.com/users/1129452280/profile"
     }
 };
@@ -79,9 +79,6 @@ const CREATORS = {
 
     // Generate sidebar HTML from data
     generateSidebar();
-
-    // Initialize footer
-    initializeFooter();
 })();
 
 // ===== Generate Sidebar Function =====
@@ -99,6 +96,11 @@ function generateSidebar() {
     const updatesSection = createUpdatesSection();
     updatesSection.classList.add('updates-section-bottom');
     sidebarContent.appendChild(updatesSection);
+
+    // Add credits section below updates
+    const creditsSection = createCreditsSection();
+    creditsSection.classList.add('credits-section-bottom');
+    sidebarContent.appendChild(creditsSection);
 }
 
 // ===== Create Updates Section =====
@@ -358,46 +360,85 @@ function showWelcomePage() {
     `;
 }
 
-// ===== Create Footer =====
-function createFooter() {
-    const footer = document.createElement('footer');
-    footer.className = 'site-footer';
-    footer.innerHTML = `
-        <div class="footer-content">
-            <span class="footer-text">Created by</span>
-            <a href="${CREATORS.owners[0].url}" target="_blank" rel="noopener noreferrer" class="footer-link">
-                ${CREATORS.owners[0].name}
-            </a>
-            <span class="footer-separator">•</span>
-            <a href="${CREATORS.owners[1].url}" target="_blank" rel="noopener noreferrer" class="footer-link">
-                ${CREATORS.owners[1].name}
-            </a>
-            <span class="footer-separator">•</span>
-            <span class="footer-text">Studio:</span>
-            <a href="${CREATORS.studio.url}" target="_blank" rel="noopener noreferrer" class="footer-link">
-                ${CREATORS.studio.name}
-            </a>
-            <span class="footer-separator">•</span>
-            <span class="footer-text">Made by:</span>
-            <a href="${CREATORS.madeby.url}" target="_blank" rel="noopener noreferrer" class="footer-link">
-                ${CREATORS.madeby.name}
-            </a>
-        </div>
-    `;
-    return footer;
+// ===== Create Credits Section =====
+function createCreditsSection() {
+    const creditsDiv = document.createElement('div');
+    creditsDiv.className = 'world-section credits-section';
+
+    // Credits header (clickable button, no dropdown)
+    const creditsHeader = document.createElement('div');
+    creditsHeader.className = 'world-header no-arrow';
+    creditsHeader.textContent = 'Credits';
+
+    // Remove the arrow/collapsed class logic
+    creditsHeader.classList.remove('collapsed');
+
+    // Add click event to show credits
+    creditsHeader.addEventListener('click', () => {
+        // Highlight this section
+        document.querySelectorAll('.world-header').forEach(h => h.classList.remove('active-section'));
+        creditsHeader.classList.add('active-section');
+
+        // Show the credits page
+        displayCredits();
+    });
+
+    creditsDiv.appendChild(creditsHeader);
+    return creditsDiv;
 }
 
-// ===== Initialize Footer =====
-function initializeFooter() {
-    // Check if footer already exists
-    let footer = document.querySelector('.site-footer');
-    if (footer) {
-        footer.remove();
+// ===== Display Credits Page =====
+function displayCredits() {
+    const contentArea = document.getElementById('content');
+
+    if (!contentArea) {
+        console.warn('⚠️ Content area not found');
+        return;
     }
 
-    // Create and append new footer
-    footer = createFooter();
-    document.body.appendChild(footer);
+    // Generate HTML for credits with new grid design
+    let creditsHTML = `
+        <div class="credits-page-container">
+            <div class="credits-header">
+                <h2>Credits</h2>
+                <p>The team behind Tap Simulator Wiki</p>
+            </div>
+            
+            <div class="credits-grid">
+                <!-- Owners Group -->
+                ${CREATORS.owners.map(owner => `
+                    <a href="${owner.url}" target="_blank" rel="noopener noreferrer" class="credit-card owner-card">
+                        <div class="credit-icon">👑</div>
+                        <div class="credit-info">
+                            <div class="credit-name">${owner.name}</div>
+                            <div class="credit-role">Game Owner</div>
+                        </div>
+                    </a>
+                `).join('')}
+
+                <!-- Studio -->
+                <a href="${CREATORS.studio.url}" target="_blank" rel="noopener noreferrer" class="credit-card studio-card">
+                    <div class="credit-icon">🏢</div>
+                    <div class="credit-info">
+                        <div class="credit-name">${CREATORS.studio.name}</div>
+                        <div class="credit-role">Game Studio</div>
+                    </div>
+                </a>
+
+                <!-- Wiki Creator -->
+                <a href="${CREATORS.madeby.url}" target="_blank" rel="noopener noreferrer" class="credit-card dev-card">
+                    <div class="credit-icon">💻</div>
+                    <div class="credit-info">
+                        <div class="credit-name">${CREATORS.madeby.name}</div>
+                        <div class="credit-role">Wiki Developer</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    `;
+
+    contentArea.innerHTML = creditsHTML;
+    contentArea.scrollTop = 0;
 }
 
 // ===== Add Click Handler to Header Title =====
