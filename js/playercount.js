@@ -1,8 +1,16 @@
-// js/playercount.js
+// js/playercount.js -- Location: /js/playercount.js (frontend player count script)
 
 // ===== Player Count Configuration =====
-const API_URL = 'https://roblox-playercount-proxy-e1pa2ea4h-astros-projects-7d607cbf.vercel.app/api/players';
-const UPDATE_INTERVAL = 30000; // 30 seconds (display refresh only, backend saves every 10 min)
+
+// Your deployed Vercel proxy URL
+const API_URL = 'https://roblox-playercount-proxy-a8367ru0w-astros-projects-7d607cbf.vercel.app/api/players';
+
+// Display refresh interval (UI updates only, not necessarily a real network call every time)
+const UPDATE_INTERVAL = 120000; // 120 seconds (2 minutes)
+
+// Browser-side cache config so refreshes do not spam API
+const BROWSER_CACHE_KEY = 'astro_playercount_cache_v1';
+const BROWSER_CACHE_TTL_MS = 120000; // 120 seconds cache in browser (matches refresh)
 
 // ===== Initialize Player Count =====
 // Creates 3 stacked lines: Active, 24hr Peak, 7d Peak
@@ -75,6 +83,7 @@ function initPlayerCount() {
     inner.appendChild(activeLine);
     inner.appendChild(peak24hLine);
     inner.appendChild(peak7dLine);
+
     playerCountWrapper.appendChild(inner);
 
     // Insert between title and icon
@@ -86,8 +95,52 @@ function initPlayerCount() {
   setInterval(fetchPlayerCount, UPDATE_INTERVAL);
 }
 
+// ===== Browser Cache Helpers =====
+
+// Read cached player data from localStorage with TTL
+function getCachedPlayerData() {
+  try {
+    const raw = localStorage.getItem(BROWSER_CACHE_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed.cachedAt !== 'number') {
+      console.warn('⚠️ Playercount cache corrupted, ignoring and refetching');
+      return null;
+    }
+
+    const age = Date.now() - parsed.cachedAt;
+    if (age > BROWSER_CACHE_TTL_MS) {
+      // Cache expired
+      return null;
+    }
+
+    return parsed;
+  } catch (err) {
+    console.warn('⚠️ Failed to read playercount cache from localStorage:', err && err.message ? err.message : err);
+    return null;
+  }
+}
+
+// Save latest player data into localStorage
+function setCachedPlayerData(currentPlayers, peak24h, peak7d) {
+  try {
+    const payload = {
+      playing: currentPlayers,
+      peak24h: peak24h,
+      peak7d: peak7d,
+      cachedAt: Date.now(),
+    };
+    localStorage.setItem(BROWSER_CACHE_KEY, JSON.stringify(payload));
+  } catch (err) {
+    console.warn('⚠️ Failed to write playercount cache to localStorage:', err && err.message ? err.message : err);
+  }
+}
+
 // ===== Fetch Player Count =====
-// Calls Vercel proxy to get current + peak data
+// Calls Vercel proxy to get current + peak data, but respects browser cache
 function fetchPlayerCount() {
   if (!API_URL || API_URL.indexOf('your-vercel-app-name') !== -1) {
     console.warn('⚠️ API_URL for player count is not set to your real Vercel URL');
@@ -95,6 +148,16 @@ function fetchPlayerCount() {
     return;
   }
 
+  // Try to use browser cache first to avoid extra network calls on refresh
+  const cached = getCachedPlayerData();
+  if (cached) {
+    // Debug info to confirm cache usage
+    console.warn('⚠️ Using browser playercount cache (no API call this tick)');
+    updatePlayerCountDisplay(cached.playing, cached.peak24h, cached.peak7d);
+    return;
+  }
+
+  // No valid cache -> fetch from API
   fetch(API_URL)
     .then(response => {
       if (!response.ok) {
@@ -112,11 +175,15 @@ function fetchPlayerCount() {
       const currentPlayers = data.playing;
       const peak24h = data.peak24h || 0;
       const peak7d = data.peak7d || 0;
-      
+
+      // Update UI
       updatePlayerCountDisplay(currentPlayers, peak24h, peak7d);
+
+      // Store in browser cache for next 120 seconds
+      setCachedPlayerData(currentPlayers, peak24h, peak7d);
     })
     .catch(error => {
-      console.warn('⚠️ Failed to fetch player count from proxy:', error.message);
+      console.warn('⚠️ Failed to fetch player count from proxy:', error && error.message ? error.message : error);
       updatePlayerCountDisplay(null, null, null);
     });
 }
@@ -162,4 +229,4 @@ if (document.readyState === 'loading') {
   initPlayerCount();
 }
 
-// js/playercount.js
+// js/playercount.js -- Location: /js/playercount.js (frontend player count script)
