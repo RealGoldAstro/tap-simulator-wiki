@@ -567,6 +567,75 @@ const WIKI_DATA = {
                     chance: 0.000001
                 }
             ]
+        },
+        "Magma Egg": {
+            type: "Base",
+            cost: 25000000000000000,
+            pets: [
+                {
+                    petname: "Ashdog",
+                    rarity: "Common",
+                    base: 10000,
+                    petdisplayname: "Ash Dog",
+                    chance: 0.38
+                },
+                {
+                    petname: "BoneBull",
+                    rarity: "Rare",
+                    base: 10700,
+                    petdisplayname: "Bone Bull",
+                    chance: 0.3
+                },
+                {
+                    petname: "EmberInkling",
+                    rarity: "Rare",
+                    base: 12100,
+                    petdisplayname: "Ember Inkling",
+                    chance: 0.18
+                },
+                {
+                    petname: "Magmawrath",
+                    rarity: "Epic",
+                    base: 13000,
+                    petdisplayname: "Magmawrath",
+                    chance: 0.12
+                },
+                {
+                    petname: "BoneCat",
+                    rarity: "Epic",
+                    base: 14000,
+                    petdisplayname: "Bone Cat",
+                    chance: 0.02
+                },
+                {
+                    petname: "MagmaEmpryreus",
+                    rarity: "Legendary",
+                    base: 18500,
+                    petdisplayname: "Magma Empryreus",
+                    chance: 0.001
+                },
+                {
+                    petname: "HydraMagmaEmpryreus",
+                    rarity: "Legendary",
+                    base: 19000,
+                    petdisplayname: "Hydra Magma Empryreus",
+                    chance: 0.00005
+                },
+                {
+                    petname: "KingEmblazed",
+                    rarity: "Mythical",
+                    base: 27000,
+                    petdisplayname: "King Emblazed",
+                    chance: 0.00001
+                },
+                {
+                    petname: "Magmasaur",
+                    rarity: "Secret I",
+                    base: 50000,
+                    petdisplayname: "Magmasaur",
+                    chance: 0.000002
+                }
+            ]
         }
     },
     "Exclusive Eggs": {
