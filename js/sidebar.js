@@ -7,6 +7,23 @@
 // Update log data with dates
 const UPDATE_LOGS = [
     {
+        version: "Update 2",
+        priority: 3,
+        date: { date: "December 7, 2025", time: "23:30 GMT" },
+        content: [
+            {
+                type: 'feature-list',
+                items: [
+                    { icon: "🏝️", text: "New Island", subtext: "Volcano Island Added" },
+                    { icon: "🥚", text: "1 New Eggs", subtext: "Magma Egg" },
+                    { icon: "🐾", text: "9 New Pets" },
+                    { icon: "⭐", text: "1 New Secrets" },
+                    { icon: "🛒", text: "Trading Added!", subtext: "You can Trade yours friends or build up your pet power via trading!" }
+                ]
+            }
+        ]
+    },
+    {
         version: "Update 1.1",
         priority: 2,
         date: { date: "December 2, 2025", time: "21:00 GMT" },
