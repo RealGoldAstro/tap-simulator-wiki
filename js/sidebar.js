@@ -9,7 +9,7 @@ const UPDATE_LOGS = [
     {
         version: "Update 2",
         priority: 3,
-        date: { date: "December 7, 2025", time: "23:30 GMT" },
+        date: { date: "December 7, 2025", time: "21:30 GMT" },
         content: [
             {
                 type: 'feature-list',
