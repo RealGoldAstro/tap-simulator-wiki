@@ -619,7 +619,7 @@ const WIKI_DATA = {
                     rarity: "Legendary",
                     base: 19000,
                     petdisplayname: "Hydra Magma Empryreus",
-                    chance: 0.00005
+                    chance: 0.0005
                 },
                 {
                     petname: "KingEmblazed",
