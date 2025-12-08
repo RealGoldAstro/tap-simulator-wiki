@@ -626,7 +626,7 @@ const WIKI_DATA = {
                     rarity: "Mythical",
                     base: 35000,
                     petdisplayname: "King Emblazed",
-                    chance: 0.00001
+                    chance: 0.0001
                 },
                 {
                     petname: "Magmasaur",
