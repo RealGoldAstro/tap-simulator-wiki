@@ -7,6 +7,20 @@
 // Update log data with dates
 const UPDATE_LOGS = [
     {
+        version: "Update 2.1",
+        priority: 4,
+        date: { date: "December 12, 2025", time: "19:00 GMT" },
+        content: [
+            {
+                type: 'feature-list',
+                items: [
+                    { icon: "👆", text: "Auto Clicker", subtext: "Auto Clicker enable stat should save bow when auto rejoining" },
+                    { icon: "📊", text: "Leaderboard Fixed", subtext: "Leaderboard should show up on stats and in chat again" },
+                ]
+            }
+        ]
+    },
+    {
         version: "Update 2",
         priority: 3,
         date: { date: "December 7, 2025", time: "21:30 GMT" },
