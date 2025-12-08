@@ -582,56 +582,56 @@ const WIKI_DATA = {
                 {
                     petname: "BoneBull",
                     rarity: "Rare",
-                    base: 10700,
+                    base: 11750,
                     petdisplayname: "Bone Bull",
                     chance: 0.3
                 },
                 {
                     petname: "EmberInkling",
                     rarity: "Rare",
-                    base: 12100,
+                    base: 12700,
                     petdisplayname: "Ember Inkling",
                     chance: 0.18
                 },
                 {
                     petname: "Magmawrath",
                     rarity: "Epic",
-                    base: 13000,
+                    base: 14000,
                     petdisplayname: "Magmawrath",
                     chance: 0.12
                 },
                 {
                     petname: "BoneCat",
                     rarity: "Epic",
-                    base: 14000,
+                    base: 16000,
                     petdisplayname: "Bone Cat",
                     chance: 0.02
                 },
                 {
                     petname: "MagmaEmpryreus",
                     rarity: "Legendary",
-                    base: 18500,
+                    base: 21600,
                     petdisplayname: "Magma Empryreus",
                     chance: 0.001
                 },
                 {
                     petname: "HydraMagmaEmpryreus",
                     rarity: "Legendary",
-                    base: 19000,
+                    base: 26000,
                     petdisplayname: "Hydra Magma Empryreus",
                     chance: 0.0005
                 },
                 {
                     petname: "KingEmblazed",
                     rarity: "Mythical",
-                    base: 27000,
+                    base: 35000,
                     petdisplayname: "King Emblazed",
                     chance: 0.00001
                 },
                 {
                     petname: "Magmasaur",
                     rarity: "Secret I",
-                    base: 50000,
+                    base: 60000,
                     petdisplayname: "Magmasaur",
                     chance: 0.000002
                 }
